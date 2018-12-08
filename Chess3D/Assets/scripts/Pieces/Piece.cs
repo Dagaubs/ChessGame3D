@@ -16,6 +16,9 @@ public abstract class Piece : MonoBehaviour {
 	public virtual void Init(Player p){
 		player = p;
 		GoTo(getInitialCase());
+		if(p.getSide() == Player.PlayerSide.BLACK){
+			transform.localEulerAngles = Vector3.up * 180f;
+		}
 		Material m = player.getSide() == Player.PlayerSide.WHITE ? GameManager.instance.whiteMaterial : GameManager.instance.blackMaterial;
 		transform.GetChild(0).GetComponent<Renderer>().material = m;
 	}
