@@ -51,8 +51,19 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\Chess\Demo\Scripts\Main.cs" />
+     <Compile Include="Assets\Chess\Scripts\ChessUiEngine.cs" />
      <Compile Include="Assets\scripts\Case.cs" />
+     <Compile Include="Assets\scripts\EventManager.cs" />
      <Compile Include="Assets\scripts\GameManager.cs" />
+     <Compile Include="Assets\scripts\Pieces\Bishop.cs" />
+     <Compile Include="Assets\scripts\Pieces\King.cs" />
+     <Compile Include="Assets\scripts\Pieces\Knight.cs" />
+     <Compile Include="Assets\scripts\Pieces\Pawn.cs" />
+     <Compile Include="Assets\scripts\Pieces\Piece.cs" />
+     <Compile Include="Assets\scripts\Pieces\Queen.cs" />
+     <Compile Include="Assets\scripts\Pieces\Rook.cs" />
+     <Compile Include="Assets\scripts\Player.cs" />
  <Reference Include="Facebook.Unity.Settings">
  <HintPath>/home/dagaubs/Cours/projet/ChessGame3D/Chess3D/Library/FacebookSDK/Facebook.Unity.Settings.dll</HintPath>
  </Reference>
