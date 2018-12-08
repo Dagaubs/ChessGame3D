@@ -9,14 +9,107 @@ public class Player : MonoBehaviour {
 		BLACK
 	}
 
+	private bool playersTurn = false;
+	public bool isPlaying(){ return playersTurn;}
+
 	private PlayerSide side;
 	public PlayerSide getSide(){return side;}
-
+	private string toString(){return side.ToString()+ "PLAYER";}
+	//private Camera mainCamera;
+	[SerializeField]
+	private LayerMask layerMask;
 	public List<Piece> alivedPieces;
+	public List<Piece> lostPieces;
+
+	private bool picked = false;
+	private Piece pickedPiece = null;
+
+	public void LoseThisPiece(Piece p){
+		if(alivedPieces.Contains(p) && !lostPieces.Contains(p)){
+			alivedPieces.Remove(p);
+			lostPieces.Add(p);
+			EventManager.TriggerEvent(toString()+"_LOST_PIECE");
+		}else{
+			Debug.LogError("Can't lose this piece : not in alivelist! | is this in lostList ? => " + lostPieces.Contains(p));
+		}
+	}
 
 	public void Init(PlayerSide s,Transform pieces_holder){
 		side = s;
 		createPieces(pieces_holder);
+		//mainCamera = Camera.main; 
+		layerMask = LayerMask.GetMask("Piece", "Case");
+		startListenings();
+	}
+
+	private void startListenings(){
+		//Debug.Log(side.ToString() + " starts listening");
+		EventManager.StartListening(side.ToString()+"_BEGIN_TURN", beginOfTurn);
+	}
+
+	private void stopListenings(){
+		EventManager.StopListening(side.ToString()+"_BEGIN_TURN", beginOfTurn);
+	}
+
+	private void beginOfTurn(){
+		Debug.Log(toString()+" : begin turn");
+		playersTurn = true;
+	}
+
+	private void endOfTurn(){
+		playersTurn = false;
+		EventManager.TriggerEvent(side.ToString()+"_END_TURN");
+	}
+
+	void Update(){
+		if(playersTurn){
+			if (Input.GetMouseButtonUp(0))
+			{
+				//Debug.Log(toString() + " : fire !");
+				Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+				RaycastHit hit;
+				if (Physics.Raycast(ray,out hit, layerMask)){
+					Piece foundPiece;
+					//Debug.Log("Hit something : " + hit.collider.gameObject.name);
+					if(hit.collider.gameObject.layer == LayerMask.NameToLayer("Case")){// if you hit a Case
+						Case hitCase = hit.collider.GetComponent<Case>();
+						if(picked && hitCase.isAccessible()){
+							//Create class deplacement and save it
+							//Debug.Log(toString() + " : Found a case accessible => " + hitCase.GetIndex());
+							pickedPiece.UnpickExceptTarget(hitCase);
+							pickedPiece.GoTo(hitCase);
+							picked = false;
+							pickedPiece = null;
+							endOfTurn();
+						}
+						else if(hitCase.isTaken()){
+							foundPiece = hitCase.GetStandingOnPiece();
+							if(foundPiece.GetPlayer() == this){
+								//Debug.Log(toString() + " : pick an ally !");
+								if(picked)
+									pickedPiece.Unpick();
+								
+								picked = true;
+								pickedPiece = foundPiece;
+								foundPiece.Pick();
+							}
+						}
+					}else if(hit.collider.gameObject.layer == LayerMask.NameToLayer("Piece")){ // if you hit a Piece
+							foundPiece = hit.collider.GetComponent<Piece>();
+							if(foundPiece.GetPlayer() == this){
+								if(picked)
+									pickedPiece.Unpick();
+									
+								picked = true;
+								pickedPiece = foundPiece;
+								foundPiece.Pick();
+							}
+					}else{
+						Debug.LogError("You shouldn't be able to hit that : " + hit.collider.gameObject + " | layer : " + LayerMask.LayerToName(hit.collider.gameObject.layer));
+					}
+				}
+			}
+		}
 	}
 
 	private void createPieces(Transform pieces_holder){

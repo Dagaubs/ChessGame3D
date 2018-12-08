@@ -5,7 +5,7 @@ using UnityEngine;
 public class GameManager : MonoBehaviour {
 
 	[SerializeField]
-	private Transform plateTransform, pieces_holder;
+	private Transform plateTransform, pieces_holder, whiteLosses, blackLosses;
 
 	[SerializeField]
 	private GameObject light_case, dark_case;
@@ -15,12 +15,19 @@ public class GameManager : MonoBehaviour {
 	public Material whiteMaterial, blackMaterial;
 
 	private Case[] cases = null;
-	public Case GetCaseWithIndex(int index){return cases[index];}
+	public Case GetCaseWithIndex(int index){
+		if(index < 0 || index >= 64){
+			Debug.LogError("GM_GetCaseWithIndex : index not correct : " + index);
+			return null;
+		}
+		return cases[index];}
 
 	private static GameManager gameManager;
 
 	private Player whitePlayer, blackPlayer;
-	public bool isInit = false, isInitiating = false;
+	public bool isInit = false, isInitiating = false, gameRunning = false;
+
+	private Player.PlayerSide actualTurn = Player.PlayerSide.WHITE;
 
 	public static GameManager instance
     {
@@ -54,9 +61,9 @@ public class GameManager : MonoBehaviour {
 			initPlate();
         }
 		//create player and make them spawn pieces
-		whitePlayer = Instantiate(new GameObject()).AddComponent<Player>();
+		whitePlayer = new GameObject("White player").AddComponent<Player>();
 		whitePlayer.Init(Player.PlayerSide.WHITE, pieces_holder);
-		blackPlayer = Instantiate(new GameObject()).AddComponent<Player>();
+		blackPlayer = new GameObject("Black player").AddComponent<Player>();
 		blackPlayer.Init(Player.PlayerSide.BLACK, pieces_holder);
 
 		//remove accesibility to all Cases
@@ -69,9 +76,66 @@ public class GameManager : MonoBehaviour {
 
 	void Start(){
 		Init();
+		startListenings();
+		beginGame();
 	}
 
-	void initPlate(){
+	private void startListenings(){
+		EventManager.StartListening("WHITE_END_TURN", endOfWhiteTurn);
+		EventManager.StartListening("BLACK_END_TURN", endOfBlackTurn);
+		EventManager.StartListening("WHITEPLAYER_LOST_PIECE", whitePlayerLostPiece);
+		EventManager.StartListening("BLACKPLAYER_LOST_PIECE", blackPlayerLostPiece);
+	}
+
+	private void stopListenings(){
+		EventManager.StopListening("WHITE_END_TURN", endOfWhiteTurn);
+		EventManager.StopListening("BLACK_END_TURN", endOfBlackTurn);
+		EventManager.StopListening("WHITEPLAYER_LOST_PIECE", whitePlayerLostPiece);
+		EventManager.StopListening("BLACKPLAYER_LOST_PIECE", blackPlayerLostPiece);
+	}
+
+	private void endOfWhiteTurn(){
+		if(actualTurn == Player.PlayerSide.WHITE){
+			actualTurn = Player.PlayerSide.BLACK;
+			beginNewturn();
+		}else{
+			Debug.LogError("Received WHITE_END_TURN event but it's BLACK turn!");
+		}
+	}
+
+	private void endOfBlackTurn(){
+		if(actualTurn == Player.PlayerSide.BLACK){
+			actualTurn = Player.PlayerSide.WHITE;
+			beginNewturn();
+		}else{
+			Debug.LogError("Received BLACK_END_TURN event but it's WHITE turn!");
+		}
+	}
+
+	private void whitePlayerLostPiece(){
+		Piece freshlyLostPiece = whitePlayer.lostPieces[whitePlayer.lostPieces.Count-1];
+		freshlyLostPiece.transform.SetParent(whiteLosses, false);
+	}
+
+
+	private void blackPlayerLostPiece(){
+		Piece freshlyLostPiece = blackPlayer.lostPieces[blackPlayer.lostPieces.Count-1];
+		freshlyLostPiece.transform.SetParent(blackLosses, false);
+	}
+
+	private void beginGame(){
+		// set up UI
+		gameRunning = true;
+		beginNewturn();
+	}
+
+	private void beginNewturn(){
+		// modify UI
+		Debug.Log("new turn : " + actualTurn.ToString());
+		EventManager.TriggerEvent(actualTurn.ToString() + "_BEGIN_TURN");
+	}
+
+	private void initPlate(){
 		bool isLight = true;
 		for(int i = 0; i < 64; i++){
 			GameObject caseGo = isLight ? light_case : dark_case;
@@ -81,5 +145,15 @@ public class GameManager : MonoBehaviour {
 			if((i+1) % 8 != 0)
 				isLight = !isLight;
 		}
+	}
+
+	public void SelectThisCases(List<Case> casesToSelect){
+
+	}
+
+	void Update(){/*
+		if(gameRunning){
+
+		}*/
 	}
 }

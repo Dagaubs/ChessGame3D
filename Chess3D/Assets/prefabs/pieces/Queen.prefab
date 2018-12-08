@@ -20,7 +20,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4655546027164148}
   - component: {fileID: 114085791680267188}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Queen
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -37,7 +37,7 @@ GameObject:
   - component: {fileID: 4978498881389966}
   - component: {fileID: 33441246850477830}
   - component: {fileID: 23188453295858716}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Queen
   m_TagString: Untagged
   m_Icon: {fileID: 0}
