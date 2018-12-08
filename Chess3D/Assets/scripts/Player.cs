@@ -9,6 +9,7 @@ public class Player : MonoBehaviour {
 		BLACK
 	}
 
+	[SerializeField]
 	private bool playersTurn = false;
 	public bool isPlaying(){ return playersTurn;}
 
@@ -45,10 +46,12 @@ public class Player : MonoBehaviour {
 	private void startListenings(){
 		//Debug.Log(side.ToString() + " starts listening");
 		EventManager.StartListening(side.ToString()+"_BEGIN_TURN", beginOfTurn);
+		EventManager.StartListening(side.ToString()+"_END_TURN", endOfTurn);
 	}
 
 	private void stopListenings(){
 		EventManager.StopListening(side.ToString()+"_BEGIN_TURN", beginOfTurn);
+		EventManager.StopListening(side.ToString()+"_END_TURN", endOfTurn);
 	}
 
 	private void beginOfTurn(){
@@ -58,7 +61,6 @@ public class Player : MonoBehaviour {
 
 	private void endOfTurn(){
 		playersTurn = false;
-		EventManager.TriggerEvent(side.ToString()+"_END_TURN");
 	}
 
 	void Update(){
@@ -77,10 +79,15 @@ public class Player : MonoBehaviour {
 							//Create class deplacement and save it
 							//Debug.Log(toString() + " : Found a case accessible => " + hitCase.GetIndex());
 							pickedPiece.UnpickExceptTarget(hitCase);
-							pickedPiece.GoTo(hitCase);
-							picked = false;
-							pickedPiece = null;
-							endOfTurn();
+							Move savedMove = pickedPiece.GoTo(hitCase);
+							if(savedMove != null){
+								picked = false;
+								pickedPiece = null;
+								GameManager.instance.SaveNewMove(savedMove);
+								//endOfTurn();
+							}else{
+								Debug.LogError("Move null : case " + hitCase.GetIndex() + " was not accessible!");
+							}
 						}
 						else if(hitCase.isTaken()){
 							foundPiece = hitCase.GetStandingOnPiece();
@@ -114,6 +121,7 @@ public class Player : MonoBehaviour {
 
 	private void createPieces(Transform pieces_holder){
 		alivedPieces = new List<Piece>();
+		lostPieces = new List<Piece>();
 
 		Piece king = Instantiate(GameManager.instance.king, pieces_holder, false).GetComponent<Piece>();
 		king.Init(this);

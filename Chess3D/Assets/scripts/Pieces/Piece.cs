@@ -15,8 +15,13 @@ public abstract class Piece : MonoBehaviour {
 
 	protected List<Case> accessibleCases = null;
 	protected virtual List<Case> GetAccessibleCases(){
-		LookForAccessibleCases();
+		if(accessibleCases == null)
+			LookForAccessibleCases();
 		return accessibleCases;
+	}
+
+	public virtual void RefreshAccessible(){
+		LookForAccessibleCases();
 	}
 
 	private bool dead = false;
@@ -56,29 +61,45 @@ public abstract class Piece : MonoBehaviour {
 		}
 	}
 
+	public virtual bool HasThisCaseInAccessibles(Case targetCase){
+		return accessibleCases.Contains(targetCase);
+	}
+
 	protected abstract void LookForAccessibleCases();
 
 	protected abstract Case getInitialCase();
 
-	public virtual void GoTo(Case targetCase){
+	public virtual Move GoTo(Case targetCase){
 		if(targetCase.isAccessible()){ // if it is legit to go to this case
+			bool killedPiecebool = false;
+			Piece foundPiece = null;
 			if(targetCase.isTaken()){ // if there's already a piece on this target
-				Piece foundPiece = targetCase.GetStandingOnPiece();
+				foundPiece = targetCase.GetStandingOnPiece();
 				if(foundPiece.GetPlayer() != player){ // if it's an enemy piece
-					foundPiece.GetEaten();
+					killedPiecebool = true;
+					//foundPiece.GetEaten();
 				}else{
 					Debug.LogError("Found an ally piece ! this case shouldn't be accessible !");
 					targetCase.WrongCaseChoiceAnimation();
-					return;
+					return null;
 				}
 			}
-			if(actualCase != null)
+			Move ret;
+			if(killedPiecebool)
+				ret = new Move(actualCase, targetCase, this, foundPiece);
+			else
+				ret = new Move(actualCase, targetCase, this);
+
+			if(actualCase != null){
 				actualCase.LeavePiece();
+			}
 			targetCase.setAccessibility(false);
 			transform.localPosition = transform.parent.InverseTransformPoint(targetCase.ComeOnPiece(this));
 			actualCase = targetCase;
 			LookForAccessibleCases();
+			return ret;
 		}
+		return null;
 	}
 
 	public virtual void GetEaten(){

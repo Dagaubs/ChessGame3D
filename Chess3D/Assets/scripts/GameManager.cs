@@ -14,6 +14,8 @@ public class GameManager : MonoBehaviour {
 
 	public Material whiteMaterial, blackMaterial;
 
+	private List<Move> moves;
+
 	private Case[] cases = null;
 	public Case GetCaseWithIndex(int index){
 		if(index < 0 || index >= 64){
@@ -55,6 +57,7 @@ public class GameManager : MonoBehaviour {
     {
 		if(isInit || isInitiating) return;
 		isInitiating = true;
+		moves = new List<Move>();
         if (cases == null)
         {
 			cases = new Case[64];
@@ -74,6 +77,31 @@ public class GameManager : MonoBehaviour {
 		isInit = true;
     }
 
+	public void SaveNewMove(Move m){
+		moves.Add(m);
+		foreach(Piece p in whitePlayer.alivedPieces){
+			if(p.HasThisCaseInAccessibles(m.getLeftCase()) || p.HasThisCaseInAccessibles(m.getJoinedCase()))
+				p.RefreshAccessible();
+		}
+		foreach(Piece p in blackPlayer.alivedPieces){
+			if(p.HasThisCaseInAccessibles(m.getLeftCase()) || p.HasThisCaseInAccessibles(m.getJoinedCase()))
+				p.RefreshAccessible();
+		}
+		Piece killedPiece = m.getKilledPiece();
+		if(killedPiece != null){ //If a Piece was destroyed by this move
+			killedPiece.GetEaten();
+			Transform chosenTransform = killedPiece.GetPlayer().getSide() == Player.PlayerSide.WHITE ? whiteLosses : blackLosses;
+			placeKilledPieceInGraveyard(killedPiece, chosenTransform);
+		}
+		endOfActualTurn();
+	}
+
+	private void placeKilledPieceInGraveyard(Piece killedPiece, Transform chosenTransform){
+		killedPiece.transform.SetParent(chosenTransform);
+		Player ownPlayer = killedPiece.GetPlayer();
+		killedPiece.transform.localPosition = Vector3.back * (ownPlayer.lostPieces.Count - 1);
+	}
+
 	void Start(){
 		Init();
 		startListenings();
@@ -81,17 +109,28 @@ public class GameManager : MonoBehaviour {
 	}
 
 	private void startListenings(){
-		EventManager.StartListening("WHITE_END_TURN", endOfWhiteTurn);
+		/*EventManager.StartListening("WHITE_END_TURN", endOfWhiteTurn);
 		EventManager.StartListening("BLACK_END_TURN", endOfBlackTurn);
 		EventManager.StartListening("WHITEPLAYER_LOST_PIECE", whitePlayerLostPiece);
-		EventManager.StartListening("BLACKPLAYER_LOST_PIECE", blackPlayerLostPiece);
+		EventManager.StartListening("BLACKPLAYER_LOST_PIECE", blackPlayerLostPiece);*/
 	}
 
-	private void stopListenings(){
+	private void stopListenings(){/*
 		EventManager.StopListening("WHITE_END_TURN", endOfWhiteTurn);
 		EventManager.StopListening("BLACK_END_TURN", endOfBlackTurn);
 		EventManager.StopListening("WHITEPLAYER_LOST_PIECE", whitePlayerLostPiece);
-		EventManager.StopListening("BLACKPLAYER_LOST_PIECE", blackPlayerLostPiece);
+		EventManager.StopListening("BLACKPLAYER_LOST_PIECE", blackPlayerLostPiece);*/
+	}
+
+	private void endOfActualTurn(){
+		Player.PlayerSide finishedTurn = actualTurn;
+		if(actualTurn == Player.PlayerSide.WHITE){
+			actualTurn = Player.PlayerSide.BLACK;
+		}else{
+			actualTurn = Player.PlayerSide.WHITE;
+		}
+		EventManager.TriggerEvent(finishedTurn.ToString() + "_END_TURN");
+		beginNewturn();
 	}
 
 	private void endOfWhiteTurn(){
