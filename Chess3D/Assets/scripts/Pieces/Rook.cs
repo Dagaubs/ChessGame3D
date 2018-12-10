@@ -49,9 +49,9 @@ public class Rook : Piece {
 		for(int index = actualIndex+8; index < 64; index=index+8){
 			foundCase = gameManager.GetCaseWithIndex(index);
 			if(foundCase.isTaken()){ //if there's another piece on the case
-				Debug.Log(toString() + " : foundSomeone on : " + foundCase.toString());
+				//Debug.Log(toString() + " : foundSomeone on : " + foundCase.toString());
 				if(foundCase.GetStandingOnPiece().GetPlayer() == player){// if it's an ally
-					Debug.Log(toString() + " : found an ally");
+					//Debug.Log(toString() + " : found an ally");
 					influencingCases.Add(foundCase);
 					return ret;
 				}else{
@@ -80,9 +80,9 @@ public class Rook : Piece {
 		for(int index = actualIndex-8; index > 0; index=index-8){
 			foundCase = gameManager.GetCaseWithIndex(index);
 			if(foundCase.isTaken()){ //if there's another piece on the case
-				Debug.Log(toString() + " : foundSomeone on : " + foundCase.toString());
+				//Debug.Log(toString() + " : foundSomeone on : " + foundCase.toString());
 				if(foundCase.GetStandingOnPiece().GetPlayer() == player){// if it's an ally
-					Debug.Log(toString() + " : found an ally");
+					//Debug.Log(toString() + " : found an ally");
 					influencingCases.Add(foundCase);
 					return ret;
 				}else{
@@ -111,7 +111,7 @@ public class Rook : Piece {
 		for(int index = actualIndex-1; index > 0; index--){
 			foundCase = gameManager.GetCaseWithIndex(index);
 			if(foundCase.isTaken()){ //if there's another piece on the case
-				Debug.Log(toString() + " : foundSomeone on : " + foundCase.toString() + " | " + foundCase.GetStandingOnPiece().GetPlayer().toString() + " | " + (foundCase.GetStandingOnPiece().GetPlayer() == player).ToString());
+				//Debug.Log(toString() + " : foundSomeone on : " + foundCase.toString() + " | " + foundCase.GetStandingOnPiece().GetPlayer().toString() + " | " + (foundCase.GetStandingOnPiece().GetPlayer() == player).ToString());
 				if(foundCase.GetStandingOnPiece().GetPlayer() == player){// if it's an ally
 					influencingCases.Add(foundCase);
 					return ret;
@@ -141,7 +141,7 @@ public class Rook : Piece {
 		for(int index = actualIndex+1; index < 64; index++){
 			foundCase = gameManager.GetCaseWithIndex(index);
 			if(foundCase.isTaken()){ //if there's another piece on the case
-				Debug.Log(toString() + " : foundSomeone on : " + foundCase.toString());
+				//Debug.Log(toString() + " : foundSomeone on : " + foundCase.toString());
 				if(foundCase.GetStandingOnPiece().GetPlayer() == player){// if it's an ally
 					influencingCases.Add(foundCase);
 					return ret;

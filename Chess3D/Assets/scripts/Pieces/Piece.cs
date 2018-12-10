@@ -27,7 +27,7 @@ public abstract class Piece : MonoBehaviour {
 	protected List<Case> influencingCases = null;
 
 	public virtual void RefreshAccessible(){
-		Debug.Log(toString() + " is refreshing is Accessibles");
+		//Debug.Log(toString() + " is refreshing is Accessibles");
 		LookForAccessibleCases();
 	}
 
@@ -84,6 +84,7 @@ public abstract class Piece : MonoBehaviour {
 			if(targetCase.isTaken()){ // if there's already a piece on this target
 				foundPiece = targetCase.GetStandingOnPiece();
 				if(foundPiece.GetPlayer() != player){ // if it's an enemy piece
+					Debug.Log(toString() + " DESTROYED A PIECE");
 					killedPiecebool = true;
 					//foundPiece.GetEaten();
 				}else{
@@ -93,10 +94,12 @@ public abstract class Piece : MonoBehaviour {
 				}
 			}
 			Move ret;
-			if(killedPiecebool)
+			if(killedPiecebool){
 				ret = new Move(actualCase, targetCase, this, foundPiece);
-			else
+			}
+			else{
 				ret = new Move(actualCase, targetCase, this);
+			}
 
 			if(actualCase != null){
 				actualCase.LeavePiece();
@@ -112,7 +115,7 @@ public abstract class Piece : MonoBehaviour {
 
 	public virtual void GetEaten(){
 		// leave piece
-		actualCase.LeavePiece();
+		//actualCase.LeavePiece();
 		dead = true;
 		// inform player and GameManager
 		player.LoseThisPiece(this);
