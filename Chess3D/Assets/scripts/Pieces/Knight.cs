@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Knight : Piece {
 
+	public override string toString(){return player.getSide().ToString() + " KNIGHT (" + piece_type_index + ")";}
+
 	protected override Case getInitialCase(){
 		if(player.getSide() == Player.PlayerSide.WHITE){ //white
 			if(piece_type_index == 1)
@@ -19,6 +21,7 @@ public class Knight : Piece {
 	}
 
 	protected override void LookForAccessibleCases(){
+		influencingCases = new List<Case>();
 		List<Case> ret = getUpLeftDiagonale();
 		ret.AddRange(getUpRightDiagonale());
 		ret.AddRange(getDownRightDiagonale());
@@ -41,6 +44,8 @@ public class Knight : Piece {
 			if(upCase.isTaken()){ //if there's another piece on the case
 				if(upCase.GetStandingOnPiece().GetPlayer() != player){// if it's an enemy
 					ret.Add(upCase);
+				}else{// if it's an ally
+					influencingCases.Add(upCase);
 				}
 			}
 			else
@@ -51,6 +56,8 @@ public class Knight : Piece {
 			if(leftCase.isTaken()){ //if there's another piece on the case
 				if(leftCase.GetStandingOnPiece().GetPlayer() != player){// if it's an enemy
 					ret.Add(leftCase);
+				}else{// if it's an ally
+					influencingCases.Add(leftCase);
 				}
 			}
 			else
@@ -74,16 +81,21 @@ public class Knight : Piece {
 			if(upCase.isTaken()){ //if there's another piece on the case
 				if(upCase.GetStandingOnPiece().GetPlayer() != player){// if it's an enemy
 					ret.Add(upCase);
+				}else{// if it's an ally
+					influencingCases.Add(upCase);
 				}
 			}
-			else
+			else{
 				ret.Add(upCase);
+			}
 		}
 		if(indexCorner%8 != 7){ //if we are NOT on RIGHT bounds
 			rightCase = gameManager.GetCaseWithIndex(indexCorner +1);
 			if(rightCase.isTaken()){ //if there's another piece on the case
 				if(rightCase.GetStandingOnPiece().GetPlayer() != player){// if it's an enemy
 					ret.Add(rightCase);
+				}else{// if it's an ally
+					influencingCases.Add(rightCase);
 				}
 			}
 			else
@@ -107,6 +119,8 @@ public class Knight : Piece {
 			if(downCase.isTaken()){ //if there's another piece on the case
 				if(downCase.GetStandingOnPiece().GetPlayer() != player){// if it's an enemy
 					ret.Add(downCase);
+				}else{// if it's an ally
+					influencingCases.Add(downCase);
 				}
 			}
 			else
@@ -117,6 +131,8 @@ public class Knight : Piece {
 			if(rightCase.isTaken()){ //if there's another piece on the case
 				if(rightCase.GetStandingOnPiece().GetPlayer() != player){// if it's an enemy
 					ret.Add(rightCase);
+				}else{// if it's an ally
+					influencingCases.Add(rightCase);
 				}
 			}
 			else
@@ -140,6 +156,8 @@ public class Knight : Piece {
 			if(downCase.isTaken()){ //if there's another piece on the case
 				if(downCase.GetStandingOnPiece().GetPlayer() != player){// if it's an enemy
 					ret.Add(downCase);
+				}else{// if it's an ally
+					influencingCases.Add(downCase);
 				}
 			}
 			else
@@ -150,6 +168,8 @@ public class Knight : Piece {
 			if(leftCase.isTaken()){ //if there's another piece on the case
 				if(leftCase.GetStandingOnPiece().GetPlayer() != player){// if it's an enemy
 					ret.Add(leftCase);
+				}else{// if it's an ally
+					influencingCases.Add(leftCase);
 				}
 			}
 			else

@@ -73,6 +73,9 @@ public class GameManager : MonoBehaviour {
 		foreach(Case c in cases)
 			c.setAccessibility(false);
 
+		whitePlayer.RefreshAllPieces();
+		blackPlayer.RefreshAllPieces();
+
 		isInitiating = false;
 		isInit = true;
     }
@@ -80,11 +83,11 @@ public class GameManager : MonoBehaviour {
 	public void SaveNewMove(Move m){
 		moves.Add(m);
 		foreach(Piece p in whitePlayer.alivedPieces){
-			if(p.HasThisCaseInAccessibles(m.getLeftCase()) || p.HasThisCaseInAccessibles(m.getJoinedCase()))
+			if(p.HasThisCaseInAccessiblesOrInfluence(m.getLeftCase()) || p.HasThisCaseInAccessiblesOrInfluence(m.getJoinedCase()))
 				p.RefreshAccessible();
 		}
 		foreach(Piece p in blackPlayer.alivedPieces){
-			if(p.HasThisCaseInAccessibles(m.getLeftCase()) || p.HasThisCaseInAccessibles(m.getJoinedCase()))
+			if(p.HasThisCaseInAccessiblesOrInfluence(m.getLeftCase()) || p.HasThisCaseInAccessiblesOrInfluence(m.getJoinedCase()))
 				p.RefreshAccessible();
 		}
 		Piece killedPiece = m.getKilledPiece();
@@ -93,6 +96,8 @@ public class GameManager : MonoBehaviour {
 			Transform chosenTransform = killedPiece.GetPlayer().getSide() == Player.PlayerSide.WHITE ? whiteLosses : blackLosses;
 			placeKilledPieceInGraveyard(killedPiece, chosenTransform);
 		}
+		m.getMovedPiece().RefreshAccessible();
+		Debug.Log(m.toString());
 		endOfActualTurn();
 	}
 
@@ -163,14 +168,16 @@ public class GameManager : MonoBehaviour {
 	}
 
 	private void beginGame(){
-		// set up UI
+		// TODO: set up UI
+
 		gameRunning = true;
 		beginNewturn();
 	}
 
 	private void beginNewturn(){
-		// modify UI
-		Debug.Log("new turn : " + actualTurn.ToString());
+		// TODO: modify UI
+
+		//Debug.Log("new turn : " + actualTurn.ToString());
 		EventManager.TriggerEvent(actualTurn.ToString() + "_BEGIN_TURN");
 	}
 

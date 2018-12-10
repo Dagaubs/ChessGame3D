@@ -15,7 +15,7 @@ public class Player : MonoBehaviour {
 
 	private PlayerSide side;
 	public PlayerSide getSide(){return side;}
-	private string toString(){return side.ToString()+ "PLAYER";}
+	public string toString(){return side.ToString()+ "PLAYER";}
 	//private Camera mainCamera;
 	[SerializeField]
 	private LayerMask layerMask;
@@ -41,6 +41,12 @@ public class Player : MonoBehaviour {
 		//mainCamera = Camera.main; 
 		layerMask = LayerMask.GetMask("Piece", "Case");
 		startListenings();
+	}
+
+	public void RefreshAllPieces(){
+		foreach(Piece p in alivedPieces){
+			p.RefreshAccessible();
+		}
 	}
 
 	private void startListenings(){

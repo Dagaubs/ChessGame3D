@@ -13,6 +13,9 @@ public abstract class Piece : MonoBehaviour {
 	protected Player player;
 	public virtual Player GetPlayer(){return player;}
 
+	public abstract string toString();
+
+	[SerializeField]
 	protected List<Case> accessibleCases = null;
 	protected virtual List<Case> GetAccessibleCases(){
 		if(accessibleCases == null)
@@ -20,7 +23,11 @@ public abstract class Piece : MonoBehaviour {
 		return accessibleCases;
 	}
 
+	[SerializeField]
+	protected List<Case> influencingCases = null;
+
 	public virtual void RefreshAccessible(){
+		Debug.Log(toString() + " is refreshing is Accessibles");
 		LookForAccessibleCases();
 	}
 
@@ -30,6 +37,7 @@ public abstract class Piece : MonoBehaviour {
 	public virtual void Init(Player p){
 		player = p;
 		GoTo(getInitialCase());
+		gameObject.name = toString();
 		if(p.getSide() == Player.PlayerSide.BLACK){
 			transform.localEulerAngles = Vector3.up * 180f;
 		}
@@ -38,7 +46,7 @@ public abstract class Piece : MonoBehaviour {
 	}
 
 	public virtual void Pick(){
-		Debug.Log("Pick is call on " + actualCase.GetIndex());
+		//Debug.Log("Pick is call on " + actualCase.GetIndex());
 		actualCase.PickPieceOnCase();
 		List<Case> casesTosetAccessible = GetAccessibleCases();
 		foreach(Case c in casesTosetAccessible)
@@ -61,8 +69,8 @@ public abstract class Piece : MonoBehaviour {
 		}
 	}
 
-	public virtual bool HasThisCaseInAccessibles(Case targetCase){
-		return accessibleCases.Contains(targetCase);
+	public virtual bool HasThisCaseInAccessiblesOrInfluence(Case targetCase){
+		return accessibleCases.Contains(targetCase) || influencingCases.Contains(targetCase);
 	}
 
 	protected abstract void LookForAccessibleCases();
@@ -96,7 +104,7 @@ public abstract class Piece : MonoBehaviour {
 			targetCase.setAccessibility(false);
 			transform.localPosition = transform.parent.InverseTransformPoint(targetCase.ComeOnPiece(this));
 			actualCase = targetCase;
-			LookForAccessibleCases();
+			//LookForAccessibleCases();
 			return ret;
 		}
 		return null;

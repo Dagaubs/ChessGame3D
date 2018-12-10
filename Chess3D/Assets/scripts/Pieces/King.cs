@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class King : Piece {
 
+	public override string toString(){return player.getSide().ToString() + " KING";}
+
 	protected override Case getInitialCase(){
 		if(player.getSide() == Player.PlayerSide.WHITE){ //white
 			return GameManager.instance.GetCaseWithIndex(4);
@@ -13,6 +15,7 @@ public class King : Piece {
 	}
 
 	protected override void LookForAccessibleCases(){
+		influencingCases = new List<Case>();
 		List<Case> ret = new List<Case>();
 		int actualIndex = actualCase.GetIndex();
 		int index;
@@ -24,16 +27,16 @@ public class King : Piece {
 					index = actualIndex + (x*1) + (y*8);
 					foundCase = gameManager.GetCaseWithIndex(index);
 					if(foundCase.isTaken()){ //if there's another piece on the case
-						if(foundCase.GetStandingOnPiece().GetPlayer() == player){// if it's an ally
-							accessibleCases = ret;
-							return;
-						}else{
+						if(foundCase.GetStandingOnPiece().GetPlayer() != player){// if it's an enemy
+							Debug.Log(player.toString() + " : Found a case with an enemy : " + foundCase.GetStandingOnPiece().GetPlayer().toString());
 							ret.Add(foundCase);
-							accessibleCases = ret;
-							return;
+						}else{
+							influencingCases.Add(foundCase);
 						}
 					}
-					ret.Add(foundCase);
+					else{
+						ret.Add(foundCase);
+					}
 				}
 			}
 		}

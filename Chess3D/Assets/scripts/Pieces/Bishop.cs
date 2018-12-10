@@ -19,12 +19,15 @@ public class Bishop : Piece {
 	}
 	
 	protected override void LookForAccessibleCases(){
+		influencingCases = new List<Case>();
 		List<Case> ret = getUpLeftDiagonale();
 		ret.AddRange(getUpRightDiagonale());
 		ret.AddRange(getDownRightDiagonale());
 		ret.AddRange(getDownLeftDiagonale());
 		accessibleCases = ret;
 	}
+
+	public override string toString(){return player.getSide().ToString() + " BISHOP (" + piece_type_index + ")";}
 
 	private List<Case> getUpLeftDiagonale(){
 		List<Case> ret = new List<Case>();
@@ -39,13 +42,17 @@ public class Bishop : Piece {
 			foundCase = gameManager.GetCaseWithIndex(index);
 			if(foundCase.isTaken()){ //if there's another piece on the case
 				if(foundCase.GetStandingOnPiece().GetPlayer() == player){// if it's an ally
+					Debug.Log(toString() + " FOUND AN ALLY!");
+					influencingCases.Add(foundCase);
 					return ret;
 				}else{
 					ret.Add(foundCase);
 					return ret;
 				}
 			}
-			ret.Add(foundCase);
+			else{
+				ret.Add(foundCase);
+			}
 			if(index%8 == 0 || index/8 == 7) // if we are on the LEFT bounds OR TOP bounds
 				return ret;
 		}
@@ -65,13 +72,16 @@ public class Bishop : Piece {
 			foundCase = gameManager.GetCaseWithIndex(index);
 			if(foundCase.isTaken()){ //if there's another piece on the case
 				if(foundCase.GetStandingOnPiece().GetPlayer() == player){// if it's an ally
+					influencingCases.Add(foundCase);
 					return ret;
 				}else{
 					ret.Add(foundCase);
 					return ret;
 				}
 			}
-			ret.Add(foundCase);
+			else{
+				ret.Add(foundCase);
+			}
 			if(index%8 == 7 || index/8 == 7) // if we are on the RIGHT bounds OR TOP bounds
 				return ret;
 		}
@@ -91,13 +101,16 @@ public class Bishop : Piece {
 			foundCase = gameManager.GetCaseWithIndex(index);
 			if(foundCase.isTaken()){ //if there's another piece on the case
 				if(foundCase.GetStandingOnPiece().GetPlayer() == player){// if it's an ally
+					influencingCases.Add(foundCase);
 					return ret;
 				}else{
 					ret.Add(foundCase);
 					return ret;
 				}
 			}
-			ret.Add(foundCase);
+			else{
+				ret.Add(foundCase);
+			}
 			if(index%8 == 7 || index/8 == 0) // if we are on the RIGHT bounds OR BOTTOM bounds
 				return ret;
 		}
@@ -117,13 +130,16 @@ public class Bishop : Piece {
 			foundCase = gameManager.GetCaseWithIndex(index);
 			if(foundCase.isTaken()){ //if there's another piece on the case
 				if(foundCase.GetStandingOnPiece().GetPlayer() == player){// if it's an ally
+					influencingCases.Add(foundCase);
 					return ret;
 				}else{
 					ret.Add(foundCase);
 					return ret;
 				}
 			}
-			ret.Add(foundCase);
+			else{
+				ret.Add(foundCase);
+			}
 			if(index%8 == 0 || index/8 == 0) // if we are on the LEFT bounds OR BOTTOM bounds
 				return ret;
 		}

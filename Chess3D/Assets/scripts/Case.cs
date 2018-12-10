@@ -13,9 +13,13 @@ public class Case : MonoBehaviour {
 		return new Vector3(transform.position.x,transform.position.y + 0.1f, transform.position.z);
 	}*/
 
+	public static int Capital_A_Char_index = 65;
+
 	[SerializeField]
 	private case_type type;
 	public case_type getType(){return type;}
+
+	public string generalCoordinate = "";
 
 	[SerializeField]
 	private int indexInPlate;
@@ -40,6 +44,10 @@ public class Case : MonoBehaviour {
 			accessibleTakenGo.SetActive(false);
 			accessibleGo.SetActive(false);
 		}
+	}
+
+	public string toString(){
+		return generalCoordinate + "(" + indexInPlate + ")";
 	}
 
 	[SerializeField]
@@ -84,6 +92,7 @@ public class Case : MonoBehaviour {
 
 	public void init(int nb){
 		indexInPlate = nb;
+		generalCoordinate = ((char)(Capital_A_Char_index + indexInPlate%8)).ToString() + (indexInPlate/8 + 1).ToString();
 		transform.position = new Vector3(-4 + (indexInPlate%8), 0,-4 + (indexInPlate/8));
 	}
 

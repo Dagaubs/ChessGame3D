@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Pawn : Piece {
 
+	public override string toString(){return player.getSide().ToString() + " PAWN (" + piece_type_index + ")";}
+
 	protected override Case getInitialCase(){
 		if(player.getSide() == Player.PlayerSide.WHITE){ //white
 				return GameManager.instance.GetCaseWithIndex(7 + piece_type_index);
@@ -13,6 +15,7 @@ public class Pawn : Piece {
 	}
 
 	protected override void LookForAccessibleCases(){
+		influencingCases = new List<Case>();
 		if(player.getSide() == Player.PlayerSide.WHITE)
 			white_LookForAccessibleCases();
 		else
@@ -35,25 +38,41 @@ public class Pawn : Piece {
 			longForwardCase = gameManager.GetCaseWithIndex(actualIndex+16); // is able to move 2 case forward
 			if(!longForwardCase.isTaken()) //if there's NO other piece on the case
 				ret.Add(longForwardCase);
+			else
+				influencingCases.Add(longForwardCase);
 		}
 
 		forwardCase = gameManager.GetCaseWithIndex(actualIndex+8);
 		if(!forwardCase.isTaken()) //if there's NO other piece on the case
 			ret.Add(forwardCase);
+		else
+			influencingCases.Add(forwardCase);
 
 		if(actualIndex%8 != 0){ // if we are NOT on LEFT bounds
 			upLeftCase = gameManager.GetCaseWithIndex(actualIndex+7);
 			if(upLeftCase.isTaken()){ //if there's NO other piece on the case
-				if(upLeftCase.GetStandingOnPiece().GetPlayer() != player)// if it's an enemy
+				if(upLeftCase.GetStandingOnPiece().GetPlayer() != player){// if it's an enemy
 					ret.Add(upLeftCase);
+				}else{ //if it's a ally
+					influencingCases.Add(upLeftCase);
+				}
+			}
+			else{
+					influencingCases.Add(upLeftCase);
 			}
 		}
 
 		if(actualIndex%8 != 7){ // if we are NOT on RIGHT bounds
 			upRightCase = gameManager.GetCaseWithIndex(actualIndex+9);
 			if(upRightCase.isTaken()){ //if there's NO other piece on the case
-				if(upRightCase.GetStandingOnPiece().GetPlayer() != player)// if it's an enemy
+				if(upRightCase.GetStandingOnPiece().GetPlayer() != player){// if it's an enemy
 					ret.Add(upRightCase);
+				}else{ //if it's a ally
+					influencingCases.Add(upRightCase);
+				}
+			}
+			else{
+					influencingCases.Add(upRightCase);
 			}
 		}
 		accessibleCases = ret;
@@ -74,25 +93,41 @@ public class Pawn : Piece {
 			longForwardCase = gameManager.GetCaseWithIndex(actualIndex-16); // is able to move 2 case forward
 			if(!longForwardCase.isTaken()) //if there's NO other piece on the case
 				ret.Add(longForwardCase);
+			else
+				influencingCases.Add(longForwardCase);
 		}
 
 		forwardCase = gameManager.GetCaseWithIndex(actualIndex-8);
 		if(!forwardCase.isTaken()) //if there's NO other piece on the case
 			ret.Add(forwardCase);
+		else
+			influencingCases.Add(forwardCase);
 
 		if(actualIndex%8 != 0){ // if we are NOT on LEFT bounds
 			downLeftCase = gameManager.GetCaseWithIndex(actualIndex-9);
 			if(downLeftCase.isTaken()){ //if there's NO other piece on the case
-				if(downLeftCase.GetStandingOnPiece().GetPlayer() != player)// if it's an enemy
+				if(downLeftCase.GetStandingOnPiece().GetPlayer() != player){// if it's an enemy
 					ret.Add(downLeftCase);
+				}else{ //if it's a ally
+					influencingCases.Add(downLeftCase);
+				}
+			}
+			else{
+					influencingCases.Add(downLeftCase);
 			}
 		}
 
 		if(actualIndex%8 != 7){ // if we are NOT on RIGHT bounds
 			downRightCase = gameManager.GetCaseWithIndex(actualIndex-7);
 			if(downRightCase.isTaken()){ //if there's NO other piece on the case
-				if(downRightCase.GetStandingOnPiece().GetPlayer() != player)// if it's an enemy
+				if(downRightCase.GetStandingOnPiece().GetPlayer() != player){// if it's an enemy
 					ret.Add(downRightCase);
+				}else{ //if it's a ally
+					influencingCases.Add(downRightCase);
+				}
+			}
+			else{
+					influencingCases.Add(downRightCase);
 			}
 		}
 		accessibleCases = ret;

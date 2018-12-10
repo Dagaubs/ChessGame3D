@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Rook : Piece {
 
+	public override string toString(){return player.getSide().ToString() + " ROOK (" + piece_type_index + ")";}
+
 	protected override Case getInitialCase(){
 		if(player.getSide() == Player.PlayerSide.WHITE){ //white
 			if(piece_type_index == 1)
@@ -19,6 +21,7 @@ public class Rook : Piece {
 	}
 
 	protected override void LookForAccessibleCases(){
+		influencingCases = new List<Case>();
 		List<Case> retUp = getUpVerticale(),
 		retDown = getDownVerticale(),
 		retLeft = getLeftHorizontale(),
@@ -46,15 +49,19 @@ public class Rook : Piece {
 		for(int index = actualIndex+8; index < 64; index=index+8){
 			foundCase = gameManager.GetCaseWithIndex(index);
 			if(foundCase.isTaken()){ //if there's another piece on the case
-				Debug.Log("getUpVertical : foundSomeone on : " + index);
+				Debug.Log(toString() + " : foundSomeone on : " + foundCase.toString());
 				if(foundCase.GetStandingOnPiece().GetPlayer() == player){// if it's an ally
+					Debug.Log(toString() + " : found an ally");
+					influencingCases.Add(foundCase);
 					return ret;
 				}else{
 					ret.Add(foundCase);
 					return ret;
 				}
 			}
-			ret.Add(foundCase);
+			else{
+				ret.Add(foundCase);
+			}
 			if(index/8 == 7) // if we are on the top bounds
 				return ret;
 		}
@@ -73,15 +80,19 @@ public class Rook : Piece {
 		for(int index = actualIndex-8; index > 0; index=index-8){
 			foundCase = gameManager.GetCaseWithIndex(index);
 			if(foundCase.isTaken()){ //if there's another piece on the case
-				Debug.Log("getUpVertical : foundSomeone on : " + index);
+				Debug.Log(toString() + " : foundSomeone on : " + foundCase.toString());
 				if(foundCase.GetStandingOnPiece().GetPlayer() == player){// if it's an ally
+					Debug.Log(toString() + " : found an ally");
+					influencingCases.Add(foundCase);
 					return ret;
 				}else{
 					ret.Add(foundCase);
 					return ret;
 				}
 			}
-			ret.Add(foundCase);
+			else{
+				ret.Add(foundCase);
+			}
 			if(index/8 == 0) // if we are on the top bounds
 				return ret;
 		}
@@ -92,7 +103,7 @@ public class Rook : Piece {
 		List<Case> ret = new List<Case>();
 		int actualIndex = actualCase.GetIndex();
 
-		if(actualIndex%8 == 0) // if we are on the top bounds
+		if(actualIndex%8 == 0) // if we are on the LEFT bounds
 			return ret;
 
 		Case foundCase;
@@ -100,16 +111,19 @@ public class Rook : Piece {
 		for(int index = actualIndex-1; index > 0; index--){
 			foundCase = gameManager.GetCaseWithIndex(index);
 			if(foundCase.isTaken()){ //if there's another piece on the case
-				Debug.Log("getUpVertical : foundSomeone on : " + index);
+				Debug.Log(toString() + " : foundSomeone on : " + foundCase.toString() + " | " + foundCase.GetStandingOnPiece().GetPlayer().toString() + " | " + (foundCase.GetStandingOnPiece().GetPlayer() == player).ToString());
 				if(foundCase.GetStandingOnPiece().GetPlayer() == player){// if it's an ally
+					influencingCases.Add(foundCase);
 					return ret;
 				}else{
 					ret.Add(foundCase);
 					return ret;
 				}
 			}
-			ret.Add(foundCase);
-			if(index%8 == 0) // if we are on the top bounds
+			else{
+				ret.Add(foundCase);
+			}
+			if(index%8 == 0) // if we are on the LEFT bounds
 				return ret;
 		}
 		return ret;
@@ -127,15 +141,18 @@ public class Rook : Piece {
 		for(int index = actualIndex+1; index < 64; index++){
 			foundCase = gameManager.GetCaseWithIndex(index);
 			if(foundCase.isTaken()){ //if there's another piece on the case
-				Debug.Log("getUpVertical : foundSomeone on : " + index);
+				Debug.Log(toString() + " : foundSomeone on : " + foundCase.toString());
 				if(foundCase.GetStandingOnPiece().GetPlayer() == player){// if it's an ally
+					influencingCases.Add(foundCase);
 					return ret;
 				}else{
 					ret.Add(foundCase);
 					return ret;
 				}
 			}
-			ret.Add(foundCase);
+			else{
+				ret.Add(foundCase);
+			}
 			if(index%8 == 7) // if we are on the RIGHT bounds
 				return ret;
 		}

@@ -18,4 +18,8 @@ public class Move {
 		this.movedPiece = movedPiece;
 		this.killedPiece = killedPiece; 
 	}
+
+	public string toString(){
+		return movedPiece.toString() + (killedPiece != null ? " destroyed " + killedPiece.toString() + " on " : " moved to ") + joinedCase.toString();
+	}
 }
