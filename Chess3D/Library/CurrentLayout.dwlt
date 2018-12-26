@@ -110,7 +110,7 @@ MonoBehaviour:
   m_MinSize: {x: 713, y: 492}
   m_MaxSize: {x: 18008, y: 14042}
   vertical: 0
-  controlID: 50
+  controlID: 26
 --- !u!114 &6
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -134,7 +134,7 @@ MonoBehaviour:
   m_MinSize: {x: 202, y: 442}
   m_MaxSize: {x: 4002, y: 8042}
   vertical: 1
-  controlID: 51
+  controlID: 27
 --- !u!114 &7
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -284,7 +284,7 @@ MonoBehaviour:
   m_MinSize: {x: 277, y: 192}
   m_MaxSize: {x: 4002, y: 8042}
   vertical: 1
-  controlID: 153
+  controlID: 151
 --- !u!114 &13
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -473,9 +473,9 @@ MonoBehaviour:
     speed: 2
     m_Value: {x: -0.37896743, y: 0.02330712, z: -0.009548137, w: -0.9250673}
   m_Size:
-    m_Target: 36.816326
+    m_Target: 32.11291
     speed: 2
-    m_Value: 36.816326
+    m_Value: 32.11291
   m_Ortho:
     m_Target: 0
     speed: 2
@@ -583,9 +583,9 @@ MonoBehaviour:
     height: 287
   m_TreeViewState:
     scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: 9c46feff
-    m_LastClickedID: -112996
-    m_ExpandedIDs: ca8bfeffa8bcfeffa097ffffbce8ffff9efbffff000000000029000012290000
+    m_SelectedIDs: 16290000
+    m_LastClickedID: 10518
+    m_ExpandedIDs: 9efbffff0000000016290000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -646,18 +646,18 @@ MonoBehaviour:
     m_ShowAllHits: 0
     m_SearchArea: 0
     m_Folders:
-    - Assets/scripts/Pieces
+    - Assets/scripts
   m_ViewMode: 1
   m_StartGridSize: 16
   m_LastFolders:
-  - Assets/scripts/Pieces
+  - Assets/scripts
   m_LastFoldersGridSize: 16
   m_LastProjectPath: /home/dagaubs/Cours/projet/ChessGame3D/Chess3D
   m_IsLocked: 0
   m_FolderTreeState:
     scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: e6270000
-    m_LastClickedID: 10214
+    m_SelectedIDs: 06280000
+    m_LastClickedID: 10246
     m_ExpandedIDs: 0000000064270000f227000006280000ca28000000ca9a3bffffff7f
     m_RenameOverlay:
       m_UserAcceptedRename: 0
@@ -713,22 +713,22 @@ MonoBehaviour:
   m_ListAreaState:
     m_SelectedInstanceIDs: 
     m_LastClickedInstanceID: 0
-    m_HadKeyboardFocusLastEvent: 1
+    m_HadKeyboardFocusLastEvent: 0
     m_ExpandedInstanceIDs: c6280000163500009a320000000000006829000080270000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
-      m_Name: Move
-      m_OriginalName: Move
+      m_Name: 
+      m_OriginalName: 
       m_EditFieldRect:
         serializedVersion: 2
         x: 0
         y: 0
         width: 0
         height: 0
-      m_UserData: 1816
+      m_UserData: 0
       m_IsWaitingForDelay: 0
       m_IsRenaming: 0
-      m_OriginalEventType: 0
+      m_OriginalEventType: 11
       m_IsRenamingFilename: 1
       m_ClientGUIView: {fileID: 11}
     m_CreateAssetUtility:

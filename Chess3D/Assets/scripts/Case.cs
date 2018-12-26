@@ -65,7 +65,7 @@ public class Case : MonoBehaviour {
 	}
 
 	public Vector3 ComeOnPiece(Piece piece){
-		Debug.Log(toString() + " is taken by " + piece.toString());
+		//Debug.Log(toString() + " is taken by " + piece.toString());
 		taken = true;
 		standingOnPiece = piece;
 		return transform.position;
