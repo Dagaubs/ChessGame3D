@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+
 
 public class GameManager : MonoBehaviour {
 
@@ -17,6 +19,11 @@ public class GameManager : MonoBehaviour {
 	private List<Move> moves;
 
 	private Case[] cases = null;
+
+	public GameObject[] UIimagesPieceLost;
+	public Text[]		UITextsPieceLost;
+	public int[]		PiecesLostBySide;
+
 	public Case GetCaseWithIndex(int index){
 		if(index < 0 || index >= 64){
 			Debug.LogError("GM_GetCaseWithIndex : index not correct : " + index);
@@ -76,6 +83,9 @@ public class GameManager : MonoBehaviour {
 		whitePlayer.RefreshAllPieces();
 		blackPlayer.RefreshAllPieces();
 
+		//initialise tabs
+		PiecesLostBySide = new int[10]; // 10 => we don't count the king
+
 		isInitiating = false;
 		isInit = true;
     }
@@ -113,19 +123,23 @@ public class GameManager : MonoBehaviour {
 		Piece killedPiece = m.getKilledPiece();
 		if(killedPiece != null){ //If a Piece was destroyed by this move
 			killedPiece.GetEaten();
-			Transform chosenTransform = killedPiece.GetPlayer().getSide() == Player.PlayerSide.WHITE ? whiteLosses : blackLosses;
-			placeKilledPieceInGraveyard(killedPiece, chosenTransform);
+
+			//ANIMATION DE DEATH ?!
+
+			Destroy(killedPiece.gameObject);
+		//	Transform chosenTransform = killedPiece.GetPlayer().getSide() == Player.PlayerSide.WHITE ? whiteLosses : blackLosses;
+		//	placeKilledPieceInGraveyard(killedPiece, chosenTransform);
 		}
 		m.getMovedPiece().RefreshAccessible();
 		Debug.Log(m.toString());
 		endOfActualTurn();
 	}
 
-	private void placeKilledPieceInGraveyard(Piece killedPiece, Transform chosenTransform){
+/*	private void placeKilledPieceInGraveyard(Piece killedPiece, Transform chosenTransform){
 		killedPiece.transform.SetParent(chosenTransform);
 		Player ownPlayer = killedPiece.GetPlayer();
 		killedPiece.transform.localPosition = Vector3.back * (ownPlayer.lostPieces.Count - 1);
-	}
+	}*/
 
 	void Start(){
 		Init();
@@ -175,17 +189,28 @@ public class GameManager : MonoBehaviour {
 			Debug.LogError("Received BLACK_END_TURN event but it's WHITE turn!");
 		}
 	}
-
+/*
 	private void whitePlayerLostPiece(){
 		Piece freshlyLostPiece = whitePlayer.lostPieces[whitePlayer.lostPieces.Count-1];
 		freshlyLostPiece.transform.SetParent(whiteLosses, false);
+	}*/
+
+	public void PlayerLostPiece(Player.PlayerSide side, Piece.PieceType type){
+		int offset = side == Player.PlayerSide.WHITE ? 0 : 5;
+		int index = offset + (int)type -1; //-1 => we don't count the king
+
+		PiecesLostBySide[index]++;
+		UIimagesPieceLost[index].SetActive(true);
+
+		if(PiecesLostBySide[index] > 1){
+			UITextsPieceLost[index].text = "x"+PiecesLostBySide[index];
+		}
 	}
-
-
+/* 
 	private void blackPlayerLostPiece(){
 		Piece freshlyLostPiece = blackPlayer.lostPieces[blackPlayer.lostPieces.Count-1];
 		freshlyLostPiece.transform.SetParent(blackLosses, false);
-	}
+	}*/
 
 	private void beginGame(){
 		// TODO: set up UI

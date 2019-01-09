@@ -20,18 +20,19 @@ public class Player : MonoBehaviour {
 	[SerializeField]
 	private LayerMask layerMask;
 	public List<Piece> alivedPieces;
-	public List<Piece> lostPieces;
+	//public List<Piece> lostPieces;
 
 	private bool picked = false;
 	private Piece pickedPiece = null;
 
 	public void LoseThisPiece(Piece p){
-		if(alivedPieces.Contains(p) && !lostPieces.Contains(p)){
+		if(alivedPieces.Contains(p) /*&& !lostPieces.Contains(p)*/){
 			alivedPieces.Remove(p);
-			lostPieces.Add(p);
-			EventManager.TriggerEvent(toString()+"_LOST_PIECE");
+			//lostPieces.Add(p);
+			//EventManager.TriggerEvent(toString()+"_LOST_PIECE");
+			GameManager.instance.PlayerLostPiece(side, p.getType());
 		}else{
-			Debug.LogError("Can't lose this piece : not in alivelist! | is this in lostList ? => " + lostPieces.Contains(p));
+			Debug.LogError("Can't lose this piece : not in alivelist! " /* | is this in lostList ? => " + lostPieces.Contains(p)*/);
 		}
 	}
 
@@ -127,7 +128,7 @@ public class Player : MonoBehaviour {
 
 	private void createPieces(Transform pieces_holder){
 		alivedPieces = new List<Piece>();
-		lostPieces = new List<Piece>();
+		//lostPieces = new List<Piece>();
 
 		Piece king = Instantiate(GameManager.instance.king, pieces_holder, false).GetComponent<Piece>();
 		king.Init(this);

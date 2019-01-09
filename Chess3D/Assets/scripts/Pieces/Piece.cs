@@ -4,6 +4,11 @@ using UnityEngine;
 
 public abstract class Piece : MonoBehaviour {
 
+	public enum PieceType{KING, QUEEN, BISHOP, KNIGHT, ROOK, PAWN}
+
+	protected PieceType type;
+	public PieceType getType(){return type;}
+
 	protected Case actualCase;
 
 	protected int piece_type_index = 1;

@@ -165,7 +165,7 @@ GameObject:
   - component: {fileID: 184404865}
   - component: {fileID: 184404864}
   m_Layer: 5
-  m_Name: Image
+  m_Name: ImageK
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -261,7 +261,7 @@ GameObject:
   - component: {fileID: 210717614}
   - component: {fileID: 210717613}
   m_Layer: 5
-  m_Name: Image
+  m_Name: ImageP
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -746,6 +746,29 @@ MonoBehaviour:
   pawn: {fileID: 1100077953778398, guid: c2b9f925628ac4f9b9eb1a985ac4bec5, type: 2}
   whiteMaterial: {fileID: 2100000, guid: 95329442790654d60949b5ecbd0d6fc6, type: 2}
   blackMaterial: {fileID: 2100000, guid: 99bad0cc0b33a43d883bbccdcae81870, type: 2}
+  UIimagesPieceLost:
+  - {fileID: 1183440660}
+  - {fileID: 1533505523}
+  - {fileID: 184404862}
+  - {fileID: 907755344}
+  - {fileID: 210717611}
+  - {fileID: 1703243296}
+  - {fileID: 2014479282}
+  - {fileID: 963502442}
+  - {fileID: 1347324341}
+  - {fileID: 1395167417}
+  UITextsPieceLost:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  PiecesLostBySide: 
   isInit: 0
   isInitiating: 0
   gameRunning: 0
@@ -1067,7 +1090,7 @@ GameObject:
   - component: {fileID: 907755347}
   - component: {fileID: 907755346}
   m_Layer: 5
-  m_Name: Image
+  m_Name: ImageR
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1371,7 +1394,7 @@ GameObject:
   - component: {fileID: 1183440663}
   - component: {fileID: 1183440662}
   m_Layer: 5
-  m_Name: Image
+  m_Name: ImageQ
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2422,7 +2445,7 @@ GameObject:
   - component: {fileID: 1533505526}
   - component: {fileID: 1533505525}
   m_Layer: 5
-  m_Name: Image
+  m_Name: ImageB
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
