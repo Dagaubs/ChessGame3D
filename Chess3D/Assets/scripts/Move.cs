@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class Move {
 
-	private Case leftCase, joinedCase;
-	private Piece movedPiece, killedPiece;
+	protected Case leftCase, joinedCase;
+	protected Piece movedPiece, killedPiece;
 
 	public Case getLeftCase(){return leftCase;}
 	public Case getJoinedCase(){return joinedCase;}
@@ -19,7 +19,7 @@ public class Move {
 		this.killedPiece = killedPiece; 
 	}
 
-	public string toString(){
+	public virtual string toString(){
 		return movedPiece.toString() + (killedPiece != null ? " destroyed " + killedPiece.toString() + " on " : " moved to ") + joinedCase.toString();
 	}
 }

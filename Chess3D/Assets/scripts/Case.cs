@@ -95,6 +95,7 @@ public class Case : MonoBehaviour {
 		indexInPlate = nb;
 		generalCoordinate = ((char)(Capital_A_Char_index + indexInPlate%8)).ToString() + (indexInPlate/8 + 1).ToString();
 		transform.position = new Vector3(-4 + (indexInPlate%8), 0,-4 + (indexInPlate/8));
+		gameObject.name = "Case(" + indexInPlate +")_" + type.ToString();
 	}
 
 	public void WrongCaseChoiceAnimation(){

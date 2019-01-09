@@ -80,6 +80,26 @@ public class GameManager : MonoBehaviour {
 		isInit = true;
     }
 
+	public bool SaveNewPotentialMove(PotentialMove m){
+		bool ret = false;
+
+		foreach(Piece p in whitePlayer.alivedPieces){
+			if(p.HasThisCaseInAccessiblesOrInfluence(m.getLeftCase()) || p.HasThisCaseInAccessiblesOrInfluence(m.getJoinedCase())){
+				Debug.Log(p.toString() + " is checking for check!");
+				ret = ret || p.CheckForCheck();
+			}
+		}
+		foreach(Piece p in blackPlayer.alivedPieces){
+			if(p.HasThisCaseInAccessiblesOrInfluence(m.getLeftCase()) || p.HasThisCaseInAccessiblesOrInfluence(m.getJoinedCase())){
+				Debug.Log(p.toString() + " is checking for check!");
+				ret = ret || p.CheckForCheck();
+			}
+		}
+
+		m.ReverseMove();
+		return ret;
+	}
+
 	public void SaveNewMove(Move m){
 		moves.Add(m);
 		foreach(Piece p in whitePlayer.alivedPieces){

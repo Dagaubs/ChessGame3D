@@ -14,6 +14,29 @@ public class King : Piece {
 		}
 	}
 
+	public override bool CheckForCheck(){
+		int actualIndex = actualCase.GetIndex();
+		int index;
+		GameManager gameManager = GameManager.instance;
+		Case foundCase;
+		for(int y = -1; y <= 1; y++){
+			for(int x = -1; x <= 1; x++){
+				if(!(x == -1 && actualIndex%8 == 0) && !(y == -1 && actualIndex/8 ==0) && !(x == 1 && actualIndex%8==7) && !(y == 1 && actualIndex/8 == 7)){
+					index = actualIndex + (x*1) + (y*8);
+					foundCase = gameManager.GetCaseWithIndex(index);
+					if(foundCase.isTaken()){ //if there's another piece on the case
+						if(foundCase.GetStandingOnPiece().GetPlayer() != player){// if it's an enemy
+							string piecename = foundCase.GetStandingOnPiece().toString();
+							if(piecename.Substring(piecename.Length - 4) == "KING") // if found the Enemy KING
+								return true;
+						}
+					}
+				}
+			}
+		}
+		return false;
+	}
+
 	protected override void LookForAccessibleCases(){
 		influencingCases = new List<Case>();
 		List<Case> ret = new List<Case>();
