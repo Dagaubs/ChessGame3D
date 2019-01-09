@@ -1,0 +1,3 @@
+*.metadata
+Chess3D/Temp/*
+Chess3D/Library/ShaderCache/*
