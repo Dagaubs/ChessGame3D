@@ -68,7 +68,7 @@ public class Case : MonoBehaviour {
 		//Debug.Log(toString() + " is taken by " + piece.toString());
 		taken = true;
 		standingOnPiece = piece;
-		return transform.position;
+		return transform.position + Vector3.up * 0.5f;
 	}
 
 	public void PickPieceOnCase(){

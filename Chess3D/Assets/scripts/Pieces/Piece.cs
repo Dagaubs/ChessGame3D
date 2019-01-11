@@ -11,6 +11,9 @@ public abstract class Piece : MonoBehaviour {
 
 	protected Case actualCase;
 
+	[SerializeField]
+	private Renderer[] _renderers;
+
 	protected int piece_type_index = 1;
 	public void setIndex(int i){piece_type_index = i;}
 	public int getIndex(){return piece_type_index;}
@@ -47,7 +50,14 @@ public abstract class Piece : MonoBehaviour {
 			transform.localEulerAngles = Vector3.up * 180f;
 		}
 		Material m = player.getSide() == Player.PlayerSide.WHITE ? GameManager.instance.whiteMaterial : GameManager.instance.blackMaterial;
-		transform.GetChild(0).GetComponent<Renderer>().material = m;
+		if(_renderers != null){
+			foreach(Renderer render in _renderers){
+				render.material = m;
+			}
+		}
+		else{
+			transform.GetChild(0).GetComponent<Renderer>().material = m;
+		}
 	}
 
 	public virtual void Pick(){
