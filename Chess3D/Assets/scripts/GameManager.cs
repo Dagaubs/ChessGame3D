@@ -18,6 +18,9 @@ public class GameManager : MonoBehaviour {
 
 	private List<Move> moves;
 
+	[SerializeField]
+	private float case_size = 1f;
+
 	private Case[] cases = null;
 
 	public GameObject[] UIimagesPieceLost;
@@ -235,7 +238,7 @@ public class GameManager : MonoBehaviour {
 		for(int i = 0; i < 64; i++){
 			GameObject caseGo = isLight ? light_case : dark_case;
 			Case createCase = Instantiate(caseGo, plateTransform, false).GetComponent<Case>();
-			createCase.init(i);
+			createCase.init(i, case_size);
 			cases[i] = createCase;
 			if((i+1) % 8 != 0)
 				isLight = !isLight;

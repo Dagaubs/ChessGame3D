@@ -8,8 +8,16 @@ public abstract class Piece : MonoBehaviour {
 
 	protected PieceType type;
 	public PieceType getType(){return type;}
-
 	protected Case actualCase;
+
+	protected Animator _animator;
+	protected float maxDistanceForShortAttack = 3f;
+
+	[SerializeField]
+	protected float acceleration, maxSpeed;
+
+	[SerializeField]
+	private Renderer[] _renderers;
 
 	protected int piece_type_index = 1;
 	public void setIndex(int i){piece_type_index = i;}
@@ -28,6 +36,9 @@ public abstract class Piece : MonoBehaviour {
 		return accessibleCases;
 	}
 
+	protected static Vector3 black_defaultEulerAngle = Vector3.up * 180f, white_defaultEulerAngle = Vector3.zero;
+	protected Vector3 defaultEulerAngle;
+
 	[SerializeField]
 	protected List<Case> influencingCases = null;
 
@@ -45,12 +56,24 @@ public abstract class Piece : MonoBehaviour {
 			targetCase = getInitialCase();
 		}
 		GoTo(targetCase);
+		_animator = GetComponent<Animator>();
+		GoTo(getInitialCase(), true);
 		gameObject.name = toString();
 		if(p.getSide() == Player.PlayerSide.BLACK){
-			transform.localEulerAngles = Vector3.up * 180f;
+			defaultEulerAngle = black_defaultEulerAngle;
+		}else{
+			defaultEulerAngle = white_defaultEulerAngle;
 		}
+		transform.localEulerAngles = defaultEulerAngle;
 		Material m = player.getSide() == Player.PlayerSide.WHITE ? GameManager.instance.whiteMaterial : GameManager.instance.blackMaterial;
-		transform.GetChild(0).GetComponent<Renderer>().material = m;
+		if(_renderers != null){
+			foreach(Renderer render in _renderers){
+				render.material = m;
+			}
+		}
+		else{
+			transform.GetChild(0).GetComponent<Renderer>().material = m;
+		}
 	}
 
 	public virtual void Pick(){
@@ -92,7 +115,7 @@ public abstract class Piece : MonoBehaviour {
 
 	protected abstract Case getInitialCase();
 
-	public virtual Move GoTo(Case targetCase){
+	public virtual Move GoTo(Case targetCase, bool isInitiate = false){
 		if(targetCase.isAccessible()){ // if it is legit to go to this case
 			bool killedPiecebool = false;
 			Piece foundPiece = null;
@@ -120,8 +143,17 @@ public abstract class Piece : MonoBehaviour {
 				actualCase.LeavePiece();
 			}
 			targetCase.setAccessibility(false);
-			transform.localPosition = transform.parent.InverseTransformPoint(targetCase.ComeOnPiece(this));
-			actualCase = targetCase;
+			if(!isInitiate){
+				StartCoroutine(MoveTo(targetCase));
+				targetCase.ComeOnPiece(this);
+				actualCase = targetCase;
+			}
+				//transform.localPosition = transform.parent.InverseTransformPoint(targetCase.ComeOnAttackPosition(this));
+			else{
+				transform.localPosition = transform.parent.InverseTransformPoint(targetCase.ComeOnPiece(this));
+				actualCase = targetCase;
+			}
+				
 			//LookForAccessibleCases();
 			return ret;
 		}
@@ -196,6 +228,61 @@ public abstract class Piece : MonoBehaviour {
 			Debug.LogError(toString() + " - Potential Move null : case " + foundCase.GetIndex() + " was not accessible!");
 			return false;
 		}
+	}
+
+	protected IEnumerator MoveTo(Case targetCase){
+		if(_animator == null){
+			_animator = GetComponent<Animator>();
+			if(_animator == null){
+				Debug.LogError("No Animator FOund ");
+				yield return null;
+			}
+		}
+		Piece enemyPiece = targetCase.GetStandingOnPiece();
+		Vector3 targetMovePosition = transform.parent.InverseTransformPoint(targetCase.ComeOnPiece(this));
+		if(enemyPiece != null) // if you have to kill a piece
+		{
+			StartCoroutine(Attack(targetCase, enemyPiece));
+		}
+		// Rotate character to make him look at the target Case
+		//Transform targetCaseTransform = targetCase.transform;
+		transform.LookAt(targetCase.GetStandingOnPieceTransform());
+
+		Vector3 velocity = new Vector3();
+		float actualSpeed = 0f;
+		// Move To targetMovePosition
+		while(Vector3.Distance(targetMovePosition, transform.position) > 0.1f){
+
+			if(Vector3.Distance(targetMovePosition, transform.position) < 1f && actualSpeed > 2f)
+				actualSpeed -= acceleration * Time.deltaTime;
+			else
+				actualSpeed += acceleration * Time.deltaTime;
+			actualSpeed = actualSpeed > maxSpeed ? maxSpeed : actualSpeed;
+			_animator.SetFloat("Speed", actualSpeed);
+			velocity = Vector3.forward * actualSpeed;
+			transform.Translate(velocity * Time.deltaTime);
+			if(Vector3.Normalize(targetMovePosition - transform.position) != transform.forward){
+				Debug.Log("Should be passed : " + Vector3.Normalize(targetMovePosition - transform.position) + " | forward : " + transform.forward);
+				transform.position = targetMovePosition;
+			}
+			yield return new WaitForFixedUpdate();
+		}
+		transform.localPosition = targetMovePosition;
+		transform.localEulerAngles = defaultEulerAngle;
+		_animator.SetFloat("Speed", 0f);
+		yield return null;	
+	}
+
+	protected IEnumerator Attack(Case targetCase, Piece enemyPiece){
+		Vector3 targetAttackPosition = targetCase.GetAttackPosition(this);
+		if(Vector3.Distance(transform.localPosition, targetAttackPosition) > maxDistanceForShortAttack){ //Long Range Attack
+
+		}
+		else // Short Range Attack
+		{
+
+		}
+		yield return null;
 	}
 
 	protected List<Case> getUpVerticale(){

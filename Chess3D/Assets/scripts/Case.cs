@@ -20,10 +20,14 @@ public class Case : MonoBehaviour {
 	public case_type getType(){return type;}
 
 	public string generalCoordinate = "";
+	private float case_size;
 
 	[SerializeField]
 	private int indexInPlate;
 	public int GetIndex(){return indexInPlate;}
+
+	private Transform standingOnPieceTransform;
+	public Transform GetStandingOnPieceTransform() { return standingOnPieceTransform;}
 
 	[SerializeField]
 	private bool accessibility = true, selected = false;
@@ -64,11 +68,35 @@ public class Case : MonoBehaviour {
 		standingOnPiece = null;
 	}
 
+	public Vector3 GetAttackPosition(Piece attacker){
+		/*switch (attacker.GetPlayer().getSide())
+		{
+			case Player.PlayerSide.WHITE:
+				return 	transform.position + Vector3.up * 0.5f + Vector3.down * case_size / 2;
+			case Player.PlayerSide.BLACK:
+				return 	transform.position + Vector3.up * 0.5f + Vector3.forward * case_size / 2;
+			default:
+				Debug.LogError("Doesn't know this PlayerSide : " + attacker.GetPlayer().getSide().ToString());
+				return transform.position;
+		}*/
+		Vector3 standingOnPiecePosition = standingOnPieceTransform.position;
+		Vector3 a_Vector = standingOnPiecePosition, b_Vector = new Vector3(attacker.transform.position.x, 0.5f, attacker.transform.position.z);
+		Vector3 dir = Vector3.Normalize(b_Vector - a_Vector);
+		Debug.Log("A : " + a_Vector + " | B : " + b_Vector + " | dir : " + dir);
+		return standingOnPiecePosition + dir * case_size;
+	}
+
 	public Vector3 ComeOnPiece(Piece piece){
 		//Debug.Log(toString() + " is taken by " + piece.toString());
 		taken = true;
 		standingOnPiece = piece;
-		return transform.position;
+		return standingOnPieceTransform.position;
+	}
+
+	public Vector3 ComeOnAttackPosition(Piece piece){
+		taken = true;
+		standingOnPiece = piece;
+		return GetAttackPosition(piece);
 	}
 
 	public void PickPieceOnCase(){
@@ -91,11 +119,16 @@ public class Case : MonoBehaviour {
 		selectedGo.SetActive(selected);
 	}
 
-	public void init(int nb){
+	public void init(int nb, float case_size = 1f){
 		indexInPlate = nb;
+		this.case_size = case_size;
 		generalCoordinate = ((char)(Capital_A_Char_index + indexInPlate%8)).ToString() + (indexInPlate/8 + 1).ToString();
-		transform.position = new Vector3(-4 + (indexInPlate%8), 0,-4 + (indexInPlate/8));
+		transform.localScale = new Vector3(case_size, 1f, case_size);
+		float firstindex = -4f * case_size + case_size / 2;
+		transform.position = new Vector3(firstindex + (indexInPlate%8) * case_size, 0,firstindex + (indexInPlate/8) * case_size);
 		gameObject.name = "Case(" + indexInPlate +")_" + type.ToString();
+		standingOnPieceTransform = Instantiate(new GameObject("StandingOnPiece Transform"), transform, false).transform;
+		standingOnPieceTransform.localPosition = Vector3.up * 0.5f;
 	}
 
 	public void WrongCaseChoiceAnimation(){
