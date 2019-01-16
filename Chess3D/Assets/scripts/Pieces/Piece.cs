@@ -39,9 +39,12 @@ public abstract class Piece : MonoBehaviour {
 	private bool dead = false;
 	public bool isDead(){return dead;}
 
-	public virtual void Init(Player p){
+	public virtual void Init(Player p, Case targetCase = null){
 		player = p;
-		GoTo(getInitialCase());
+		if(targetCase == null){
+			targetCase = getInitialCase();
+		}
+		GoTo(targetCase);
 		gameObject.name = toString();
 		if(p.getSide() == Player.PlayerSide.BLACK){
 			transform.localEulerAngles = Vector3.up * 180f;
