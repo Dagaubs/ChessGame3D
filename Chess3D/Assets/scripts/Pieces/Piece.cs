@@ -119,8 +119,8 @@ public abstract class Piece : MonoBehaviour {
 
 	protected abstract Case getInitialCase();
 
-	public virtual Move GoTo(Case targetCase, bool isInitiate = false){
-		if(targetCase.isAccessible()){ // if it is legit to go to this case
+	public virtual Move GoTo(Case targetCase, bool isInitiate = false, bool isSpecialMove = false){
+		if(targetCase.isAccessible() || isSpecialMove){ // if it is legit to go to this case
 			bool killedPiecebool = false;
 			Piece foundPiece = null;
 			if(targetCase.isTaken()){ // if there's already a piece on this target
@@ -169,7 +169,7 @@ public abstract class Piece : MonoBehaviour {
 						else{
 							targetRookCase = GameManager.instance.GetCaseWithIndex(actualCaseIndex+1);
 						}
-						rookForCastling.GoTo(targetRookCase);
+						rookForCastling.GoTo(targetRookCase, false, true);
 					}					
 				}
 			}
