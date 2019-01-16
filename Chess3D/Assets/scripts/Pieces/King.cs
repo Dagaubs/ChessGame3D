@@ -87,13 +87,12 @@ public class King : Piece {
 					for(int i = actualIndex+1; i<rookIndex; ++i){
 						Case foundCase = GameManager.instance.GetCaseWithIndex(i);
 						if(foundCase.isTaken() /* || TODO: if we are in danger */ ){
-							Debug.LogError("case "+i+"is taken");
 							isOk = false;
 							break;
 						}
 					}
 					if(isOk){
-						Debug.LogError("isOK");
+						Debug.Log("castling available");
 						Case castlingCase = GameManager.instance.GetCaseWithIndex(actualIndex+2);
 						castlingCases.Add(castlingCase);
 					}
@@ -103,12 +102,12 @@ public class King : Piece {
 					for(int i = actualIndex-1; i>rookIndex; --i){
 						Case foundCase = GameManager.instance.GetCaseWithIndex(i);
 						if(foundCase.isTaken() /* || TODO: if we are in danger */ ){
-							Debug.LogError("case "+i+"is taken");
 							isOk = false;
 							break;
 						}
 					}
 					if(isOk){
+						Debug.Log("castling available");
 						Case castlingCase = GameManager.instance.GetCaseWithIndex(actualIndex-2);
 						castlingCases.Add(castlingCase);
 					}					

@@ -141,15 +141,14 @@ public abstract class Piece : MonoBehaviour {
 			}
 			else{
 				ret = new Move(actualCase, targetCase, this);
-
-				//Castling
-				if(type == PieceType.KING){
-					
-				}
 			}
+
+			int targetCaseIndex = targetCase.GetIndex();
+			int actualCaseIndex =0;
 
 			if(actualCase != null){
 				actualCase.LeavePiece();
+				actualCaseIndex = actualCase.GetIndex();
 			}
 			targetCase.setAccessibility(false);
 			if(!isInitiate){
@@ -157,6 +156,22 @@ public abstract class Piece : MonoBehaviour {
 				targetCase.ComeOnPiece(this);
 				actualCase = targetCase;
 				_hasMoved = true;
+
+				//Castling
+				if(type == PieceType.KING){
+					if(Mathf.Abs(targetCaseIndex - actualCaseIndex)==2){
+						Debug.Log("faut bouger la tour mtn");
+						Piece rookForCastling = GetRookForCastling(actualCaseIndex, targetCaseIndex);
+						Case targetRookCase;
+						if(targetCaseIndex > actualCaseIndex){
+							targetRookCase = GameManager.instance.GetCaseWithIndex(actualCaseIndex+1);
+						}
+						else{
+							targetRookCase = GameManager.instance.GetCaseWithIndex(actualCaseIndex+1);
+						}
+						rookForCastling.GoTo(targetRookCase);
+					}					
+				}
 			}
 				//transform.localPosition = transform.parent.InverseTransformPoint(targetCase.ComeOnAttackPosition(this));
 			else{
@@ -168,6 +183,37 @@ public abstract class Piece : MonoBehaviour {
 			return ret;
 		}
 		return null;
+	}
+
+	private Piece GetRookForCastling(int actualIndex, int kingTargetCaseIndex){
+		int offsetFromKing;
+		if(actualIndex < kingTargetCaseIndex){
+			if(player.getSide() == Player.PlayerSide.WHITE){
+				offsetFromKing = 3;
+			}
+			else{
+				offsetFromKing =4;
+			}
+		}
+		else{
+			if(player.getSide() == Player.PlayerSide.WHITE){
+				offsetFromKing = -4;
+			}
+			else{
+				offsetFromKing =-3;
+			}
+		}
+
+		int rookCaseIndex = actualIndex + offsetFromKing;
+		Case rookCase = GameManager.instance.GetCaseWithIndex(rookCaseIndex);
+		Piece rook = rookCase.GetStandingOnPiece();
+		if(rook == null){
+			Debug.LogError("no Piece on this case");
+		}
+		else if(rook.getType() != PieceType.ROOK){
+			Debug.LogError("this is not a rook");
+		}
+		return rook;
 	}
 
 	public void ReversePotentiallyGoTo(Case leftCase, Case joinedCase, Piece killedPiece = null){			
