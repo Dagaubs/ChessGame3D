@@ -38,6 +38,8 @@ public class King : Piece {
 	}
 
 	protected override void LookForAccessibleCases(){
+		Debug.Log("kiiiiing ");
+
 		influencingCases = new List<Case>();
 		List<Case> ret = new List<Case>();
 		int actualIndex = actualCase.GetIndex();
@@ -53,7 +55,7 @@ public class King : Piece {
 						if(foundCase.GetStandingOnPiece().GetPlayer() != player){// if it's an enemy
 							Debug.Log(player.toString() + " : Found a case with an enemy : " + foundCase.GetStandingOnPiece().GetPlayer().toString());
 							ret.Add(foundCase);
-						}else{
+						} else{
 							influencingCases.Add(foundCase);
 						}
 					}
@@ -63,6 +65,45 @@ public class King : Piece {
 				}
 			}
 		}
+		Debug.Log("king "+_hasMoved);
+		if(!_hasMoved){
+			List<Case> castlingCases = LookForCastling(actualIndex);
+			Debug.LogWarning(castlingCases.Count);
+			for(int i = 0; i< castlingCases.Count; ++i){
+				ret.Add(castlingCases[i]);
+			}
+		}
 		accessibleCases = ret;
+	}
+
+	protected List<Case> LookForCastling(int actualIndex){
+		List<Case> castlingCases = new List<Case>();
+		List<Piece> othersPiece = player.alivedPieces;
+		foreach(Piece p in othersPiece){
+			if(p.getType() == PieceType.ROOK && !p.HasMoved()){
+				int rookIndex = p.getActualCase().GetIndex();
+				if(rookIndex > actualIndex){
+					for(int i = actualIndex+1; i<rookIndex; ++i){
+						Case foundCase = GameManager.instance.GetCaseWithIndex(i);
+						if(foundCase.isTaken() /* || TODO: if we are in echec */ ){
+							break;
+						}
+					}
+					Case castlingCase = GameManager.instance.GetCaseWithIndex(+2);
+					castlingCases.Add(castlingCase);
+				}
+				else{
+					for(int i = actualIndex-1; i>rookIndex; --i){
+						Case foundCase = GameManager.instance.GetCaseWithIndex(i);
+						if(foundCase.isTaken() /* || TODO: if we are in echec */ ){
+							break;
+						}
+					}
+					Case castlingCase = GameManager.instance.GetCaseWithIndex(-2);
+					castlingCases.Add(castlingCase);
+				}
+			}
+		} 
+		return castlingCases;
 	}
 }

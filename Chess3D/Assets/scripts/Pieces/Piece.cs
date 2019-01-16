@@ -8,7 +8,12 @@ public abstract class Piece : MonoBehaviour {
 
 	protected PieceType type;
 	public PieceType getType(){return type;}
+
 	protected Case actualCase;
+	public Case getActualCase(){return actualCase;}
+
+	protected bool _hasMoved;
+	public bool HasMoved(){return _hasMoved;}
 
 	protected Animator _animator;
 	protected float maxDistanceForShortAttack = 3f;
@@ -55,9 +60,8 @@ public abstract class Piece : MonoBehaviour {
 		if(targetCase == null){
 			targetCase = getInitialCase();
 		}
-		GoTo(targetCase);
+		GoTo(targetCase, true);
 		_animator = GetComponent<Animator>();
-		GoTo(getInitialCase(), true);
 		gameObject.name = toString();
 		if(p.getSide() == Player.PlayerSide.BLACK){
 			defaultEulerAngle = black_defaultEulerAngle;
@@ -147,6 +151,7 @@ public abstract class Piece : MonoBehaviour {
 				StartCoroutine(MoveTo(targetCase));
 				targetCase.ComeOnPiece(this);
 				actualCase = targetCase;
+				_hasMoved = true;
 			}
 				//transform.localPosition = transform.parent.InverseTransformPoint(targetCase.ComeOnAttackPosition(this));
 			else{
