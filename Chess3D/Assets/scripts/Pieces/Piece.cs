@@ -141,6 +141,11 @@ public abstract class Piece : MonoBehaviour {
 			}
 			else{
 				ret = new Move(actualCase, targetCase, this);
+
+				//Castling
+				if(type == PieceType.KING){
+					
+				}
 			}
 
 			if(actualCase != null){

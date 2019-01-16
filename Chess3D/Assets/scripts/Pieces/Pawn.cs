@@ -231,4 +231,8 @@ public class Pawn : Piece {
 		}
 		return false;
 	}
+
+	void Awake(){
+		type = PieceType.PAWN;
+	}
 }

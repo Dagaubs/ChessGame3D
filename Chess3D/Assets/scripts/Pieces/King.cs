@@ -83,27 +83,42 @@ public class King : Piece {
 			if(p.getType() == PieceType.ROOK && !p.HasMoved()){
 				int rookIndex = p.getActualCase().GetIndex();
 				if(rookIndex > actualIndex){
+					bool isOk =true;
 					for(int i = actualIndex+1; i<rookIndex; ++i){
 						Case foundCase = GameManager.instance.GetCaseWithIndex(i);
-						if(foundCase.isTaken() /* || TODO: if we are in echec */ ){
+						if(foundCase.isTaken() /* || TODO: if we are in danger */ ){
+							Debug.LogError("case "+i+"is taken");
+							isOk = false;
 							break;
 						}
 					}
-					Case castlingCase = GameManager.instance.GetCaseWithIndex(+2);
-					castlingCases.Add(castlingCase);
+					if(isOk){
+						Debug.LogError("isOK");
+						Case castlingCase = GameManager.instance.GetCaseWithIndex(actualIndex+2);
+						castlingCases.Add(castlingCase);
+					}
 				}
 				else{
+					bool isOk =true;
 					for(int i = actualIndex-1; i>rookIndex; --i){
 						Case foundCase = GameManager.instance.GetCaseWithIndex(i);
-						if(foundCase.isTaken() /* || TODO: if we are in echec */ ){
+						if(foundCase.isTaken() /* || TODO: if we are in danger */ ){
+							Debug.LogError("case "+i+"is taken");
+							isOk = false;
 							break;
 						}
 					}
-					Case castlingCase = GameManager.instance.GetCaseWithIndex(-2);
-					castlingCases.Add(castlingCase);
+					if(isOk){
+						Case castlingCase = GameManager.instance.GetCaseWithIndex(actualIndex-2);
+						castlingCases.Add(castlingCase);
+					}					
 				}
 			}
 		} 
 		return castlingCases;
+	}
+
+	void Awake(){
+		type = PieceType.KING;
 	}
 }
