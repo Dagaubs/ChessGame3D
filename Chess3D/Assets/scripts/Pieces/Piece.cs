@@ -317,7 +317,7 @@ public abstract class Piece : MonoBehaviour {
 			_animator.SetFloat("Speed", actualSpeed);
 			velocity = Vector3.forward * actualSpeed;
 			transform.Translate(velocity * Time.deltaTime);
-			if(Vector3.Normalize(targetMovePosition - transform.position) != transform.forward){
+			if(Vector3.Distance(Vector3.Normalize(targetMovePosition - transform.position), transform.forward) > 0.1f){
 				Debug.Log("Should be passed : " + Vector3.Normalize(targetMovePosition - transform.position) + " | forward : " + transform.forward);
 				transform.position = targetMovePosition;
 			}
