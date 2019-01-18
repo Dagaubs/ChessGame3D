@@ -3585,7 +3585,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   acceleration: 4
-  maxSpeed: 8
+  maxSpeed: 6
   _renderers:
   - {fileID: 137512554901402104}
   - {fileID: 23119011776333036}
