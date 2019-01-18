@@ -88,9 +88,19 @@ public class Player : MonoBehaviour {
 							pickedPiece.UnpickExceptTarget(hitCase);
 							Move savedMove = pickedPiece.GoTo(hitCase);
 							if(savedMove != null){
+								
+								if(pickedPiece.getType() == Piece.PieceType.PAWN){
+									int caseLine = savedMove.getJoinedCase().GetIndex() /8;
+									//check if pawn get to the other side
+									if( caseLine == 0 && side == PlayerSide.BLACK || caseLine == 7 && side == PlayerSide.WHITE){
+										GameManager.instance.PawnToQueen(pickedPiece, savedMove.getJoinedCase()); 
+										}
+								}
+
 								picked = false;
 								pickedPiece = null;
 								GameManager.instance.SaveNewMove(savedMove);
+ 
 								//endOfTurn();
 							}else{
 								Debug.LogError("Move null : case " + hitCase.GetIndex() + " was not accessible!");

@@ -39,4 +39,8 @@ public class Queen : Piece {
 		ret.AddRange(getRightHorizontale());
 		accessibleCases = ret;
 	}
+
+	void Awake(){
+		type = PieceType.QUEEN;
+	}
 }

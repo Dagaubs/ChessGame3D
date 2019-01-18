@@ -90,11 +90,6 @@ public class Pawn : Piece {
 		List<Case> ret = new List<Case>();
 		int actualIndex = actualCase.GetIndex();
 
-		if(actualIndex/8 == 0){//If we are on BOTTOM bounds 
-			// SHOULD BE ABLE TO TRANSFORM IN QUEEN, KNIGHT OR ROOK
-			accessibleCases = ret;
-		}
-
 		GameManager gameManager = GameManager.instance;
 		Case downLeftCase, downRightCase, forwardCase, longForwardCase;
 		if(actualCase == getInitialCase()){
@@ -235,5 +230,9 @@ public class Pawn : Piece {
 			}
 		}
 		return false;
+	}
+
+	void Awake(){
+		type = PieceType.PAWN;
 	}
 }

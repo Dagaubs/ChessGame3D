@@ -44,4 +44,8 @@ public class Rook : Piece {
 			retUp.AddRange(retRight);
 		accessibleCases = retUp;
 	}
+
+	void Awake(){
+		type = PieceType.ROOK;
+	}
 }

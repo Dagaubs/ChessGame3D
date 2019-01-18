@@ -313,4 +313,8 @@ public class Knight : Piece {
 		}
 		return false;
 	}
+
+	void Awake(){
+		type = PieceType.KNIGHT;
+	}
 }

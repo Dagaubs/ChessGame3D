@@ -25,7 +25,11 @@ public class GameManager : MonoBehaviour {
 
 	public GameObject[] UIimagesPieceLost;
 	public Text[]		UITextsPieceLost;
-	public int[]		PiecesLostBySide;
+	public GameObject	ChooseNewPiecePannel;
+
+	private int[]		PiecesLostBySide;
+	private Case		_CasePawnToQueen;
+	private Piece		_PawnToDestroy;
 
 	public Case GetCaseWithIndex(int index){
 		if(index < 0 || index >= 64){
@@ -146,7 +150,7 @@ public class GameManager : MonoBehaviour {
 
 	void Start(){
 		Init();
-		startListenings();
+		//startListenings();
 		beginGame();
 	}
 
@@ -239,6 +243,41 @@ public class GameManager : MonoBehaviour {
 			if((i+1) % 8 != 0)
 				isLight = !isLight;
 		}
+	}
+
+	public void PawnToQueen(Piece piece, Case theCase){
+		ChooseNewPiecePannel.SetActive(true);
+		_PawnToDestroy = piece;
+		_CasePawnToQueen = theCase;	
+	}
+
+	public void TransformPawn(int pieceType){
+		ChooseNewPiecePannel.SetActive(false);	
+
+		GameObject pieceObject;
+		switch ((Piece.PieceType) pieceType)
+		{
+			case Piece.PieceType.QUEEN :  pieceObject = queen;
+				break;
+			case Piece.PieceType.KNIGHT :  pieceObject = knight;
+				break;
+			case Piece.PieceType.BISHOP :  pieceObject = bishop;
+				break;
+			case Piece.PieceType.ROOK :  pieceObject = rook;
+				break;
+			default:
+				Debug.LogError("can't choose this piece");
+				pieceObject = null;
+				return;
+		}
+
+		//anim to transform in something dans un ecran de fumée
+		Destroy(_PawnToDestroy);
+		Piece piece = Instantiate(pieceObject, plateTransform, false).GetComponent<Piece>();
+
+		piece.Init(_PawnToDestroy.GetPlayer(), _CasePawnToQueen);
+		_PawnToDestroy = null;
+
 	}
 
 	public void SelectThisCases(List<Case> casesToSelect){

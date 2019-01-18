@@ -8,7 +8,12 @@ public abstract class Piece : MonoBehaviour {
 
 	protected PieceType type;
 	public PieceType getType(){return type;}
+
 	protected Case actualCase;
+	public Case getActualCase(){return actualCase;}
+
+	protected bool _hasMoved;
+	public bool HasMoved(){return _hasMoved;}
 
 	protected Animator _animator;
 	protected float maxDistanceForShortAttack = 3f;
@@ -50,10 +55,13 @@ public abstract class Piece : MonoBehaviour {
 	private bool dead = false;
 	public bool isDead(){return dead;}
 
-	public virtual void Init(Player p){
+	public virtual void Init(Player p, Case targetCase = null){
 		player = p;
+		if(targetCase == null){
+			targetCase = getInitialCase();
+		}
+		GoTo(targetCase, true);
 		_animator = GetComponent<Animator>();
-		GoTo(getInitialCase(), true);
 		gameObject.name = toString();
 		if(p.getSide() == Player.PlayerSide.BLACK){
 			defaultEulerAngle = black_defaultEulerAngle;
@@ -111,8 +119,8 @@ public abstract class Piece : MonoBehaviour {
 
 	protected abstract Case getInitialCase();
 
-	public virtual Move GoTo(Case targetCase, bool isInitiate = false){
-		if(targetCase.isAccessible()){ // if it is legit to go to this case
+	public virtual Move GoTo(Case targetCase, bool isInitiate = false, bool isSpecialMove = false){
+		if(targetCase.isAccessible() || isSpecialMove){ // if it is legit to go to this case
 			bool killedPiecebool = false;
 			Piece foundPiece = null;
 			if(targetCase.isTaken()){ // if there's already a piece on this target
@@ -135,14 +143,35 @@ public abstract class Piece : MonoBehaviour {
 				ret = new Move(actualCase, targetCase, this);
 			}
 
+			int targetCaseIndex = targetCase.GetIndex();
+			int actualCaseIndex =0;
+
 			if(actualCase != null){
 				actualCase.LeavePiece();
+				actualCaseIndex = actualCase.GetIndex();
 			}
 			targetCase.setAccessibility(false);
 			if(!isInitiate){
 				StartCoroutine(MoveTo(targetCase));
 				targetCase.ComeOnPiece(this);
 				actualCase = targetCase;
+				_hasMoved = true;
+
+				//Castling
+				if(type == PieceType.KING){
+					if(Mathf.Abs(targetCaseIndex - actualCaseIndex)==2){
+						Debug.Log("faut bouger la tour mtn");
+						Piece rookForCastling = GetRookForCastling(actualCaseIndex, targetCaseIndex);
+						Case targetRookCase;
+						if(targetCaseIndex > actualCaseIndex){
+							targetRookCase = GameManager.instance.GetCaseWithIndex(actualCaseIndex+1);
+						}
+						else{
+							targetRookCase = GameManager.instance.GetCaseWithIndex(actualCaseIndex+1);
+						}
+						rookForCastling.GoTo(targetRookCase, false, true);
+					}					
+				}
 			}
 				//transform.localPosition = transform.parent.InverseTransformPoint(targetCase.ComeOnAttackPosition(this));
 			else{
@@ -154,6 +183,37 @@ public abstract class Piece : MonoBehaviour {
 			return ret;
 		}
 		return null;
+	}
+
+	private Piece GetRookForCastling(int actualIndex, int kingTargetCaseIndex){
+		int offsetFromKing;
+		if(actualIndex < kingTargetCaseIndex){
+			if(player.getSide() == Player.PlayerSide.WHITE){
+				offsetFromKing = 3;
+			}
+			else{
+				offsetFromKing =4;
+			}
+		}
+		else{
+			if(player.getSide() == Player.PlayerSide.WHITE){
+				offsetFromKing = -4;
+			}
+			else{
+				offsetFromKing =-3;
+			}
+		}
+
+		int rookCaseIndex = actualIndex + offsetFromKing;
+		Case rookCase = GameManager.instance.GetCaseWithIndex(rookCaseIndex);
+		Piece rook = rookCase.GetStandingOnPiece();
+		if(rook == null){
+			Debug.LogError("no Piece on this case");
+		}
+		else if(rook.getType() != PieceType.ROOK){
+			Debug.LogError("this is not a rook");
+		}
+		return rook;
 	}
 
 	public void ReversePotentiallyGoTo(Case leftCase, Case joinedCase, Piece killedPiece = null){			

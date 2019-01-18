@@ -37,4 +37,7 @@ public class Bishop : Piece {
 
 	public override string toString(){return player.getSide().ToString() + " BISHOP (" + piece_type_index + ")";}
 
+	void Awake(){
+		type = PieceType.BISHOP;
+	}
 }
