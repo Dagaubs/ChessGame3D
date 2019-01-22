@@ -19,6 +19,21 @@ public abstract class Piece : MonoBehaviour {
 	protected float maxDistanceForShortAttack = 3f;
 
 	[SerializeField]
+	private bool show = false;
+	private bool saveShow = false;
+
+	void Update(){
+		if(show != saveShow){
+			saveShow = show;
+			if(saveShow){
+				Pick();
+			}
+			else
+				Unpick();
+		}
+	}
+
+	[SerializeField]
 	protected float acceleration, maxSpeed;
 
 	[SerializeField]
@@ -236,7 +251,7 @@ public abstract class Piece : MonoBehaviour {
 			if(targetCase.isTaken()){ // if there's already a piece on this target
 				foundPiece = targetCase.GetStandingOnPiece();
 				if(foundPiece.GetPlayer() != player){ // if it's an enemy piece
-					Debug.Log(toString() + " POTENTIALLY DESTROY A PIECE");
+					Debug.Log(toString() + " POTENTIALLY DESTROY " + foundPiece.toString() + " on " + targetCase.toString());
 					killedPiecebool = true;
 					//foundPiece.GetEaten();
 				}else{
@@ -277,7 +292,7 @@ public abstract class Piece : MonoBehaviour {
 	protected bool AddIfPotentialMove(Case foundCase){
 		PotentialMove newPotentialMove = PotentiallyGoTo(foundCase);
 		if(newPotentialMove != null){
-			return !GameManager.instance.SaveNewPotentialMove(newPotentialMove); // if this move doesn't place the king in check state (possible move)
+			return !GameManager.instance.SaveNewPotentialMove(newPotentialMove); // if this move doesn't place the YOUR king in check state (possible move)
 			 // otherwise we don't add it
 		}
 		else{
@@ -319,6 +334,7 @@ public abstract class Piece : MonoBehaviour {
 			transform.Translate(velocity * Time.deltaTime);
 			if(Vector3.Distance(Vector3.Normalize(targetMovePosition - transform.position), transform.forward) > 0.1f){
 				Debug.Log("Should be passed : " + Vector3.Normalize(targetMovePosition - transform.position) + " | forward : " + transform.forward);
+				_animator.SetFloat("Speed", 0f);
 				transform.position = targetMovePosition;
 			}
 			yield return new WaitForFixedUpdate();
@@ -603,9 +619,11 @@ public abstract class Piece : MonoBehaviour {
 				if(foundCase.GetStandingOnPiece().GetPlayer() == player){// if it's an ally
 					return false;
 				}else{ // if it's an enemy
-					string piecename = foundCase.GetStandingOnPiece().toString();
-					if(piecename.Substring(piecename.Length - 4) == "KING") // if found the Enemy KING
+					if(foundCase.GetStandingOnPiece().getType() == Piece.PieceType.KING) // if found the Enemy KING
+					{
+						Debug.Log(foundCase.GetStandingOnPiece().GetPlayer().getSide().ToString() + " KING IS PLACING IN CHECK BY " + toString());
 						return true;
+					}
 					else
 						return false;
 				}
@@ -631,9 +649,11 @@ public abstract class Piece : MonoBehaviour {
 				if(foundCase.GetStandingOnPiece().GetPlayer() == player){// if it's an ally
 					return false;
 				}else{ // if it's an enemy
-					string piecename = foundCase.GetStandingOnPiece().toString();
-					if(piecename.Substring(piecename.Length - 4) == "KING") // if found the Enemy KING
+					if(foundCase.GetStandingOnPiece().getType() == Piece.PieceType.KING) // if found the Enemy KING
+					{
+						Debug.Log(foundCase.GetStandingOnPiece().GetPlayer().getSide().ToString() + " KING IS PLACING IN CHECK BY " + toString());
 						return true;
+					}
 					else
 						return false;
 				}
@@ -659,9 +679,11 @@ public abstract class Piece : MonoBehaviour {
 				if(foundCase.GetStandingOnPiece().GetPlayer() == player){// if it's an ally
 					return false;
 				}else{ // if it's an enemy
-					string piecename = foundCase.GetStandingOnPiece().toString();
-					if(piecename.Substring(piecename.Length - 4) == "KING") // if found the Enemy KING
+					if(foundCase.GetStandingOnPiece().getType() == Piece.PieceType.KING) // if found the Enemy KING
+					{
+						Debug.Log(foundCase.GetStandingOnPiece().GetPlayer().getSide().ToString() + " KING IS PLACING IN CHECK BY " + toString());
 						return true;
+					}
 					else
 						return false;
 				}
@@ -687,9 +709,11 @@ public abstract class Piece : MonoBehaviour {
 				if(foundCase.GetStandingOnPiece().GetPlayer() == player){// if it's an ally
 					return false;
 				}else{ // if it's an enemy
-					string piecename = foundCase.GetStandingOnPiece().toString();
-					if(piecename.Substring(piecename.Length - 4) == "KING") // if found the Enemy KING
+					if(foundCase.GetStandingOnPiece().getType() == Piece.PieceType.KING) // if found the Enemy KING
+					{
+						Debug.Log(foundCase.GetStandingOnPiece().GetPlayer().getSide().ToString() + " KING IS PLACING IN CHECK BY " + toString());
 						return true;
+					}
 					else
 						return false;
 				}
@@ -715,9 +739,11 @@ public abstract class Piece : MonoBehaviour {
 				if(foundCase.GetStandingOnPiece().GetPlayer() == player){// if it's an ally
 					return false;
 				}else{ // if it's an enemy
-					string piecename = foundCase.GetStandingOnPiece().toString();
-					if(piecename.Substring(piecename.Length - 4) == "KING") // if found the Enemy KING
+					if(foundCase.GetStandingOnPiece().getType() == Piece.PieceType.KING) // if found the Enemy KING
+					{
+						Debug.Log(foundCase.GetStandingOnPiece().GetPlayer().getSide().ToString() + " KING IS PLACING IN CHECK BY " + toString());
 						return true;
+					}
 					else
 						return false;
 				}
@@ -743,9 +769,11 @@ public abstract class Piece : MonoBehaviour {
 				if(foundCase.GetStandingOnPiece().GetPlayer() == player){// if it's an ally
 					return false;
 				}else{ // if it's an enemy
-					string piecename = foundCase.GetStandingOnPiece().toString();
-					if(piecename.Substring(piecename.Length - 4) == "KING") // if found the Enemy KING
+					if(foundCase.GetStandingOnPiece().getType() == Piece.PieceType.KING) // if found the Enemy KING
+					{
+						Debug.Log(foundCase.GetStandingOnPiece().GetPlayer().getSide().ToString() + " KING IS PLACING IN CHECK BY " + toString());
 						return true;
+					}
 					else
 						return false;
 				}
@@ -771,9 +799,11 @@ public abstract class Piece : MonoBehaviour {
 				if(foundCase.GetStandingOnPiece().GetPlayer() == player){// if it's an ally
 					return false;
 				}else{ // if it's an enemy
-					string piecename = foundCase.GetStandingOnPiece().toString();
-					if(piecename.Substring(piecename.Length - 4) == "KING") // if found the Enemy KING
+					if(foundCase.GetStandingOnPiece().getType() == Piece.PieceType.KING) // if found the Enemy KING
+					{
+						Debug.Log(foundCase.GetStandingOnPiece().GetPlayer().getSide().ToString() + " KING IS PLACING IN CHECK BY " + toString());
 						return true;
+					}
 					else
 						return false;
 				}
@@ -799,9 +829,11 @@ public abstract class Piece : MonoBehaviour {
 				if(foundCase.GetStandingOnPiece().GetPlayer() == player){// if it's an ally
 					return false;
 				}else{ // if it's an enemy
-					string piecename = foundCase.GetStandingOnPiece().toString();
-					if(piecename.Substring(piecename.Length - 4) == "KING") // if found the Enemy KING
+					if(foundCase.GetStandingOnPiece().getType() == Piece.PieceType.KING) // if found the Enemy KING
+					{
+						Debug.Log(foundCase.GetStandingOnPiece().GetPlayer().getSide().ToString() + " KING IS PLACING IN CHECK BY " + toString());
 						return true;
+					}
 					else
 						return false;
 				}

@@ -126,7 +126,7 @@ public class Case : MonoBehaviour {
 		transform.localScale = new Vector3(case_size, 1f, case_size);
 		float firstindex = -4f * case_size + case_size / 2;
 		transform.position = new Vector3(firstindex + (indexInPlate%8) * case_size, 0,firstindex + (indexInPlate/8) * case_size);
-		gameObject.name = "Case(" + indexInPlate +")_" + type.ToString();
+		gameObject.name = "Case_" + generalCoordinate + "(" + indexInPlate +")_" + type.ToString();
 		standingOnPieceTransform = Instantiate(new GameObject("StandingOnPiece Transform"), transform, false).transform;
 		standingOnPieceTransform.localPosition = Vector3.up * 0.5f;
 	}

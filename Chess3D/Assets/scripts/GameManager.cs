@@ -16,10 +16,12 @@ public class GameManager : MonoBehaviour {
 
 	public Material whiteMaterial, blackMaterial;
 
+	private Piece PieceThatIsChecking = null;
+
 	private List<Move> moves;
 
 	[SerializeField]
-	private float case_size = 1f;
+	private float case_size = 1.3f;
 
 	private Case[] cases = null;
 
@@ -99,34 +101,57 @@ public class GameManager : MonoBehaviour {
 
 	public bool SaveNewPotentialMove(PotentialMove m){
 		bool ret = false;
+		Debug.Log("Potential New Move : " + m.toString());
+		Piece killedPiece = m.getKilledPiece();
 
-		foreach(Piece p in whitePlayer.alivedPieces){
-			if(p.HasThisCaseInAccessiblesOrInfluence(m.getLeftCase()) || p.HasThisCaseInAccessiblesOrInfluence(m.getJoinedCase())){
-				Debug.Log(p.toString() + " is checking for check!");
-				ret = ret || p.CheckForCheck();
+		if(PieceThatIsChecking != null){
+			if(PieceThatIsChecking != m.getMovedPiece() && PieceThatIsChecking != m.getKilledPiece() && PieceThatIsChecking.CheckForCheck()){ // if this move didn't prevent the king to be killed
+				Debug.Log(PieceThatIsChecking.toString() + " is still checking the king, should not be possible");
+				m.ReverseMove();
+				return true;
 			}
 		}
-		foreach(Piece p in blackPlayer.alivedPieces){
-			if(p.HasThisCaseInAccessiblesOrInfluence(m.getLeftCase()) || p.HasThisCaseInAccessiblesOrInfluence(m.getJoinedCase())){
-				Debug.Log(p.toString() + " is checking for check!");
-				ret = ret || p.CheckForCheck();
+		bool usefulToTestJoinedCase = true;
+		if(killedPiece){
+			if(killedPiece.getType() == Piece.PieceType.KING){
+				Debug.Log(m.getMovedPiece().toString() + " COULD END GAME BY KILLING ENEMY KING ");
+				PieceThatIsChecking = m.getMovedPiece();
+				ret = true;
+			}
+			else if(killedPiece == PieceThatIsChecking){
+				Debug.Log(m.getMovedPiece().toString() + " COULD KILL THE PIECE THAT IS CHECKING KING ");
+				usefulToTestJoinedCase = false;
+			}
+		}
+		Player enemyPlayer = m.getMovedPiece().GetPlayer().getSide() == Player.PlayerSide.WHITE ? blackPlayer : whitePlayer;
+		foreach(Piece p in enemyPlayer.alivedPieces){
+			if(p.HasThisCaseInAccessiblesOrInfluence(m.getLeftCase()) || (usefulToTestJoinedCase && p.HasThisCaseInAccessiblesOrInfluence(m.getJoinedCase()))){
+				Debug.Log(p.toString() + " is checking for check !");
+				bool check = p.CheckForCheck();
+				if(check)
+					Debug.Log(p.toString() + " is PLACING ENEMY'S KING IN CHECK STATE IF DOING THIS MOVE!");
+				ret = ret || check;
 			}
 		}
 
 		m.ReverseMove();
+		if(ret){
+			Debug.Log("POTENTIAL MOVE : " + m.toString() + " and place its king in check state !");
+		}
 		return ret;
 	}
 
 	public void SaveNewMove(Move m){
 		moves.Add(m);
-		foreach(Piece p in whitePlayer.alivedPieces){
-			if(p.HasThisCaseInAccessiblesOrInfluence(m.getLeftCase()) || p.HasThisCaseInAccessiblesOrInfluence(m.getJoinedCase()))
-				p.RefreshAccessible();
+		Debug.Log(m.toString());
+		if(PieceThatIsChecking != null){
+			if(PieceThatIsChecking.CheckForCheck()){ // if this move didn't prevent the king to be killed 
+				Debug.LogError("THIS MOVE SHOULD NOT HAVE POSSIBLE !");
+				return;
+			}else
+				PieceThatIsChecking = null;
 		}
-		foreach(Piece p in blackPlayer.alivedPieces){
-			if(p.HasThisCaseInAccessiblesOrInfluence(m.getLeftCase()) || p.HasThisCaseInAccessiblesOrInfluence(m.getJoinedCase()))
-				p.RefreshAccessible();
-		}
+		
 		Piece killedPiece = m.getKilledPiece();
 		if(killedPiece != null){ //If a Piece was destroyed by this move
 			killedPiece.GetEaten();
@@ -137,8 +162,37 @@ public class GameManager : MonoBehaviour {
 		//	Transform chosenTransform = killedPiece.GetPlayer().getSide() == Player.PlayerSide.WHITE ? whiteLosses : blackLosses;
 		//	placeKilledPieceInGraveyard(killedPiece, chosenTransform);
 		}
-		m.getMovedPiece().RefreshAccessible();
-		Debug.Log(m.toString());
+
+		Piece movedPiece = m.getMovedPiece();
+		movedPiece.RefreshAccessible();
+		Debug.Log(movedPiece.toString() + " CHECK FOR CHECKSTATE AFTER MOVE");
+		bool check = movedPiece.CheckForCheck();
+		if(check){ // if enemy's king is checked : refresh all accessibles of its team
+
+			Player enemyPlayer = movedPiece.GetPlayer().getSide() == Player.PlayerSide.WHITE ? blackPlayer : whitePlayer;
+			Debug.Log("BEGIN Refreshing " + enemyPlayer.getSide().ToString() + " PLayer Pieces ! (" + enemyPlayer.alivedPieces.Count + ")");
+			foreach(Piece p in enemyPlayer.alivedPieces){
+				Debug.Log("REFRESHING " + p.toString());
+				p.RefreshAccessible();
+			}
+			Debug.Log("ENDED Refreshing " + enemyPlayer.getSide().ToString() + " PLayer Pieces !");
+		}else{
+			Debug.Log(movedPiece.toString() + " ENDS TURN WITHOUT SETTING OTHER KING IN CHECK MATE");
+		}
+		foreach(Piece p in whitePlayer.alivedPieces){
+			if(p.HasThisCaseInAccessiblesOrInfluence(m.getLeftCase()) || p.HasThisCaseInAccessiblesOrInfluence(m.getJoinedCase()))
+			{
+				Debug.Log(p.toString() + " Refresh its accessible after move !");
+				p.RefreshAccessible();
+			}
+		}
+		foreach(Piece p in blackPlayer.alivedPieces){
+			if(p.HasThisCaseInAccessiblesOrInfluence(m.getLeftCase()) || p.HasThisCaseInAccessiblesOrInfluence(m.getJoinedCase()))
+			{
+				Debug.Log(p.toString() + " Refresh its accessible after move !");
+				p.RefreshAccessible();
+			}
+		}
 		endOfActualTurn();
 	}
 
@@ -234,7 +288,7 @@ public class GameManager : MonoBehaviour {
 	}
 
 	private void initPlate(){
-		bool isLight = true;
+		bool isLight = false;
 		for(int i = 0; i < 64; i++){
 			GameObject caseGo = isLight ? light_case : dark_case;
 			Case createCase = Instantiate(caseGo, plateTransform, false).GetComponent<Case>();

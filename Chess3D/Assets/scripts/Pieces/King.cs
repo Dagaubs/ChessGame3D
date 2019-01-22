@@ -38,7 +38,7 @@ public class King : Piece {
 	}
 
 	protected override void LookForAccessibleCases(){
-		Debug.Log("kiiiiing ");
+		//Debug.Log("kiiiiing ");
 
 		influencingCases = new List<Case>();
 		List<Case> ret = new List<Case>();
@@ -54,18 +54,18 @@ public class King : Piece {
 					if(foundCase.isTaken()){ //if there's another piece on the case
 						if(foundCase.GetStandingOnPiece().GetPlayer() != player){// if it's an enemy
 							Debug.Log(player.toString() + " : Found a case with an enemy : " + foundCase.GetStandingOnPiece().GetPlayer().toString());
-							ret.Add(foundCase);
+							if(AddIfPotentialMove(foundCase))
+								ret.Add(foundCase);
 						} else{
 							influencingCases.Add(foundCase);
 						}
 					}
-					else{
+					else if(AddIfPotentialMove(foundCase))
 						ret.Add(foundCase);
-					}
 				}
 			}
 		}
-		Debug.Log("king "+_hasMoved);
+		//Debug.Log("king "+_hasMoved);
 		if(!_hasMoved){
 			List<Case> castlingCases = LookForCastling(actualIndex);
 			Debug.LogWarning(castlingCases.Count);
@@ -101,7 +101,7 @@ public class King : Piece {
 					bool isOk =true;
 					for(int i = actualIndex-1; i>rookIndex; --i){
 						Case foundCase = GameManager.instance.GetCaseWithIndex(i);
-						if(foundCase.isTaken() /* || TODO: if we are in danger */ ){
+						if(foundCase.isTaken() || !AddIfPotentialMove(foundCase)/* if we are in danger */ ){
 							isOk = false;
 							break;
 						}
@@ -109,7 +109,10 @@ public class King : Piece {
 					if(isOk){
 						Debug.Log("castling available");
 						Case castlingCase = GameManager.instance.GetCaseWithIndex(actualIndex-2);
-						castlingCases.Add(castlingCase);
+						if(AddIfPotentialMove(castlingCase))
+							castlingCases.Add(castlingCase);
+						else 
+							Debug.Log("Can't castling cause it would be in check state !");
 					}					
 				}
 			}

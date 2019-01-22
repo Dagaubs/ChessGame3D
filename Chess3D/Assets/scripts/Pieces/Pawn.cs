@@ -45,14 +45,16 @@ public class Pawn : Piece {
 		if(actualCase == getInitialCase()){
 			longForwardCase = gameManager.GetCaseWithIndex(actualIndex+16); // is able to move 2 case forward
 			if(!longForwardCase.isTaken()) //if there's NO other piece on the case
-				ret.Add(longForwardCase);
+				if(AddIfPotentialMove(longForwardCase))
+					ret.Add(longForwardCase);
 			else
 				influencingCases.Add(longForwardCase);
 		}
 
 		forwardCase = gameManager.GetCaseWithIndex(actualIndex+8);
 		if(!forwardCase.isTaken()) //if there's NO other piece on the case
-			ret.Add(forwardCase);
+			if(AddIfPotentialMove(forwardCase))
+				ret.Add(forwardCase);
 		else
 			influencingCases.Add(forwardCase);
 
@@ -60,7 +62,8 @@ public class Pawn : Piece {
 			upLeftCase = gameManager.GetCaseWithIndex(actualIndex+7);
 			if(upLeftCase.isTaken()){ //if there's NO other piece on the case
 				if(upLeftCase.GetStandingOnPiece().GetPlayer() != player){// if it's an enemy
-					ret.Add(upLeftCase);
+					if(AddIfPotentialMove(upLeftCase))
+						ret.Add(upLeftCase);
 				}else{ //if it's a ally
 					influencingCases.Add(upLeftCase);
 				}
@@ -74,7 +77,8 @@ public class Pawn : Piece {
 			upRightCase = gameManager.GetCaseWithIndex(actualIndex+9);
 			if(upRightCase.isTaken()){ //if there's NO other piece on the case
 				if(upRightCase.GetStandingOnPiece().GetPlayer() != player){// if it's an enemy
-					ret.Add(upRightCase);
+					if(AddIfPotentialMove(upRightCase))
+						ret.Add(upRightCase);
 				}else{ //if it's a ally
 					influencingCases.Add(upRightCase);
 				}
@@ -95,14 +99,16 @@ public class Pawn : Piece {
 		if(actualCase == getInitialCase()){
 			longForwardCase = gameManager.GetCaseWithIndex(actualIndex-16); // is able to move 2 case forward
 			if(!longForwardCase.isTaken()) //if there's NO other piece on the case
-				ret.Add(longForwardCase);
+				if(AddIfPotentialMove(longForwardCase))
+					ret.Add(longForwardCase);
 			else
 				influencingCases.Add(longForwardCase);
 		}
 
 		forwardCase = gameManager.GetCaseWithIndex(actualIndex-8);
 		if(!forwardCase.isTaken()) //if there's NO other piece on the case
-			ret.Add(forwardCase);
+			if(AddIfPotentialMove(forwardCase))
+				ret.Add(forwardCase);
 		else
 			influencingCases.Add(forwardCase);
 
@@ -110,7 +116,8 @@ public class Pawn : Piece {
 			downLeftCase = gameManager.GetCaseWithIndex(actualIndex-9);
 			if(downLeftCase.isTaken()){ //if there's NO other piece on the case
 				if(downLeftCase.GetStandingOnPiece().GetPlayer() != player){// if it's an enemy
-					ret.Add(downLeftCase);
+					if(AddIfPotentialMove(downLeftCase))
+						ret.Add(downLeftCase);
 				}else{ //if it's a ally
 					influencingCases.Add(downLeftCase);
 				}
@@ -124,7 +131,8 @@ public class Pawn : Piece {
 			downRightCase = gameManager.GetCaseWithIndex(actualIndex-7);
 			if(downRightCase.isTaken()){ //if there's NO other piece on the case
 				if(downRightCase.GetStandingOnPiece().GetPlayer() != player){// if it's an enemy
-					ret.Add(downRightCase);
+					if(AddIfPotentialMove(downRightCase))
+						ret.Add(downRightCase);
 				}else{ //if it's a ally
 					influencingCases.Add(downRightCase);
 				}

@@ -20,6 +20,6 @@ public class Move {
 	}
 
 	public virtual string toString(){
-		return movedPiece.toString() + (killedPiece != null ? " destroyed " + killedPiece.toString() + " on " : " moved to ") + joinedCase.toString();
+		return movedPiece.toString() + " moved from " + leftCase.toString() + " and " + (killedPiece != null ? " destroyed " + killedPiece.toString() + " on " : " moved to ") + joinedCase.toString();
 	}
 }

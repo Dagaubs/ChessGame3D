@@ -51,24 +51,26 @@ public class Knight : Piece {
 			upCase = gameManager.GetCaseWithIndex(indexCorner + 8);
 			if(upCase.isTaken()){ //if there's another piece on the case
 				if(upCase.GetStandingOnPiece().GetPlayer() != player){// if it's an enemy
-					ret.Add(upCase);
+					if(AddIfPotentialMove(upCase))
+						ret.Add(upCase);
 				}else{// if it's an ally
 					influencingCases.Add(upCase);
 				}
 			}
-			else
+			else if(AddIfPotentialMove(upCase))
 				ret.Add(upCase);
 		}
 		if(indexCorner%8 != 0){ //if we are NOT on LEFT bounds
 			leftCase = gameManager.GetCaseWithIndex(indexCorner -1);
 			if(leftCase.isTaken()){ //if there's another piece on the case
 				if(leftCase.GetStandingOnPiece().GetPlayer() != player){// if it's an enemy
-					ret.Add(leftCase);
+					if(AddIfPotentialMove(leftCase))
+						ret.Add(leftCase);
 				}else{// if it's an ally
 					influencingCases.Add(leftCase);
 				}
 			}
-			else
+			else if(AddIfPotentialMove(leftCase))
 				ret.Add(leftCase);
 		}
 		return ret;
@@ -88,25 +90,26 @@ public class Knight : Piece {
 			upCase = gameManager.GetCaseWithIndex(indexCorner + 8);
 			if(upCase.isTaken()){ //if there's another piece on the case
 				if(upCase.GetStandingOnPiece().GetPlayer() != player){// if it's an enemy
-					ret.Add(upCase);
+					if(AddIfPotentialMove(upCase))
+						ret.Add(upCase);
 				}else{// if it's an ally
 					influencingCases.Add(upCase);
 				}
 			}
-			else{
+			else if(AddIfPotentialMove(upCase))
 				ret.Add(upCase);
-			}
 		}
 		if(indexCorner%8 != 7){ //if we are NOT on RIGHT bounds
 			rightCase = gameManager.GetCaseWithIndex(indexCorner +1);
 			if(rightCase.isTaken()){ //if there's another piece on the case
 				if(rightCase.GetStandingOnPiece().GetPlayer() != player){// if it's an enemy
-					ret.Add(rightCase);
+					if(AddIfPotentialMove(rightCase))
+						ret.Add(rightCase);
 				}else{// if it's an ally
 					influencingCases.Add(rightCase);
 				}
 			}
-			else
+			else if(AddIfPotentialMove(rightCase))
 				ret.Add(rightCase);
 		}
 		return ret;
@@ -126,24 +129,26 @@ public class Knight : Piece {
 			downCase = gameManager.GetCaseWithIndex(indexCorner - 8);
 			if(downCase.isTaken()){ //if there's another piece on the case
 				if(downCase.GetStandingOnPiece().GetPlayer() != player){// if it's an enemy
-					ret.Add(downCase);
+					if(AddIfPotentialMove(downCase))
+						ret.Add(downCase);
 				}else{// if it's an ally
 					influencingCases.Add(downCase);
 				}
 			}
-			else
+			else if(AddIfPotentialMove(downCase))
 				ret.Add(downCase);
 		}
 		if(indexCorner%8 != 7){ //if we are NOT on RIGHT bounds
 			rightCase = gameManager.GetCaseWithIndex(indexCorner +1);
 			if(rightCase.isTaken()){ //if there's another piece on the case
 				if(rightCase.GetStandingOnPiece().GetPlayer() != player){// if it's an enemy
-					ret.Add(rightCase);
+					if(AddIfPotentialMove(rightCase))
+						ret.Add(rightCase);
 				}else{// if it's an ally
 					influencingCases.Add(rightCase);
 				}
 			}
-			else
+			else if(AddIfPotentialMove(rightCase))
 				ret.Add(rightCase);
 		}
 		return ret;
@@ -163,24 +168,26 @@ public class Knight : Piece {
 			downCase = gameManager.GetCaseWithIndex(indexCorner - 8);
 			if(downCase.isTaken()){ //if there's another piece on the case
 				if(downCase.GetStandingOnPiece().GetPlayer() != player){// if it's an enemy
-					ret.Add(downCase);
+					if(AddIfPotentialMove(downCase))
+						ret.Add(downCase);
 				}else{// if it's an ally
 					influencingCases.Add(downCase);
 				}
 			}
-			else
+			else if(AddIfPotentialMove(downCase))
 				ret.Add(downCase);
 		}
 		if(indexCorner%8 != 7){ //if we are NOT on RIGHT bounds
 			leftCase = gameManager.GetCaseWithIndex(indexCorner -1);
 			if(leftCase.isTaken()){ //if there's another piece on the case
 				if(leftCase.GetStandingOnPiece().GetPlayer() != player){// if it's an enemy
-					ret.Add(leftCase);
+					if(AddIfPotentialMove(leftCase))
+						ret.Add(leftCase);
 				}else{// if it's an ally
 					influencingCases.Add(leftCase);
 				}
 			}
-			else
+			else if(AddIfPotentialMove(leftCase))
 				ret.Add(leftCase);
 		}
 		return ret;
