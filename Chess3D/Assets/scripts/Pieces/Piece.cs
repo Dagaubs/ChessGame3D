@@ -279,7 +279,7 @@ public abstract class Piece : MonoBehaviour {
 			if(targetCase.isTaken()){ // if there's already a piece on this target
 				foundPiece = targetCase.GetStandingOnPiece();
 				if(foundPiece.GetPlayer() != player){ // if it's an enemy piece
-					Debug.Log(toString() + " POTENTIALLY DESTROY " + foundPiece.toString() + " on " + targetCase.toString());
+				//	Debug.Log(toString() + " POTENTIALLY DESTROY " + foundPiece.toString() + " on " + targetCase.toString());
 					killedPiecebool = true;
 					//foundPiece.GetEaten();
 				}else{

@@ -65,7 +65,6 @@ public class King : Piece {
 		}
 		if(!_hasMoved){
 			List<Case> castlingCases = LookForCastling(actualIndex);
-			Debug.LogWarning(castlingCases.Count);
 			for(int i = 0; i< castlingCases.Count; ++i){
 				ret.Add(castlingCases[i]);
 			}
