@@ -34,21 +34,44 @@ public class Pawn : Piece {
 	private void white_LookForAccessibleCases(){
 		List<Case> ret = new List<Case>();
 		int actualIndex = actualCase.GetIndex();
+		GameManager gameManager = GameManager.instance;
 
 		if(actualIndex/8 == 7){//If we are on TOP bounds 
 			// SHOULD BE ABLE TO TRANSFORM IN QUEEN, KNIGHT OR ROOK
 			accessibleCases = ret;
+			gameManager.PawnToQueen(this, actualCase);
+			return;
 		}
 
-		GameManager gameManager = GameManager.instance;
 		Case upLeftCase, upRightCase, forwardCase, longForwardCase;
-		if(actualCase == getInitialCase()){
+		Case initialCase = getInitialCase();
+		if(actualCase == initialCase){
 			longForwardCase = gameManager.GetCaseWithIndex(actualIndex+16); // is able to move 2 case forward
 			if(!longForwardCase.isTaken()) //if there's NO other piece on the case
 				if(AddIfPotentialMove(longForwardCase))
 					ret.Add(longForwardCase);
 			else
 				influencingCases.Add(longForwardCase);
+		}
+	 	else if(actualIndex == initialCase.GetIndex() +24){ //prise en passant
+			Case rightCase = gameManager.GetCaseWithIndex(actualIndex+1);
+			Case leftCase = gameManager.GetCaseWithIndex(actualIndex-1);
+			influencingCases.Add(rightCase);
+			influencingCases.Add(leftCase);
+			Move lastMove = gameManager.GetLastMove();
+			Piece lastPieceMoved = lastMove.getMovedPiece();
+			if(lastPieceMoved.getType() == PieceType.PAWN){
+				Pawn pawnMoved = (Pawn) lastPieceMoved;
+				if(lastMove.getLeftCase() == pawnMoved.getInitialCase()){
+					Case caseJoinedatLastMove = lastMove.getJoinedCase();
+					if(caseJoinedatLastMove.GetIndex() == actualIndex +1){
+						ret.Add(gameManager.GetCaseWithIndex(actualIndex+9));
+					}
+					else if(caseJoinedatLastMove.GetIndex() == actualIndex -1){
+						ret.Add(gameManager.GetCaseWithIndex(actualIndex+7));
+					}
+				}
+			}
 		}
 
 		forwardCase = gameManager.GetCaseWithIndex(actualIndex+8);
@@ -93,16 +116,44 @@ public class Pawn : Piece {
 	private void black_LookForAccessibleCases(){
 		List<Case> ret = new List<Case>();
 		int actualIndex = actualCase.GetIndex();
-
+		Case initialCase = getInitialCase();
 		GameManager gameManager = GameManager.instance;
+
+		if(actualIndex/8 == 0){//If we are on TOP bounds 
+			// SHOULD BE ABLE TO TRANSFORM IN QUEEN, KNIGHT OR ROOK
+			accessibleCases = ret;
+			gameManager.PawnToQueen(this, actualCase);
+			return;
+		}
+
 		Case downLeftCase, downRightCase, forwardCase, longForwardCase;
-		if(actualCase == getInitialCase()){
+		if(actualCase == initialCase){
 			longForwardCase = gameManager.GetCaseWithIndex(actualIndex-16); // is able to move 2 case forward
 			if(!longForwardCase.isTaken()) //if there's NO other piece on the case
 				if(AddIfPotentialMove(longForwardCase))
 					ret.Add(longForwardCase);
 			else
 				influencingCases.Add(longForwardCase);
+		}
+		else if(actualIndex == initialCase.GetIndex() -24){ //prise en passant
+			Case rightCase = gameManager.GetCaseWithIndex(actualIndex+1);
+			Case leftCase = gameManager.GetCaseWithIndex(actualIndex-1);
+			influencingCases.Add(rightCase);
+			influencingCases.Add(leftCase);
+			Move lastMove = gameManager.GetLastMove();
+			Piece lastPieceMoved = lastMove.getMovedPiece();
+			if(lastPieceMoved.getType() == PieceType.PAWN){
+				Pawn pawnMoved = (Pawn) lastPieceMoved;
+				if(lastMove.getLeftCase() == pawnMoved.getInitialCase()){
+					Case caseJoinedatLastMove = lastMove.getJoinedCase();
+					if(caseJoinedatLastMove.GetIndex() == actualIndex +1){
+						ret.Add(gameManager.GetCaseWithIndex(actualIndex-7));
+					}
+					else if(caseJoinedatLastMove.GetIndex() == actualIndex -1){
+						ret.Add(gameManager.GetCaseWithIndex(actualIndex-9));
+					}
+				}
+			}
 		}
 
 		forwardCase = gameManager.GetCaseWithIndex(actualIndex-8);

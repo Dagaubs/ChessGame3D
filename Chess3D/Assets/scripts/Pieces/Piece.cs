@@ -175,8 +175,10 @@ public abstract class Piece : MonoBehaviour {
 				//Castling
 				if(type == PieceType.KING){
 					if(Mathf.Abs(targetCaseIndex - actualCaseIndex)==2){
-						Debug.Log("faut bouger la tour mtn");
 						Piece rookForCastling = GetRookForCastling(actualCaseIndex, targetCaseIndex);
+						if(rookForCastling == null){
+							return null;
+						}
 						Case targetRookCase;
 						if(targetCaseIndex > actualCaseIndex){
 							targetRookCase = GameManager.instance.GetCaseWithIndex(actualCaseIndex+1);
@@ -186,6 +188,26 @@ public abstract class Piece : MonoBehaviour {
 						}
 						rookForCastling.GoTo(targetRookCase, false, true);
 					}					
+				}
+				else if(type == PieceType.PAWN && !killedPiecebool){
+					Case PawnToKillCase = null;
+					if(Mathf.Abs(actualCaseIndex+8-targetCaseIndex)==1){  //prise en passant white
+						PawnToKillCase = GameManager.instance.GetCaseWithIndex(targetCaseIndex-8);
+					}
+					else if(Mathf.Abs(actualCaseIndex-8-targetCaseIndex)==1){//prise en passant black
+						PawnToKillCase = GameManager.instance.GetCaseWithIndex(targetCaseIndex+8);
+					}
+					if(PawnToKillCase != null){
+						Piece pawnToKill = PawnToKillCase.GetStandingOnPiece();
+						if(pawnToKill == null){
+							Debug.LogError("there is no piece here");
+						}
+						else if(pawnToKill.getType() != PieceType.PAWN){
+							Debug.LogError("this is not a Pawn");
+						}
+						/////TODO COOL ANIM !!!
+						Destroy(pawnToKill.gameObject);
+					} 
 				}
 			}
 				//transform.localPosition = transform.parent.InverseTransformPoint(targetCase.ComeOnAttackPosition(this));
@@ -224,10 +246,16 @@ public abstract class Piece : MonoBehaviour {
 		Piece rook = rookCase.GetStandingOnPiece();
 		if(rook == null){
 			Debug.LogError("no Piece on this case");
+			return null;
 		}
 		else if(rook.getType() != PieceType.ROOK){
 			Debug.LogError("this is not a rook");
+			return null;
 		}
+		else if(rook.GetPlayer() != player){
+			Debug.LogError("this is not my rook");
+			return null;
+		} 
 		return rook;
 	}
 

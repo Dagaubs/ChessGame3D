@@ -101,12 +101,12 @@ public class GameManager : MonoBehaviour {
 
 	public bool SaveNewPotentialMove(PotentialMove m){
 		bool ret = false;
-		Debug.Log("Potential New Move : " + m.toString());
+	//	Debug.Log("Potential New Move : " + m.toString());
 		Piece killedPiece = m.getKilledPiece();
 
 		if(PieceThatIsChecking != null){
 			if(PieceThatIsChecking != m.getMovedPiece() && PieceThatIsChecking != m.getKilledPiece() && PieceThatIsChecking.CheckForCheck()){ // if this move didn't prevent the king to be killed
-				Debug.Log(PieceThatIsChecking.toString() + " is still checking the king, should not be possible");
+		//		Debug.Log(PieceThatIsChecking.toString() + " is still checking the king, should not be possible");
 				m.ReverseMove();
 				return true;
 			}
@@ -114,19 +114,19 @@ public class GameManager : MonoBehaviour {
 		bool usefulToTestJoinedCase = true;
 		if(killedPiece){
 			if(killedPiece.getType() == Piece.PieceType.KING){
-				Debug.Log(m.getMovedPiece().toString() + " COULD END GAME BY KILLING ENEMY KING ");
+		//		Debug.Log(m.getMovedPiece().toString() + " COULD END GAME BY KILLING ENEMY KING ");
 				PieceThatIsChecking = m.getMovedPiece();
 				ret = true;
 			}
 			else if(killedPiece == PieceThatIsChecking){
-				Debug.Log(m.getMovedPiece().toString() + " COULD KILL THE PIECE THAT IS CHECKING KING ");
+		//		Debug.Log(m.getMovedPiece().toString() + " COULD KILL THE PIECE THAT IS CHECKING KING ");
 				usefulToTestJoinedCase = false;
 			}
 		}
 		Player enemyPlayer = m.getMovedPiece().GetPlayer().getSide() == Player.PlayerSide.WHITE ? blackPlayer : whitePlayer;
 		foreach(Piece p in enemyPlayer.alivedPieces){
 			if(p.HasThisCaseInAccessiblesOrInfluence(m.getLeftCase()) || (usefulToTestJoinedCase && p.HasThisCaseInAccessiblesOrInfluence(m.getJoinedCase()))){
-				Debug.Log(p.toString() + " is checking for check !");
+			//	Debug.Log(p.toString() + " is checking for check !");
 				bool check = p.CheckForCheck();
 				if(check)
 					Debug.Log(p.toString() + " is PLACING ENEMY'S KING IN CHECK STATE IF DOING THIS MOVE!");
@@ -136,7 +136,7 @@ public class GameManager : MonoBehaviour {
 
 		m.ReverseMove();
 		if(ret){
-			Debug.Log("POTENTIAL MOVE : " + m.toString() + " and place its king in check state !");
+		//	Debug.Log("POTENTIAL MOVE : " + m.toString() + " and place its king in check state !");
 		}
 		return ret;
 	}
@@ -194,6 +194,15 @@ public class GameManager : MonoBehaviour {
 			}
 		}
 		endOfActualTurn();
+	}
+
+	public Move GetLastMove(){
+		Move lastMove = null;
+		int nbMoves = moves.Count;
+		if(nbMoves > 0){
+			lastMove = moves[nbMoves -1];
+		}
+		return lastMove;
 	}
 
 /*	private void placeKilledPieceInGraveyard(Piece killedPiece, Transform chosenTransform){

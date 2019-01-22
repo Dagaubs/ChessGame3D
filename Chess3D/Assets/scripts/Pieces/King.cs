@@ -38,8 +38,6 @@ public class King : Piece {
 	}
 
 	protected override void LookForAccessibleCases(){
-		//Debug.Log("kiiiiing ");
-
 		influencingCases = new List<Case>();
 		List<Case> ret = new List<Case>();
 		int actualIndex = actualCase.GetIndex();
@@ -65,7 +63,6 @@ public class King : Piece {
 				}
 			}
 		}
-		//Debug.Log("king "+_hasMoved);
 		if(!_hasMoved){
 			List<Case> castlingCases = LookForCastling(actualIndex);
 			Debug.LogWarning(castlingCases.Count);
@@ -86,13 +83,13 @@ public class King : Piece {
 					bool isOk =true;
 					for(int i = actualIndex+1; i<rookIndex; ++i){
 						Case foundCase = GameManager.instance.GetCaseWithIndex(i);
-						if(foundCase.isTaken() /* || TODO: if we are in danger */ ){
+						if(foundCase.isTaken() || !AddIfPotentialMove(foundCase)){
 							isOk = false;
 							break;
 						}
+						influencingCases.Add(foundCase);
 					}
 					if(isOk){
-						Debug.Log("castling available");
 						Case castlingCase = GameManager.instance.GetCaseWithIndex(actualIndex+2);
 						castlingCases.Add(castlingCase);
 					}
@@ -101,13 +98,12 @@ public class King : Piece {
 					bool isOk =true;
 					for(int i = actualIndex-1; i>rookIndex; --i){
 						Case foundCase = GameManager.instance.GetCaseWithIndex(i);
-						if(foundCase.isTaken() || !AddIfPotentialMove(foundCase)/* if we are in danger */ ){
+						if(foundCase.isTaken() || !AddIfPotentialMove(foundCase)){
 							isOk = false;
 							break;
 						}
 					}
 					if(isOk){
-						Debug.Log("castling available");
 						Case castlingCase = GameManager.instance.GetCaseWithIndex(actualIndex-2);
 						if(AddIfPotentialMove(castlingCase))
 							castlingCases.Add(castlingCase);
