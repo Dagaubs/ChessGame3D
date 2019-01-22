@@ -337,8 +337,6 @@ public class GameManager : MonoBehaviour {
 		//anim to transform in something dans un ecran de fumée
 		Destroy(_PawnToDestroy.gameObject);
 		Piece piece = Instantiate(pieceObject, pieces_holder, false).GetComponent<Piece>();
-
-		Debug.LogWarning("caseToQueen : "+casePawnToQueen);
 		player.alivedPieces.Remove(_PawnToDestroy);
 		casePawnToQueen.LeavePiece();
 		piece.Init(player, casePawnToQueen);

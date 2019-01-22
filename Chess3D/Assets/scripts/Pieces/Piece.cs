@@ -75,7 +75,6 @@ public abstract class Piece : MonoBehaviour {
 		if(targetCase == null){
 			targetCase = getInitialCase();
 		}
-		Debug.LogWarning("targetCase init : "+targetCase);
 		GoTo(targetCase, true, true);
 		_animator = GetComponent<Animator>();
 		gameObject.name = toString();
@@ -214,7 +213,6 @@ public abstract class Piece : MonoBehaviour {
 				//transform.localPosition = transform.parent.InverseTransformPoint(targetCase.ComeOnAttackPosition(this));
 			else{
 				Vector3 toDebug = targetCase.ComeOnPiece(this);
-				Debug.LogWarning("target case :" + toDebug);
 				transform.localPosition = transform.parent.InverseTransformPoint(toDebug);
 				actualCase = targetCase;
 			}

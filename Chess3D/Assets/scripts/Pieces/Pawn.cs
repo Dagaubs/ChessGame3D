@@ -53,7 +53,7 @@ public class Pawn : Piece {
 			else
 				influencingCases.Add(longForwardCase);
 		}
-	 	else if(actualIndex == initialCase.GetIndex() +24){ //prise en passant
+	 	else if(actualIndex/8 == 4){ //prise en passant
 			Case rightCase = gameManager.GetCaseWithIndex(actualIndex+1);
 			Case leftCase = gameManager.GetCaseWithIndex(actualIndex-1);
 			influencingCases.Add(rightCase);
@@ -135,7 +135,7 @@ public class Pawn : Piece {
 			else
 				influencingCases.Add(longForwardCase);
 		}
-		else if(actualIndex == initialCase.GetIndex() -24){ //prise en passant
+		else if(actualIndex/8 == 3){ //prise en passant
 			Case rightCase = gameManager.GetCaseWithIndex(actualIndex+1);
 			Case leftCase = gameManager.GetCaseWithIndex(actualIndex-1);
 			influencingCases.Add(rightCase);
