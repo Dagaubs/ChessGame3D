@@ -128,8 +128,8 @@ public class GameManager : MonoBehaviour {
 			if(p.HasThisCaseInAccessiblesOrInfluence(m.getLeftCase()) || (usefulToTestJoinedCase && p.HasThisCaseInAccessiblesOrInfluence(m.getJoinedCase()))){
 			//	Debug.Log(p.toString() + " is checking for check !");
 				bool check = p.CheckForCheck();
-				if(check)
-					Debug.Log(p.toString() + " is PLACING ENEMY'S KING IN CHECK STATE IF DOING THIS MOVE!");
+			//	if(check)
+			//		Debug.Log(p.toString() + " is PLACING ENEMY'S KING IN CHECK STATE IF DOING THIS MOVE!");
 				ret = ret || check;
 			}
 		}
