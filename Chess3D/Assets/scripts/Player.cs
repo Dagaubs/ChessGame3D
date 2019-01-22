@@ -62,7 +62,7 @@ public class Player : MonoBehaviour {
 	}
 
 	private void beginOfTurn(){
-		Debug.Log(toString()+" : begin turn");
+	//	Debug.Log(toString()+" : begin turn");
 		playersTurn = true;
 	}
 

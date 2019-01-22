@@ -128,8 +128,8 @@ public class GameManager : MonoBehaviour {
 			if(p.HasThisCaseInAccessiblesOrInfluence(m.getLeftCase()) || (usefulToTestJoinedCase && p.HasThisCaseInAccessiblesOrInfluence(m.getJoinedCase()))){
 			//	Debug.Log(p.toString() + " is checking for check !");
 				bool check = p.CheckForCheck();
-				if(check)
-					Debug.Log(p.toString() + " is PLACING ENEMY'S KING IN CHECK STATE IF DOING THIS MOVE!");
+			//	if(check)
+			//		Debug.Log(p.toString() + " is PLACING ENEMY'S KING IN CHECK STATE IF DOING THIS MOVE!");
 				ret = ret || check;
 			}
 		}
@@ -143,7 +143,7 @@ public class GameManager : MonoBehaviour {
 
 	public void SaveNewMove(Move m){
 		moves.Add(m);
-		Debug.Log(m.toString());
+	//	Debug.Log(m.toString());
 		if(PieceThatIsChecking != null){
 			if(PieceThatIsChecking.CheckForCheck()){ // if this move didn't prevent the king to be killed 
 				Debug.LogError("THIS MOVE SHOULD NOT HAVE POSSIBLE !");
@@ -165,31 +165,31 @@ public class GameManager : MonoBehaviour {
 
 		Piece movedPiece = m.getMovedPiece();
 		movedPiece.RefreshAccessible();
-		Debug.Log(movedPiece.toString() + " CHECK FOR CHECKSTATE AFTER MOVE");
+	//	Debug.Log(movedPiece.toString() + " CHECK FOR CHECKSTATE AFTER MOVE");
 		bool check = movedPiece.CheckForCheck();
 		if(check){ // if enemy's king is checked : refresh all accessibles of its team
 
 			Player enemyPlayer = movedPiece.GetPlayer().getSide() == Player.PlayerSide.WHITE ? blackPlayer : whitePlayer;
-			Debug.Log("BEGIN Refreshing " + enemyPlayer.getSide().ToString() + " PLayer Pieces ! (" + enemyPlayer.alivedPieces.Count + ")");
+		//	Debug.Log("BEGIN Refreshing " + enemyPlayer.getSide().ToString() + " PLayer Pieces ! (" + enemyPlayer.alivedPieces.Count + ")");
 			foreach(Piece p in enemyPlayer.alivedPieces){
-				Debug.Log("REFRESHING " + p.toString());
+		//		Debug.Log("REFRESHING " + p.toString());
 				p.RefreshAccessible();
 			}
-			Debug.Log("ENDED Refreshing " + enemyPlayer.getSide().ToString() + " PLayer Pieces !");
+		//	Debug.Log("ENDED Refreshing " + enemyPlayer.getSide().ToString() + " PLayer Pieces !");
 		}else{
-			Debug.Log(movedPiece.toString() + " ENDS TURN WITHOUT SETTING OTHER KING IN CHECK MATE");
+		//	Debug.Log(movedPiece.toString() + " ENDS TURN WITHOUT SETTING OTHER KING IN CHECK MATE");
 		}
 		foreach(Piece p in whitePlayer.alivedPieces){
 			if(p.HasThisCaseInAccessiblesOrInfluence(m.getLeftCase()) || p.HasThisCaseInAccessiblesOrInfluence(m.getJoinedCase()))
 			{
-				Debug.Log(p.toString() + " Refresh its accessible after move !");
+		//		Debug.Log(p.toString() + " Refresh its accessible after move !");
 				p.RefreshAccessible();
 			}
 		}
 		foreach(Piece p in blackPlayer.alivedPieces){
 			if(p.HasThisCaseInAccessiblesOrInfluence(m.getLeftCase()) || p.HasThisCaseInAccessiblesOrInfluence(m.getJoinedCase()))
 			{
-				Debug.Log(p.toString() + " Refresh its accessible after move !");
+		//		Debug.Log(p.toString() + " Refresh its accessible after move !");
 				p.RefreshAccessible();
 			}
 		}
