@@ -30,7 +30,6 @@ public class GameManager : MonoBehaviour {
 	public GameObject	ChooseNewPiecePannel;
 
 	private int[]		PiecesLostBySide;
-	private Case		_CasePawnToQueen;
 	private Piece		_PawnToDestroy;
 
 	public Case GetCaseWithIndex(int index){
@@ -308,10 +307,9 @@ public class GameManager : MonoBehaviour {
 		}
 	}
 
-	public void PawnToQueen(Piece piece, Case theCase){
+	public void PawnToQueen(Piece piece){
 		ChooseNewPiecePannel.SetActive(true);
 		_PawnToDestroy = piece;
-		_CasePawnToQueen = theCase;	
 	}
 
 	public void TransformPawn(int pieceType){
@@ -335,12 +333,15 @@ public class GameManager : MonoBehaviour {
 		}
 
 		Player player = _PawnToDestroy.GetPlayer();
+		Case casePawnToQueen= _PawnToDestroy.getActualCase();
 		//anim to transform in something dans un ecran de fumée
 		Destroy(_PawnToDestroy.gameObject);
 		Piece piece = Instantiate(pieceObject, pieces_holder, false).GetComponent<Piece>();
 
-		piece.Init(player, _CasePawnToQueen);
+		Debug.LogWarning("caseToQueen : "+casePawnToQueen);
 		player.alivedPieces.Remove(_PawnToDestroy);
+		casePawnToQueen.LeavePiece();
+		piece.Init(player, casePawnToQueen);
 		player.alivedPieces.Add(piece);
 		_PawnToDestroy = null;
 

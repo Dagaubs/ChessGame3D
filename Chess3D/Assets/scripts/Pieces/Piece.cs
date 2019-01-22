@@ -75,7 +75,8 @@ public abstract class Piece : MonoBehaviour {
 		if(targetCase == null){
 			targetCase = getInitialCase();
 		}
-		GoTo(targetCase, true);
+		Debug.LogWarning("targetCase init : "+targetCase);
+		GoTo(targetCase, true, true);
 		_animator = GetComponent<Animator>();
 		gameObject.name = toString();
 		if(p.getSide() == Player.PlayerSide.BLACK){
@@ -212,7 +213,9 @@ public abstract class Piece : MonoBehaviour {
 			}
 				//transform.localPosition = transform.parent.InverseTransformPoint(targetCase.ComeOnAttackPosition(this));
 			else{
-				transform.localPosition = transform.parent.InverseTransformPoint(targetCase.ComeOnPiece(this));
+				Vector3 toDebug = targetCase.ComeOnPiece(this);
+				Debug.LogWarning("target case :" + toDebug);
+				transform.localPosition = transform.parent.InverseTransformPoint(toDebug);
 				actualCase = targetCase;
 			}
 				

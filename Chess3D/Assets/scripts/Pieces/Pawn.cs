@@ -39,7 +39,7 @@ public class Pawn : Piece {
 		if(actualIndex/8 == 7){//If we are on TOP bounds 
 			// SHOULD BE ABLE TO TRANSFORM IN QUEEN, KNIGHT OR ROOK
 			accessibleCases = ret;
-			gameManager.PawnToQueen(this, actualCase);
+			gameManager.PawnToQueen(this);
 			return;
 		}
 
@@ -122,7 +122,7 @@ public class Pawn : Piece {
 		if(actualIndex/8 == 0){//If we are on TOP bounds 
 			// SHOULD BE ABLE TO TRANSFORM IN QUEEN, KNIGHT OR ROOK
 			accessibleCases = ret;
-			gameManager.PawnToQueen(this, actualCase);
+			gameManager.PawnToQueen(this);
 			return;
 		}
 
