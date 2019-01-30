@@ -29,6 +29,8 @@ public class GameManager : MonoBehaviour {
 	public Text[]		UITextsPieceLost;
 	public GameObject	ChooseNewPiecePannel;
 
+	public Camera 		MainCamera,FightCamera;
+
 	private int[]		PiecesLostBySide;
 	private Piece		_PawnToDestroy;
 
@@ -258,11 +260,6 @@ public class GameManager : MonoBehaviour {
 			Debug.LogError("Received BLACK_END_TURN event but it's WHITE turn!");
 		}
 	}
-/*
-	private void whitePlayerLostPiece(){
-		Piece freshlyLostPiece = whitePlayer.lostPieces[whitePlayer.lostPieces.Count-1];
-		freshlyLostPiece.transform.SetParent(whiteLosses, false);
-	}*/
 
 	public void PlayerLostPiece(Player.PlayerSide side, Piece.PieceType type){
 		int offset = side == Player.PlayerSide.WHITE ? 0 : 5;
@@ -275,11 +272,6 @@ public class GameManager : MonoBehaviour {
 			UITextsPieceLost[index].text = "x"+PiecesLostBySide[index];
 		}
 	}
-/* 
-	private void blackPlayerLostPiece(){
-		Piece freshlyLostPiece = blackPlayer.lostPieces[blackPlayer.lostPieces.Count-1];
-		freshlyLostPiece.transform.SetParent(blackLosses, false);
-	}*/
 
 	private void beginGame(){
 		// TODO: set up UI

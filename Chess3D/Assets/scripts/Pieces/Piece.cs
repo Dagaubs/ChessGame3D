@@ -8,6 +8,12 @@ public abstract class Piece : MonoBehaviour {
 
 	protected PieceType type;
 	public PieceType getType(){return type;}
+	
+	[SerializeField]
+	protected GameObject meshs;
+	public void Hide(bool hide){
+		meshs.SetActive(!hide);
+	}
 
 	protected Case actualCase;
 	public Case getActualCase(){return actualCase;}
