@@ -118,4 +118,40 @@ public class King : Piece {
 	void Awake(){
 		type = PieceType.KING;
 	}
+/*
+	protected override IEnumerator ShortRangeAttack(Case targetCase){
+		transform.LookAt(targetCase.GetStandingOnPieceTransform());
+
+		Vector3 targetMovePosition = targetCase.GetAttackPosition(this);
+		Vector3 velocity = new Vector3();
+		float actualSpeed = 0f;
+		// Move To targetMovePosition
+		while(Vector3.Distance(targetMovePosition, transform.position) > 0.1f){
+
+			if(Vector3.Distance(targetMovePosition, transform.position) < 1f && actualSpeed > 2f)
+				actualSpeed -= acceleration * Time.deltaTime;
+			else
+				actualSpeed += acceleration * Time.deltaTime;
+			actualSpeed = actualSpeed > maxSpeed ? maxSpeed : actualSpeed;
+			_animator.SetFloat("Speed", actualSpeed);
+			velocity = Vector3.forward * actualSpeed;
+			transform.Translate(velocity * Time.deltaTime);
+			if(Vector3.Distance(Vector3.Normalize(targetMovePosition - transform.position), transform.forward) > 0.1f){
+				//Debug.Log("Should be passed : " + Vector3.Normalize(targetMovePosition - transform.position) + " | forward : " + transform.forward);
+				_animator.SetFloat("Speed", 0f);
+				transform.position = targetMovePosition;
+			}
+			yield return new WaitForFixedUpdate();
+		}
+		_animator.SetFloat("Speed", 0f);
+		Debug.Log("triggering attack !");
+		transform.LookAt(enemyPieceAttacked.transform);
+		_animator.SetTrigger("Attack");
+	}
+
+	protected override IEnumerator LongRangeAttack(Case targetCase){
+		StartCoroutine(ShortRangeAttack());
+		yield return null;
+	}
+*/
 }

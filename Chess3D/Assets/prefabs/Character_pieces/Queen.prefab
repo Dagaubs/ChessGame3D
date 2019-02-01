@@ -1383,6 +1383,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   meshs: {fileID: 1049694463637934}
+  death_cloud_prefab: {fileID: 1790129934523056, guid: 37fc76d7d0e20479d9b65c17b7bfe674,
+    type: 2}
+  smokepuff_prefab: {fileID: 1115940846606908, guid: 0c2f308d8d065429289945ea5f2b7f03,
+    type: 2}
   show: 0
   acceleration: 4
   maxSpeed: 6
@@ -1393,6 +1397,10 @@ MonoBehaviour:
   - {fileID: 23637946245168702}
   accessibleCases: []
   influencingCases: []
+  meteor_prefab: {fileID: 1501893964568794, guid: 3ce9063de0b8b46d9a469b21659ad863,
+    type: 2}
+  fireCircle_prefab: {fileID: 1830932601986074, guid: 66ff673bdf4fb410ebae21b72593a12f,
+    type: 2}
 --- !u!114 &114564880576357150
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -1432,13 +1432,13 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1178194815236546}
-  m_LocalRotation: {x: -7.840953e-15, y: 0.00000003725291, z: 0.00000021047894, w: 1}
-  m_LocalPosition: {x: 0.00000009689331, y: 0.000001550293, z: 0.000001550293}
+  m_LocalRotation: {x: -0.8660254, y: 0, z: 0, w: -0.50000006}
+  m_LocalPosition: {x: 0.436, y: 0, z: 0}
   m_LocalScale: {x: 0.9999999, y: 0.99999994, z: 1.0000001}
   m_Children: []
   m_Father: {fileID: 4784255802828322}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -240, y: 0, z: 0}
 --- !u!4 &4218041115117260
 Transform:
   m_ObjectHideFlags: 1
@@ -3572,6 +3572,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   meshs: {fileID: 1166706363152604}
+  death_cloud_prefab: {fileID: 1790129934523056, guid: 37fc76d7d0e20479d9b65c17b7bfe674,
+    type: 2}
+  smokepuff_prefab: {fileID: 1115940846606908, guid: 0c2f308d8d065429289945ea5f2b7f03,
+    type: 2}
   show: 0
   acceleration: 4
   maxSpeed: 6

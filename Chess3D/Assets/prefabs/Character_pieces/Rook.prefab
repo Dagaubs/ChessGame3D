@@ -1338,6 +1338,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   meshs: {fileID: 1404596465492882}
+  death_cloud_prefab: {fileID: 1790129934523056, guid: 37fc76d7d0e20479d9b65c17b7bfe674,
+    type: 2}
+  smokepuff_prefab: {fileID: 1115940846606908, guid: 0c2f308d8d065429289945ea5f2b7f03,
+    type: 2}
   show: 0
   acceleration: 4
   maxSpeed: 6

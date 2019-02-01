@@ -65,10 +65,14 @@ public class Pawn : Piece {
 				if(lastMove.getLeftCase() == pawnMoved.getInitialCase()){
 					Case caseJoinedatLastMove = lastMove.getJoinedCase();
 					if(caseJoinedatLastMove.GetIndex() == actualIndex +1){
-						ret.Add(gameManager.GetCaseWithIndex(actualIndex+9));
+						Case foundCase = gameManager.GetCaseWithIndex(actualIndex+9);
+						if(AddIfPotentialMove(foundCase))
+							ret.Add(foundCase);
 					}
 					else if(caseJoinedatLastMove.GetIndex() == actualIndex -1){
-						ret.Add(gameManager.GetCaseWithIndex(actualIndex+7));
+						Case foundCase = gameManager.GetCaseWithIndex(actualIndex+7);
+						if(AddIfPotentialMove(foundCase))
+							ret.Add(foundCase);
 					}
 				}
 			}
@@ -147,10 +151,14 @@ public class Pawn : Piece {
 				if(lastMove.getLeftCase() == pawnMoved.getInitialCase()){
 					Case caseJoinedatLastMove = lastMove.getJoinedCase();
 					if(caseJoinedatLastMove.GetIndex() == actualIndex +1){
-						ret.Add(gameManager.GetCaseWithIndex(actualIndex-7));
+						Case foundCase = gameManager.GetCaseWithIndex(actualIndex-7);
+						if(AddIfPotentialMove(foundCase))
+							ret.Add(foundCase);
 					}
 					else if(caseJoinedatLastMove.GetIndex() == actualIndex -1){
-						ret.Add(gameManager.GetCaseWithIndex(actualIndex-9));
+						Case foundCase = gameManager.GetCaseWithIndex(actualIndex-9);
+						if(AddIfPotentialMove(foundCase))
+							ret.Add(foundCase);
 					}
 				}
 			}
@@ -203,28 +211,13 @@ public class Pawn : Piece {
 		}
 
 		GameManager gameManager = GameManager.instance;
-		Case upLeftCase, upRightCase;/*, forwardCase, longForwardCase;
+		Case upLeftCase, upRightCase;
 		
-		if(actualCase == getInitialCase()){
-			longForwardCase = gameManager.GetCaseWithIndex(actualIndex+16); // is able to move 2 case forward
-			if(!longForwardCase.isTaken()) //if there's NO other piece on the case
-				ret.Add(longForwardCase);
-			else
-				influencingCases.Add(longForwardCase);
-		}
-
-		forwardCase = gameManager.GetCaseWithIndex(actualIndex+8);
-		if(!forwardCase.isTaken()) //if there's NO other piece on the case
-			ret.Add(forwardCase);
-		else
-			influencingCases.Add(forwardCase);
-		*/
 		if(actualIndex%8 != 0){ // if we are NOT on LEFT bounds
 			upLeftCase = gameManager.GetCaseWithIndex(actualIndex+7);
 			if(upLeftCase.isTaken()){ //if there's NO other piece on the case
 				if(upLeftCase.GetStandingOnPiece().GetPlayer() != player){// if it's an enemy
-					string piecename = upLeftCase.GetStandingOnPiece().toString();
-					if(piecename.Substring(piecename.Length - 4) == "KING") // if found the Enemy KING
+					if(upLeftCase.GetStandingOnPiece().getType() == Piece.PieceType.KING) // if found the Enemy KING
 						return true;
 				}
 			}
@@ -234,8 +227,7 @@ public class Pawn : Piece {
 			upRightCase = gameManager.GetCaseWithIndex(actualIndex+9);
 			if(upRightCase.isTaken()){ //if there's NO other piece on the case
 				if(upRightCase.GetStandingOnPiece().GetPlayer() != player){// if it's an enemy
-					string piecename = upRightCase.GetStandingOnPiece().toString();
-					if(piecename.Substring(piecename.Length - 4) == "KING") // if found the Enemy KING
+					if(upRightCase.GetStandingOnPiece().getType() == Piece.PieceType.KING) // if found the Enemy KING
 						return true;
 				}
 			}
@@ -251,28 +243,13 @@ public class Pawn : Piece {
 		}
 
 		GameManager gameManager = GameManager.instance;
-		Case downLeftCase, downRightCase;/*, forwardCase, longForwardCase;
-		if(actualCase == getInitialCase()){
-			longForwardCase = gameManager.GetCaseWithIndex(actualIndex-16); // is able to move 2 case forward
-			if(!longForwardCase.isTaken()) //if there's NO other piece on the case
-				ret.Add(longForwardCase);
-			else
-				influencingCases.Add(longForwardCase);
-		}
+		Case downLeftCase, downRightCase;
 
-		forwardCase = gameManager.GetCaseWithIndex(actualIndex-8);
-		if(!forwardCase.isTaken()) //if there's NO other piece on the case
-			ret.Add(forwardCase);
-		else
-			influencingCases.Add(forwardCase);
-		
-		*/
 		if(actualIndex%8 != 0){ // if we are NOT on LEFT bounds
 			downLeftCase = gameManager.GetCaseWithIndex(actualIndex-9);
 			if(downLeftCase.isTaken()){ //if there's NO other piece on the case
 				if(downLeftCase.GetStandingOnPiece().GetPlayer() != player){// if it's an enemy
-					string piecename = downLeftCase.GetStandingOnPiece().toString();
-					if(piecename.Substring(piecename.Length - 4) == "KING") // if found the Enemy KING
+					if(downLeftCase.GetStandingOnPiece().getType() == Piece.PieceType.KING) // if found the Enemy KING
 						return true;
 				}
 			}
@@ -282,8 +259,7 @@ public class Pawn : Piece {
 			downRightCase = gameManager.GetCaseWithIndex(actualIndex-7);
 			if(downRightCase.isTaken()){ //if there's NO other piece on the case
 				if(downRightCase.GetStandingOnPiece().GetPlayer() != player){// if it's an enemy
-					string piecename = downRightCase.GetStandingOnPiece().toString();
-					if(piecename.Substring(piecename.Length - 4) == "KING") // if found the Enemy KING
+					if(downRightCase.GetStandingOnPiece().getType() == Piece.PieceType.KING) // if found the Enemy KING
 							return true;
 				}
 			}
@@ -294,4 +270,40 @@ public class Pawn : Piece {
 	void Awake(){
 		type = PieceType.PAWN;
 	}
+
+	/*protected override IEnumerator ShortRangeAttack(Case targetCase){
+		transform.LookAt(targetCase.GetStandingOnPieceTransform());
+
+		Vector3 targetMovePosition = targetCase.GetAttackPosition(this);
+		Vector3 velocity = new Vector3();
+		float actualSpeed = 0f;
+		// Move To targetMovePosition
+		while(Vector3.Distance(targetMovePosition, transform.position) > 0.1f){
+
+			if(Vector3.Distance(targetMovePosition, transform.position) < 1f && actualSpeed > 2f)
+				actualSpeed -= acceleration * Time.deltaTime;
+			else
+				actualSpeed += acceleration * Time.deltaTime;
+			actualSpeed = actualSpeed > maxSpeed ? maxSpeed : actualSpeed;
+			_animator.SetFloat("Speed", actualSpeed);
+			velocity = Vector3.forward * actualSpeed;
+			transform.Translate(velocity * Time.deltaTime);
+			if(Vector3.Distance(Vector3.Normalize(targetMovePosition - transform.position), transform.forward) > 0.1f){
+				//Debug.Log("Should be passed : " + Vector3.Normalize(targetMovePosition - transform.position) + " | forward : " + transform.forward);
+				_animator.SetFloat("Speed", 0f);
+				transform.position = targetMovePosition;
+			}
+			yield return new WaitForFixedUpdate();
+		}
+		_animator.SetFloat("Speed", 0f);
+		Debug.Log("triggering attack !");
+		transform.LookAt(enemyPieceAttacked.transform);
+		_animator.SetTrigger("Attack");
+	}
+
+	protected override IEnumerator LongRangeAttack(Case targetCase){
+		StartCoroutine(ShortRangeAttack(targetCase));
+		yield return null;
+	}*/
+
 }

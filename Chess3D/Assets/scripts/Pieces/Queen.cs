@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class Queen : Piece {
 
+	[SerializeField]
+	private GameObject meteor_prefab, fireCircle_prefab;
+
 	public override string toString(){return player.getSide().ToString() + " QUEEN";}
 
 	protected override Case getInitialCase(){
@@ -39,6 +42,46 @@ public class Queen : Piece {
 		ret.AddRange(getRightHorizontale());
 		accessibleCases = ret;
 	}
+
+	public void CastMeteor(){
+		if(enemyPieceAttacked != null){
+			if(enemyPieceAttacked.IsSameSideAs(this)){
+				Debug.LogError("Can't TRIGGER METEOR a piece that is in the same team !");
+			}else{
+				Meteor meteor = Instantiate(meteor_prefab, enemyPieceAttacked.transform.position + Vector3.up * 7f, Quaternion.Euler(-110,0,0)).GetComponent<Meteor>();
+				meteor.Init(enemyPieceAttacked);
+				//Debug.Break();
+			}
+		}else{
+			Debug.LogError("EnemyPieceAttacked is null can't TRIGGER METEOR !");
+		}
+	}
+
+	public void CastFireCircle(){
+		if(enemyPieceAttacked != null){
+			if(enemyPieceAttacked.IsSameSideAs(this)){
+				Debug.LogError("Can't TRIGGER METEOR a piece that is in the same team !");
+			}else{
+				Instantiate(fireCircle_prefab, enemyPieceAttacked.transform.position, Quaternion.Euler(90,0,0));
+				enemyPieceAttacked.StartDeathAnim(false);
+			}
+		}else{
+			Debug.LogError("EnemyPieceAttacked is null can't TRIGGER METEOR !");
+		}
+	}
+
+	protected override IEnumerator ShortRangeAttack(Case targetCase){
+		transform.LookAt(enemyPieceAttacked.transform);
+		_animator.SetTrigger("ShortRangeAttack");
+		yield return null;
+	}
+
+	protected override IEnumerator LongRangeAttack(Case targetCase){
+		transform.LookAt(enemyPieceAttacked.transform);
+		_animator.SetTrigger("LongRangeAttack");
+		yield return null;
+	}
+
 
 	void Awake(){
 		type = PieceType.QUEEN;

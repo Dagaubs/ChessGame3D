@@ -48,4 +48,13 @@ public class Rook : Piece {
 	void Awake(){
 		type = PieceType.ROOK;
 	}
+
+	protected override IEnumerator ShortRangeAttack(Case targetCase){
+		yield return null;
+	}
+
+	protected override IEnumerator LongRangeAttack(Case targetCase){
+		yield return null;
+	}
+
 }

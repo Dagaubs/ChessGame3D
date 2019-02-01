@@ -10,7 +10,7 @@ public abstract class Piece : MonoBehaviour {
 	public PieceType getType(){return type;}
 	
 	[SerializeField]
-	protected GameObject meshs;
+	protected GameObject meshs, death_cloud_prefab, smokepuff_prefab;
 	public void Hide(bool hide){
 		meshs.SetActive(!hide);
 	}
@@ -27,6 +27,7 @@ public abstract class Piece : MonoBehaviour {
 	[SerializeField]
 	private bool show = false;
 	private bool saveShow = false;
+	protected bool _attacking;
 
 	void Update(){
 		if(show != saveShow){
@@ -64,6 +65,8 @@ public abstract class Piece : MonoBehaviour {
 
 	protected static Vector3 black_defaultEulerAngle = Vector3.up * 180f, white_defaultEulerAngle = Vector3.zero;
 	protected Vector3 defaultEulerAngle;
+
+	protected Piece enemyPieceAttacked = null;
 
 	[SerializeField]
 	protected List<Case> influencingCases = null;
@@ -279,6 +282,10 @@ public abstract class Piece : MonoBehaviour {
 			actualCase = leftCase;
 	}
 
+	public bool IsSameSideAs(Piece pieceToTest){
+		return player.getSide() == pieceToTest.GetPlayer().getSide();
+	}
+
 	public PotentialMove PotentiallyGoTo(Case targetCase){
 		//if(targetCase.isAccessible()){ // if it is legit to go to this case
 			bool killedPiecebool = false;
@@ -316,6 +323,52 @@ public abstract class Piece : MonoBehaviour {
 		return null;*/
 	}
 
+	public virtual void TriggerDeathAnimOfEnemy(){
+		if(enemyPieceAttacked != null){
+			if(enemyPieceAttacked.IsSameSideAs(this)){
+				Debug.LogError("Can't kill a piece that is in the same team !");
+			}else{
+				enemyPieceAttacked.StartDeathAnim();
+			}
+		}else{
+			Debug.LogError("EnemyPieceAttacked is null can't call death anim !");
+		}
+	}
+
+	public virtual void EndAttackAnim(){
+		_attacking = false;
+	}
+
+	public virtual void StartDeathAnim(bool triggersmokePuff = true){
+		if(triggersmokePuff)
+			Instantiate(smokepuff_prefab, transform, false);
+		_animator.SetTrigger("Death");
+	}
+	/*
+	public virtual IEnumerator DeathAnim(){
+		float timePassed = 0f, animTime = 1.75f;
+		while(timePassed < animTime){
+			timePassed += Time.deltaTime;
+			yield return new WaitForFixedUpdate();
+		}
+		timePassed = 0f;
+		animTime = 1.75f;
+		while(timePassed < animTime){
+			timePassed += Time.deltaTime;
+			yield return new WaitForFixedUpdate();
+		}
+		DestroyPiece();
+		yield return null;
+	}
+	*/
+	public void InstantiateDeathCloud(){
+		Instantiate(death_cloud_prefab, transform.position, Quaternion.Euler(90,0,0));
+		Destroy(gameObject);
+	}
+
+	public void DestroyPiece(){
+	}
+
 	public virtual void GetEaten(){
 		// leave piece
 		//actualCase.LeavePiece();
@@ -344,14 +397,19 @@ public abstract class Piece : MonoBehaviour {
 				yield return null;
 			}
 		}
+		_attacking = false;
 		Piece enemyPiece = targetCase.GetStandingOnPiece();
 		Vector3 targetMovePosition = transform.parent.InverseTransformPoint(targetCase.ComeOnPiece(this));
 		if(enemyPiece != null) // if you have to kill a piece
 		{
+			_attacking = true;
 			StartCoroutine(Attack(targetCase, enemyPiece));
 		}
+
+		while(_attacking) //Wait in case of Attack animation
+			yield return new WaitForFixedUpdate();
+
 		// Rotate character to make him look at the target Case
-		//Transform targetCaseTransform = targetCase.transform;
 		transform.LookAt(targetCase.GetStandingOnPieceTransform());
 
 		Vector3 velocity = new Vector3();
@@ -368,7 +426,7 @@ public abstract class Piece : MonoBehaviour {
 			velocity = Vector3.forward * actualSpeed;
 			transform.Translate(velocity * Time.deltaTime);
 			if(Vector3.Distance(Vector3.Normalize(targetMovePosition - transform.position), transform.forward) > 0.1f){
-				Debug.Log("Should be passed : " + Vector3.Normalize(targetMovePosition - transform.position) + " | forward : " + transform.forward);
+				//Debug.Log("Should be passed : " + Vector3.Normalize(targetMovePosition - transform.position) + " | forward : " + transform.forward);
 				_animator.SetFloat("Speed", 0f);
 				transform.position = targetMovePosition;
 			}
@@ -380,14 +438,49 @@ public abstract class Piece : MonoBehaviour {
 		yield return null;	
 	}
 
+	protected virtual IEnumerator ShortRangeAttack(Case targetCase){
+		transform.LookAt(targetCase.GetStandingOnPieceTransform());
+
+		Vector3 targetMovePosition = targetCase.GetAttackPosition(this);
+		Vector3 velocity = new Vector3();
+		float actualSpeed = 0f;
+		// Move To targetMovePosition
+		while(Vector3.Distance(targetMovePosition, transform.position) > 0.1f){
+
+			if(Vector3.Distance(targetMovePosition, transform.position) < 1f && actualSpeed > 2f)
+				actualSpeed -= acceleration * Time.deltaTime;
+			else
+				actualSpeed += acceleration * Time.deltaTime;
+			actualSpeed = actualSpeed > maxSpeed ? maxSpeed : actualSpeed;
+			_animator.SetFloat("Speed", actualSpeed);
+			velocity = Vector3.forward * actualSpeed;
+			transform.Translate(velocity * Time.deltaTime);
+			if(Vector3.Distance(Vector3.Normalize(targetMovePosition - transform.position), transform.forward) > 0.1f){
+				//Debug.Log("Should be passed : " + Vector3.Normalize(targetMovePosition - transform.position) + " | forward : " + transform.forward);
+				_animator.SetFloat("Speed", 0f);
+				transform.position = targetMovePosition;
+			}
+			yield return new WaitForFixedUpdate();
+		}
+		_animator.SetFloat("Speed", 0f);
+		Debug.Log("triggering attack !");
+		transform.LookAt(enemyPieceAttacked.transform);
+		_animator.SetTrigger("Attack");
+	}
+	protected virtual IEnumerator LongRangeAttack(Case targetCase){
+		StartCoroutine(ShortRangeAttack(targetCase));
+		yield return null;
+	}
+
 	protected IEnumerator Attack(Case targetCase, Piece enemyPiece){
 		Vector3 targetAttackPosition = targetCase.GetAttackPosition(this);
+		enemyPieceAttacked = enemyPiece;
 		if(Vector3.Distance(transform.localPosition, targetAttackPosition) > maxDistanceForShortAttack){ //Long Range Attack
-
+			StartCoroutine(LongRangeAttack(targetCase));
 		}
 		else // Short Range Attack
 		{
-
+			StartCoroutine(ShortRangeAttack(targetCase));
 		}
 		yield return null;
 	}

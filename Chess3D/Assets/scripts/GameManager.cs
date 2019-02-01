@@ -147,7 +147,7 @@ public class GameManager : MonoBehaviour {
 	//	Debug.Log(m.toString());
 		if(PieceThatIsChecking != null){
 			if(PieceThatIsChecking.CheckForCheck()){ // if this move didn't prevent the king to be killed 
-				Debug.LogError("THIS MOVE SHOULD NOT HAVE POSSIBLE !");
+				Debug.LogError("THIS MOVE SHOULD NOT HAVE BEEN POSSIBLE !");
 				return;
 			}else
 				PieceThatIsChecking = null;
@@ -159,38 +159,35 @@ public class GameManager : MonoBehaviour {
 
 			//ANIMATION DE DEATH ?!
 
-			Destroy(killedPiece.gameObject);
+			//Destroy(killedPiece.gameObject);
 		//	Transform chosenTransform = killedPiece.GetPlayer().getSide() == Player.PlayerSide.WHITE ? whiteLosses : blackLosses;
 		//	placeKilledPieceInGraveyard(killedPiece, chosenTransform);
 		}
 
 		Piece movedPiece = m.getMovedPiece();
 		movedPiece.RefreshAccessible();
-	//	Debug.Log(movedPiece.toString() + " CHECK FOR CHECKSTATE AFTER MOVE");
+		
 		bool check = movedPiece.CheckForCheck();
 		if(check){ // if enemy's king is checked : refresh all accessibles of its team
 
 			Player enemyPlayer = movedPiece.GetPlayer().getSide() == Player.PlayerSide.WHITE ? blackPlayer : whitePlayer;
-		//	Debug.Log("BEGIN Refreshing " + enemyPlayer.getSide().ToString() + " PLayer Pieces ! (" + enemyPlayer.alivedPieces.Count + ")");
+		
 			foreach(Piece p in enemyPlayer.alivedPieces){
-		//		Debug.Log("REFRESHING " + p.toString());
 				p.RefreshAccessible();
 			}
-		//	Debug.Log("ENDED Refreshing " + enemyPlayer.getSide().ToString() + " PLayer Pieces !");
+			
 		}else{
-		//	Debug.Log(movedPiece.toString() + " ENDS TURN WITHOUT SETTING OTHER KING IN CHECK MATE");
+			
 		}
 		foreach(Piece p in whitePlayer.alivedPieces){
 			if(p.HasThisCaseInAccessiblesOrInfluence(m.getLeftCase()) || p.HasThisCaseInAccessiblesOrInfluence(m.getJoinedCase()))
 			{
-		//		Debug.Log(p.toString() + " Refresh its accessible after move !");
 				p.RefreshAccessible();
 			}
 		}
 		foreach(Piece p in blackPlayer.alivedPieces){
 			if(p.HasThisCaseInAccessiblesOrInfluence(m.getLeftCase()) || p.HasThisCaseInAccessiblesOrInfluence(m.getJoinedCase()))
 			{
-		//		Debug.Log(p.toString() + " Refresh its accessible after move !");
 				p.RefreshAccessible();
 			}
 		}

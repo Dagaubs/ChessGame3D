@@ -3061,6 +3061,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   meshs: {fileID: 1906410146194228}
+  death_cloud_prefab: {fileID: 1790129934523056, guid: 37fc76d7d0e20479d9b65c17b7bfe674,
+    type: 2}
+  smokepuff_prefab: {fileID: 1115940846606908, guid: 0c2f308d8d065429289945ea5f2b7f03,
+    type: 2}
   show: 0
   acceleration: 4
   maxSpeed: 6
@@ -3070,6 +3074,10 @@ MonoBehaviour:
   - {fileID: 23096082490419664}
   accessibleCases: []
   influencingCases: []
+  electricBold_prefab: {fileID: 1492764227851022, guid: 39efff21b93044b4d9530e208c266962,
+    type: 2}
+  thunderBold_prefab: {fileID: 1860446189004752, guid: 7fe4a73fecda947c68efb9d1645c027b,
+    type: 2}
 --- !u!114 &114497594123943404
 MonoBehaviour:
   m_ObjectHideFlags: 1
