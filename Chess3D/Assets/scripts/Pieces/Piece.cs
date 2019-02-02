@@ -323,12 +323,13 @@ public abstract class Piece : MonoBehaviour {
 		return null;*/
 	}
 
-	public virtual void TriggerDeathAnimOfEnemy(){
+	public virtual void TriggerDeathAnimOfEnemy(string boolstring){
 		if(enemyPieceAttacked != null){
 			if(enemyPieceAttacked.IsSameSideAs(this)){
 				Debug.LogError("Can't kill a piece that is in the same team !");
 			}else{
-				enemyPieceAttacked.StartDeathAnim();
+				bool triggerSmokePuffbool = boolstring.Length == 0 || boolstring != "false";
+				enemyPieceAttacked.StartDeathAnim(triggerSmokePuffbool);
 			}
 		}else{
 			Debug.LogError("EnemyPieceAttacked is null can't call death anim !");
@@ -363,6 +364,9 @@ public abstract class Piece : MonoBehaviour {
 	*/
 	public void InstantiateDeathCloud(){
 		Instantiate(death_cloud_prefab, transform.position, Quaternion.Euler(90,0,0));
+	}
+
+	public void DestroyGameObject(){
 		Destroy(gameObject);
 	}
 

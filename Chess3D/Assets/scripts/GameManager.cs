@@ -149,8 +149,16 @@ public class GameManager : MonoBehaviour {
 			if(PieceThatIsChecking.CheckForCheck()){ // if this move didn't prevent the king to be killed 
 				Debug.LogError("THIS MOVE SHOULD NOT HAVE BEEN POSSIBLE !");
 				return;
-			}else
+			}else{
+				Player enemyPlayer = PieceThatIsChecking.GetPlayer().getSide() == Player.PlayerSide.WHITE ? blackPlayer : whitePlayer;
+		
 				PieceThatIsChecking = null;
+				// make everybody refresh their accessibles
+				
+				foreach(Piece p in enemyPlayer.alivedPieces){
+					p.RefreshAccessible();
+				}
+			}
 		}
 		
 		Piece killedPiece = m.getKilledPiece();

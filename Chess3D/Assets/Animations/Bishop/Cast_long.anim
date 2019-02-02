@@ -19540,13 +19540,13 @@ AnimationClip:
   m_GenerateMotionCurves: 0
   m_Events:
   - time: 0.68333334
-    functionName: CastThunderbolt
+    functionName: CastThunderBolt
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
-  - time: 1.1666666
+  - time: 1
     functionName: TriggerDeathAnimOfEnemy
     data: 
     objectReferenceParameter: {fileID: 0}

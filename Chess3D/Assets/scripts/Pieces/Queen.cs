@@ -63,7 +63,6 @@ public class Queen : Piece {
 				Debug.LogError("Can't TRIGGER METEOR a piece that is in the same team !");
 			}else{
 				Instantiate(fireCircle_prefab, enemyPieceAttacked.transform.position, Quaternion.Euler(90,0,0));
-				enemyPieceAttacked.StartDeathAnim(false);
 			}
 		}else{
 			Debug.LogError("EnemyPieceAttacked is null can't TRIGGER METEOR !");

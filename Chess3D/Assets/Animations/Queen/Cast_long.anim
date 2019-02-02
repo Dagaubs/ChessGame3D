@@ -19540,7 +19540,7 @@ AnimationClip:
   m_GenerateMotionCurves: 0
   m_Events:
   - time: 0.68333334
-    functionName: CastThunderbolt
+    functionName: CastMeteor
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0

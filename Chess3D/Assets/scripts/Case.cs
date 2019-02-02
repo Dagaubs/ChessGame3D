@@ -69,20 +69,10 @@ public class Case : MonoBehaviour {
 	}
 
 	public Vector3 GetAttackPosition(Piece attacker){
-		/*switch (attacker.GetPlayer().getSide())
-		{
-			case Player.PlayerSide.WHITE:
-				return 	transform.position + Vector3.up * 0.5f + Vector3.down * case_size / 2;
-			case Player.PlayerSide.BLACK:
-				return 	transform.position + Vector3.up * 0.5f + Vector3.forward * case_size / 2;
-			default:
-				Debug.LogError("Doesn't know this PlayerSide : " + attacker.GetPlayer().getSide().ToString());
-				return transform.position;
-		}*/
 		Vector3 standingOnPiecePosition = standingOnPieceTransform.position;
 		Vector3 a_Vector = standingOnPiecePosition, b_Vector = new Vector3(attacker.transform.position.x, 0.5f, attacker.transform.position.z);
 		Vector3 dir = Vector3.Normalize(b_Vector - a_Vector);
-		Debug.Log("A : " + a_Vector + " | B : " + b_Vector + " | dir : " + dir);
+		//Debug.Log("A : " + a_Vector + " | B : " + b_Vector + " | dir : " + dir);
 		return standingOnPiecePosition + dir * case_size;
 	}
 
