@@ -159,67 +159,70 @@ public abstract class Piece : MonoBehaviour {
 					return null;
 				}
 			}
+
+			int targetCaseIndex = targetCase.GetIndex();
+			int actualCaseIndex =0;
+
+			//Castling
+			if(type == PieceType.KING){
+				if(Mathf.Abs(targetCaseIndex - actualCaseIndex)==2){
+					Piece rookForCastling = GetRookForCastling(actualCaseIndex, targetCaseIndex);
+					if(rookForCastling == null){
+						return null;
+					}
+					Case targetRookCase;
+					if(targetCaseIndex > actualCaseIndex){
+						targetRookCase = GameManager.instance.GetCaseWithIndex(actualCaseIndex+1);
+					}
+					else{
+						targetRookCase = GameManager.instance.GetCaseWithIndex(actualCaseIndex+1);
+					}
+					rookForCastling.GoTo(targetRookCase, false, true);
+				}					
+			}
+			else if(type == PieceType.PAWN && !killedPiecebool && actualCase != null){ // if we move in diagonal without killing anybody = prise en passant
+				Debug.Log("actual index % 8 : " + actualCase.GetIndex() % 8 + " | target index % 8 : " + targetCase.GetIndex() % 8);
+				if((actualCase.GetIndex() % 8) != (targetCase.GetIndex() % 8)){
+					Case PawnToKillCase = null;
+					if(player.getSide() == Player.PlayerSide.WHITE){  //prise en passant white
+						PawnToKillCase = GameManager.instance.GetCaseWithIndex(targetCaseIndex-8);
+					}
+					else{//prise en passant black
+						PawnToKillCase = GameManager.instance.GetCaseWithIndex(targetCaseIndex+8);
+					}
+					if(PawnToKillCase != null){
+						killedPiecebool = true;
+						foundPiece = PawnToKillCase.GetStandingOnPiece();
+						if(foundPiece == null){
+							Debug.LogError("there is no piece here");
+						}
+						else if(foundPiece.getType() != PieceType.PAWN){
+							Debug.LogError("this is not a Pawn");
+						}
+					}else{
+						Debug.LogError("PawnToKillCase is null");
+					}
+				}
+			}
 			Move ret;
 			if(killedPiecebool){
+				Debug.Log("killed someone");
 				ret = new Move(actualCase, targetCase, this, foundPiece);
 			}
 			else{
 				ret = new Move(actualCase, targetCase, this);
 			}
 
-			int targetCaseIndex = targetCase.GetIndex();
-			int actualCaseIndex =0;
 
 			if(actualCase != null){
 				actualCase.LeavePiece();
-				actualCaseIndex = actualCase.GetIndex();
 			}
 			targetCase.setAccessibility(false);
 			if(!isInitiate){
-				StartCoroutine(MoveTo(targetCase));
+				StartCoroutine(MoveTo(targetCase, foundPiece));
 				targetCase.ComeOnPiece(this);
 				actualCase = targetCase;
-				_hasMoved = true;
-
-				//Castling
-				if(type == PieceType.KING){
-					if(Mathf.Abs(targetCaseIndex - actualCaseIndex)==2){
-						Piece rookForCastling = GetRookForCastling(actualCaseIndex, targetCaseIndex);
-						if(rookForCastling == null){
-							return null;
-						}
-						Case targetRookCase;
-						if(targetCaseIndex > actualCaseIndex){
-							targetRookCase = GameManager.instance.GetCaseWithIndex(actualCaseIndex+1);
-						}
-						else{
-							targetRookCase = GameManager.instance.GetCaseWithIndex(actualCaseIndex+1);
-						}
-						rookForCastling.GoTo(targetRookCase, false, true);
-					}					
-				}
-				else if(type == PieceType.PAWN && !killedPiecebool){
-					Case PawnToKillCase = null;
-					if(Mathf.Abs(actualCaseIndex+8-targetCaseIndex)==1){  //prise en passant white
-						PawnToKillCase = GameManager.instance.GetCaseWithIndex(targetCaseIndex-8);
-					}
-					else if(Mathf.Abs(actualCaseIndex-8-targetCaseIndex)==1){//prise en passant black
-						PawnToKillCase = GameManager.instance.GetCaseWithIndex(targetCaseIndex+8);
-					}
-					if(PawnToKillCase != null){
-						Piece pawnToKill = PawnToKillCase.GetStandingOnPiece();
-						if(pawnToKill == null){
-							Debug.LogError("there is no piece here");
-						}
-						else if(pawnToKill.getType() != PieceType.PAWN){
-							Debug.LogError("this is not a Pawn");
-						}
-						/////TODO COOL ANIM !!!
-						Destroy(pawnToKill.gameObject);
-					} 
-				}
 			}
-				//transform.localPosition = transform.parent.InverseTransformPoint(targetCase.ComeOnAttackPosition(this));
 			else{
 				Vector3 toDebug = targetCase.ComeOnPiece(this);
 				transform.localPosition = transform.parent.InverseTransformPoint(toDebug);
@@ -393,7 +396,7 @@ public abstract class Piece : MonoBehaviour {
 		}
 	}
 
-	protected IEnumerator MoveTo(Case targetCase){
+	protected IEnumerator MoveTo(Case targetCase, Piece enemyPiece = null){
 		if(_animator == null){
 			_animator = GetComponent<Animator>();
 			if(_animator == null){
@@ -402,7 +405,7 @@ public abstract class Piece : MonoBehaviour {
 			}
 		}
 		_attacking = false;
-		Piece enemyPiece = targetCase.GetStandingOnPiece();
+		//Piece enemyPiece = targetCase.GetStandingOnPiece();
 		Vector3 targetMovePosition = transform.parent.InverseTransformPoint(targetCase.ComeOnPiece(this));
 		if(enemyPiece != null) // if you have to kill a piece
 		{
