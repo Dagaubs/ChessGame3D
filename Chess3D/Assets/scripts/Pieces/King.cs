@@ -51,7 +51,7 @@ public class King : Piece {
 					foundCase = gameManager.GetCaseWithIndex(index);
 					if(foundCase.isTaken()){ //if there's another piece on the case
 						if(foundCase.GetStandingOnPiece().GetPlayer() != player){// if it's an enemy
-							Debug.Log(player.toString() + " : Found a case with an enemy : " + foundCase.GetStandingOnPiece().GetPlayer().toString());
+							//Debug.Log(player.toString() + " : Found a case with an enemy : " + foundCase.GetStandingOnPiece().GetPlayer().toString());
 							if(AddIfPotentialMove(foundCase))
 								ret.Add(foundCase);
 						} else{

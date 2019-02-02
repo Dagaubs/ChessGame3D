@@ -45,7 +45,15 @@ public class Pawn : Piece {
 
 		Case upLeftCase, upRightCase, forwardCase, longForwardCase;
 		Case initialCase = getInitialCase();
-		if(actualCase == initialCase){
+
+		forwardCase = gameManager.GetCaseWithIndex(actualIndex+8);
+		if(!forwardCase.isTaken()) //if there's NO other piece on the case
+			if(AddIfPotentialMove(forwardCase))
+				ret.Add(forwardCase);
+		else
+			influencingCases.Add(forwardCase);
+
+		if(actualCase == initialCase && !forwardCase.isTaken()){
 			longForwardCase = gameManager.GetCaseWithIndex(actualIndex+16); // is able to move 2 case forward
 			if(!longForwardCase.isTaken()) //if there's NO other piece on the case
 				if(AddIfPotentialMove(longForwardCase))
@@ -77,13 +85,6 @@ public class Pawn : Piece {
 				}
 			}
 		}
-
-		forwardCase = gameManager.GetCaseWithIndex(actualIndex+8);
-		if(!forwardCase.isTaken()) //if there's NO other piece on the case
-			if(AddIfPotentialMove(forwardCase))
-				ret.Add(forwardCase);
-		else
-			influencingCases.Add(forwardCase);
 
 		if(actualIndex%8 != 0){ // if we are NOT on LEFT bounds
 			upLeftCase = gameManager.GetCaseWithIndex(actualIndex+7);

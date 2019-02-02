@@ -106,8 +106,8 @@ public class GameManager : MonoBehaviour {
 		Piece killedPiece = m.getKilledPiece();
 
 		if(PieceThatIsChecking != null){
-			if(PieceThatIsChecking != m.getMovedPiece() && PieceThatIsChecking != m.getKilledPiece() && PieceThatIsChecking.CheckForCheck()){ // if this move didn't prevent the king to be killed
-		//		Debug.Log(PieceThatIsChecking.toString() + " is still checking the king, should not be possible");
+			if((PieceThatIsChecking != m.getMovedPiece() && PieceThatIsChecking != m.getKilledPiece()) && PieceThatIsChecking.CheckForCheck()){ // if this move didn't prevent the king to be killed
+				//Debug.Log(PieceThatIsChecking.toString() + " is still checking the king, should not be possible (" + m.getMovedPiece().toString() + " to " + m.getJoinedCase().toString() + ")");
 				m.ReverseMove();
 				return true;
 			}
@@ -120,7 +120,7 @@ public class GameManager : MonoBehaviour {
 				ret = true;
 			}
 			else if(killedPiece == PieceThatIsChecking){
-		//		Debug.Log(m.getMovedPiece().toString() + " COULD KILL THE PIECE THAT IS CHECKING KING ");
+				//Debug.Log(m.getMovedPiece().toString() + " COULD KILL THE PIECE THAT IS CHECKING KING ");
 				usefulToTestJoinedCase = false;
 			}
 		}
@@ -128,10 +128,11 @@ public class GameManager : MonoBehaviour {
 		foreach(Piece p in enemyPlayer.alivedPieces){
 			if(p.HasThisCaseInAccessiblesOrInfluence(m.getLeftCase()) || (usefulToTestJoinedCase && p.HasThisCaseInAccessiblesOrInfluence(m.getJoinedCase()))){
 			//	Debug.Log(p.toString() + " is checking for check !");
-				bool check = p.CheckForCheck();
-			//	if(check)
-			//		Debug.Log(p.toString() + " is PLACING ENEMY'S KING IN CHECK STATE IF DOING THIS MOVE!");
-				ret = ret || check;
+				if(killedPiece != null && p != killedPiece){
+					bool check = p.CheckForCheck();
+					ret = ret || check;
+				}
+				
 			}
 		}
 
@@ -145,7 +146,7 @@ public class GameManager : MonoBehaviour {
 	public void SaveNewMove(Move m){
 		moves.Add(m);
 	//	Debug.Log(m.toString());
-		if(PieceThatIsChecking != null){
+		if(PieceThatIsChecking != null && m.getKilledPiece() != null && PieceThatIsChecking != m.getKilledPiece()){
 			if(PieceThatIsChecking.CheckForCheck()){ // if this move didn't prevent the king to be killed 
 				Debug.LogError("THIS MOVE SHOULD NOT HAVE BEEN POSSIBLE !");
 				return;
@@ -179,7 +180,7 @@ public class GameManager : MonoBehaviour {
 		if(check){ // if enemy's king is checked : refresh all accessibles of its team
 
 			Player enemyPlayer = movedPiece.GetPlayer().getSide() == Player.PlayerSide.WHITE ? blackPlayer : whitePlayer;
-		
+			//Debug.Log("Refreshing All piece of " + enemyPlayer.toString() + " after check ! (" + enemyPlayer.alivedPieces.Count + ")");
 			foreach(Piece p in enemyPlayer.alivedPieces){
 				p.RefreshAccessible();
 			}

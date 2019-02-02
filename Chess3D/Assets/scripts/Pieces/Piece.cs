@@ -150,7 +150,7 @@ public abstract class Piece : MonoBehaviour {
 			if(targetCase.isTaken()){ // if there's already a piece on this target
 				foundPiece = targetCase.GetStandingOnPiece();
 				if(foundPiece.GetPlayer() != player){ // if it's an enemy piece
-					Debug.Log(toString() + " DESTROYED A PIECE");
+					//Debug.Log(toString() + " DESTROYED A PIECE");
 					killedPiecebool = true;
 					//foundPiece.GetEaten();
 				}else{
@@ -753,7 +753,7 @@ public abstract class Piece : MonoBehaviour {
 				}else{ // if it's an enemy
 					if(foundCase.GetStandingOnPiece().getType() == Piece.PieceType.KING) // if found the Enemy KING
 					{
-						Debug.Log(foundCase.GetStandingOnPiece().GetPlayer().getSide().ToString() + " KING IS PLACING IN CHECK BY " + toString());
+						//Debug.Log(foundCase.GetStandingOnPiece().GetPlayer().getSide().ToString() + " KING IS PLACING IN CHECK BY " + toString());
 						return true;
 					}
 					else
@@ -783,7 +783,7 @@ public abstract class Piece : MonoBehaviour {
 				}else{ // if it's an enemy
 					if(foundCase.GetStandingOnPiece().getType() == Piece.PieceType.KING) // if found the Enemy KING
 					{
-						Debug.Log(foundCase.GetStandingOnPiece().GetPlayer().getSide().ToString() + " KING IS PLACING IN CHECK BY " + toString());
+						//Debug.Log(foundCase.GetStandingOnPiece().GetPlayer().getSide().ToString() + " KING IS PLACING IN CHECK BY " + toString());
 						return true;
 					}
 					else
@@ -813,7 +813,7 @@ public abstract class Piece : MonoBehaviour {
 				}else{ // if it's an enemy
 					if(foundCase.GetStandingOnPiece().getType() == Piece.PieceType.KING) // if found the Enemy KING
 					{
-						Debug.Log(foundCase.GetStandingOnPiece().GetPlayer().getSide().ToString() + " KING IS PLACING IN CHECK BY " + toString());
+						//Debug.Log(foundCase.GetStandingOnPiece().GetPlayer().getSide().ToString() + " KING IS PLACING IN CHECK BY " + toString());
 						return true;
 					}
 					else
@@ -843,7 +843,7 @@ public abstract class Piece : MonoBehaviour {
 				}else{ // if it's an enemy
 					if(foundCase.GetStandingOnPiece().getType() == Piece.PieceType.KING) // if found the Enemy KING
 					{
-						Debug.Log(foundCase.GetStandingOnPiece().GetPlayer().getSide().ToString() + " KING IS PLACING IN CHECK BY " + toString());
+						//Debug.Log(foundCase.GetStandingOnPiece().GetPlayer().getSide().ToString() + " KING IS PLACING IN CHECK BY " + toString());
 						return true;
 					}
 					else
@@ -873,7 +873,7 @@ public abstract class Piece : MonoBehaviour {
 				}else{ // if it's an enemy
 					if(foundCase.GetStandingOnPiece().getType() == Piece.PieceType.KING) // if found the Enemy KING
 					{
-						Debug.Log(foundCase.GetStandingOnPiece().GetPlayer().getSide().ToString() + " KING IS PLACING IN CHECK BY " + toString());
+						//Debug.Log(foundCase.GetStandingOnPiece().GetPlayer().getSide().ToString() + " KING IS PLACING IN CHECK BY " + toString());
 						return true;
 					}
 					else
@@ -903,7 +903,7 @@ public abstract class Piece : MonoBehaviour {
 				}else{ // if it's an enemy
 					if(foundCase.GetStandingOnPiece().getType() == Piece.PieceType.KING) // if found the Enemy KING
 					{
-						Debug.Log(foundCase.GetStandingOnPiece().GetPlayer().getSide().ToString() + " KING IS PLACING IN CHECK BY " + toString());
+						//Debug.Log(foundCase.GetStandingOnPiece().GetPlayer().getSide().ToString() + " KING IS PLACING IN CHECK BY " + toString());
 						return true;
 					}
 					else
@@ -933,7 +933,7 @@ public abstract class Piece : MonoBehaviour {
 				}else{ // if it's an enemy
 					if(foundCase.GetStandingOnPiece().getType() == Piece.PieceType.KING) // if found the Enemy KING
 					{
-						Debug.Log(foundCase.GetStandingOnPiece().GetPlayer().getSide().ToString() + " KING IS PLACING IN CHECK BY " + toString());
+						//Debug.Log(foundCase.GetStandingOnPiece().GetPlayer().getSide().ToString() + " KING IS PLACING IN CHECK BY " + toString());
 						return true;
 					}
 					else
@@ -963,7 +963,7 @@ public abstract class Piece : MonoBehaviour {
 				}else{ // if it's an enemy
 					if(foundCase.GetStandingOnPiece().getType() == Piece.PieceType.KING) // if found the Enemy KING
 					{
-						Debug.Log(foundCase.GetStandingOnPiece().GetPlayer().getSide().ToString() + " KING IS PLACING IN CHECK BY " + toString());
+						//Debug.Log(foundCase.GetStandingOnPiece().GetPlayer().getSide().ToString() + " KING IS PLACING IN CHECK BY " + toString());
 						return true;
 					}
 					else
