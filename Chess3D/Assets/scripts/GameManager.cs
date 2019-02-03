@@ -10,7 +10,7 @@ public class GameManager : MonoBehaviour {
 	private Transform plateTransform, pieces_holder, whiteLosses, blackLosses;
 
 	[SerializeField]
-	private GameObject light_case, dark_case;
+	private GameObject light_case, dark_case, transform_circle;
 
 	public GameObject king, queen, rook, bishop, knight, pawn;
 
@@ -326,6 +326,7 @@ public class GameManager : MonoBehaviour {
 		casePawnToQueen.LeavePiece();
 		piece.Init(player, casePawnToQueen);
 		player.alivedPieces.Add(piece);
+		Instantiate(transform_circle, casePawnToQueen.GetStandingOnPieceTransform(), false);
 		_PawnToDestroy = null;
 
 	}
