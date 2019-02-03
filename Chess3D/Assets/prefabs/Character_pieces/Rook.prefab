@@ -1337,6 +1337,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: afaf1625f79c14b24b1c29e918f9e7b2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  minimap_img: {fileID: 114234564553222094}
   meshs: {fileID: 1404596465492882}
   death_cloud_prefab: {fileID: 1790129934523056, guid: 37fc76d7d0e20479d9b65c17b7bfe674,
     type: 2}
@@ -1351,6 +1352,7 @@ MonoBehaviour:
   - {fileID: 23932649295805384}
   accessibleCases: []
   influencingCases: []
+  maxAttackSpeed: 6
 --- !u!137 &137843026699747716
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 1

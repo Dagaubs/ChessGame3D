@@ -1967,6 +1967,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8c754622a67c400d9ea529ace3788cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  minimap_img: {fileID: 114788062793361446}
   meshs: {fileID: 1414352782253348}
   death_cloud_prefab: {fileID: 1790129934523056, guid: 37fc76d7d0e20479d9b65c17b7bfe674,
     type: 2}

@@ -3599,6 +3599,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb92186ea21224c94925b1ceffa238d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  minimap_img: {fileID: 114318580197543658}
   meshs: {fileID: 1491694172769300}
   death_cloud_prefab: {fileID: 1790129934523056, guid: 37fc76d7d0e20479d9b65c17b7bfe674,
     type: 2}
