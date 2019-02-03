@@ -29,10 +29,13 @@ public class GameManager : MonoBehaviour {
 	public Text[]		UITextsPieceLost;
 	public GameObject	ChooseNewPiecePannel;
 
-	public Camera 		MainCamera,FightCamera;
+	public Camera 		MainCamera,FirstPersonCamera;
+	public Canvas		EndOfGameCanvas;
+	public Text			EndOfGameText;
 
 	private int[]		PiecesLostBySide;
 	private Piece		_PawnToDestroy;
+
 
 	public Case GetCaseWithIndex(int index){
 		if(index < 0 || index >= 64){
@@ -46,7 +49,7 @@ public class GameManager : MonoBehaviour {
 	private Player whitePlayer, blackPlayer;
 	public bool isInit = false, isInitiating = false, gameRunning = false;
 
-	private Player.PlayerSide actualTurn = Player.PlayerSide.WHITE;
+	private Player.PlayerSide actualTurn;
 
 	public static GameManager instance
     {
@@ -106,8 +109,8 @@ public class GameManager : MonoBehaviour {
 		Piece killedPiece = m.getKilledPiece();
 
 		if(PieceThatIsChecking != null){
-			if((PieceThatIsChecking != m.getMovedPiece() && PieceThatIsChecking != m.getKilledPiece()) && PieceThatIsChecking.CheckForCheck()){ // if this move didn't prevent the king to be killed
-				//Debug.Log(PieceThatIsChecking.toString() + " is still checking the king, should not be possible (" + m.getMovedPiece().toString() + " to " + m.getJoinedCase().toString() + ")");
+			if(PieceThatIsChecking != m.getMovedPiece() && PieceThatIsChecking != m.getKilledPiece() && PieceThatIsChecking.CheckForCheck()){ // if this move didn't prevent the king to be killed
+		//		Debug.Log(PieceThatIsChecking.toString() + " is still checking the king, should not be possible");
 				m.ReverseMove();
 				return true;
 			}
@@ -120,7 +123,7 @@ public class GameManager : MonoBehaviour {
 				ret = true;
 			}
 			else if(killedPiece == PieceThatIsChecking){
-				//Debug.Log(m.getMovedPiece().toString() + " COULD KILL THE PIECE THAT IS CHECKING KING ");
+		//		Debug.Log(m.getMovedPiece().toString() + " COULD KILL THE PIECE THAT IS CHECKING KING ");
 				usefulToTestJoinedCase = false;
 			}
 		}
@@ -128,11 +131,10 @@ public class GameManager : MonoBehaviour {
 		foreach(Piece p in enemyPlayer.alivedPieces){
 			if(p.HasThisCaseInAccessiblesOrInfluence(m.getLeftCase()) || (usefulToTestJoinedCase && p.HasThisCaseInAccessiblesOrInfluence(m.getJoinedCase()))){
 			//	Debug.Log(p.toString() + " is checking for check !");
-				if(killedPiece != null && p != killedPiece){
-					bool check = p.CheckForCheck();
-					ret = ret || check;
-				}
-				
+				bool check = p.CheckForCheck();
+			//	if(check)
+			//		Debug.Log(p.toString() + " is PLACING ENEMY'S KING IN CHECK STATE IF DOING THIS MOVE!");
+				ret = ret || check;
 			}
 		}
 
@@ -146,20 +148,12 @@ public class GameManager : MonoBehaviour {
 	public void SaveNewMove(Move m){
 		moves.Add(m);
 	//	Debug.Log(m.toString());
-		if(PieceThatIsChecking != null && m.getKilledPiece() != null && PieceThatIsChecking != m.getKilledPiece()){
+		if(PieceThatIsChecking != null){
 			if(PieceThatIsChecking.CheckForCheck()){ // if this move didn't prevent the king to be killed 
-				Debug.LogError("THIS MOVE SHOULD NOT HAVE BEEN POSSIBLE !");
+				Debug.LogError("THIS MOVE SHOULD NOT HAVE POSSIBLE !");
 				return;
-			}else{
-				Player enemyPlayer = PieceThatIsChecking.GetPlayer().getSide() == Player.PlayerSide.WHITE ? blackPlayer : whitePlayer;
-		
+			}else
 				PieceThatIsChecking = null;
-				// make everybody refresh their accessibles
-				
-				foreach(Piece p in enemyPlayer.alivedPieces){
-					p.RefreshAccessible();
-				}
-			}
 		}
 		
 		Piece killedPiece = m.getKilledPiece();
@@ -168,35 +162,37 @@ public class GameManager : MonoBehaviour {
 
 			//ANIMATION DE DEATH ?!
 
-			//Destroy(killedPiece.gameObject);
-		//	Transform chosenTransform = killedPiece.GetPlayer().getSide() == Player.PlayerSide.WHITE ? whiteLosses : blackLosses;
-		//	placeKilledPieceInGraveyard(killedPiece, chosenTransform);
+			Destroy(killedPiece.gameObject);
+	
 		}
 
 		Piece movedPiece = m.getMovedPiece();
 		movedPiece.RefreshAccessible();
-		
+	//	Debug.Log(movedPiece.toString() + " CHECK FOR CHECKSTATE AFTER MOVE");
 		bool check = movedPiece.CheckForCheck();
 		if(check){ // if enemy's king is checked : refresh all accessibles of its team
 
 			Player enemyPlayer = movedPiece.GetPlayer().getSide() == Player.PlayerSide.WHITE ? blackPlayer : whitePlayer;
-			//Debug.Log("Refreshing All piece of " + enemyPlayer.toString() + " after check ! (" + enemyPlayer.alivedPieces.Count + ")");
+		//	Debug.Log("BEGIN Refreshing " + enemyPlayer.getSide().ToString() + " PLayer Pieces ! (" + enemyPlayer.alivedPieces.Count + ")");
 			foreach(Piece p in enemyPlayer.alivedPieces){
+		//		Debug.Log("REFRESHING " + p.toString());
 				p.RefreshAccessible();
 			}
-			
+		//	Debug.Log("ENDED Refreshing " + enemyPlayer.getSide().ToString() + " PLayer Pieces !");
 		}else{
-			
+		//	Debug.Log(movedPiece.toString() + " ENDS TURN WITHOUT SETTING OTHER KING IN CHECK MATE");
 		}
 		foreach(Piece p in whitePlayer.alivedPieces){
 			if(p.HasThisCaseInAccessiblesOrInfluence(m.getLeftCase()) || p.HasThisCaseInAccessiblesOrInfluence(m.getJoinedCase()))
 			{
+		//		Debug.Log(p.toString() + " Refresh its accessible after move !");
 				p.RefreshAccessible();
 			}
 		}
 		foreach(Piece p in blackPlayer.alivedPieces){
 			if(p.HasThisCaseInAccessiblesOrInfluence(m.getLeftCase()) || p.HasThisCaseInAccessiblesOrInfluence(m.getJoinedCase()))
 			{
+		//		Debug.Log(p.toString() + " Refresh its accessible after move !");
 				p.RefreshAccessible();
 			}
 		}
@@ -212,60 +208,47 @@ public class GameManager : MonoBehaviour {
 		return lastMove;
 	}
 
-/*	private void placeKilledPieceInGraveyard(Piece killedPiece, Transform chosenTransform){
-		killedPiece.transform.SetParent(chosenTransform);
-		Player ownPlayer = killedPiece.GetPlayer();
-		killedPiece.transform.localPosition = Vector3.back * (ownPlayer.lostPieces.Count - 1);
-	}*/
+	public void GiveUp(){
+		EndOfGame(whitePlayer.isPlaying());
+	}
+
+	public void EndOfGame(bool whiteWin){
+		string playerWin = whiteWin ? "White" : "Black";
+		EndOfGameText.text = "Player "+playerWin+" Win !";
+		EndOfGameCanvas.enabled = true;
+	}
+
+	public void Rematch(){
+		PiecesLostBySide = new int[10];
+		for(int i =0; i< UIimagesPieceLost.Length; ++i){
+			UIimagesPieceLost[i].SetActive(false);
+		}
+		whitePlayer.DetroyAllPieces();
+		blackPlayer.DetroyAllPieces();
+		Destroy(whitePlayer.gameObject);
+		Destroy(blackPlayer.gameObject);
+		EndOfGameCanvas.enabled = false;
+		isInit = false;
+		isInitiating = false;
+		Start();
+	}
 
 	void Start(){
 		Init();
-		//startListenings();
 		beginGame();
-	}
-
-	private void startListenings(){
-		/*EventManager.StartListening("WHITE_END_TURN", endOfWhiteTurn);
-		EventManager.StartListening("BLACK_END_TURN", endOfBlackTurn);
-		EventManager.StartListening("WHITEPLAYER_LOST_PIECE", whitePlayerLostPiece);
-		EventManager.StartListening("BLACKPLAYER_LOST_PIECE", blackPlayerLostPiece);*/
-	}
-
-	private void stopListenings(){/*
-		EventManager.StopListening("WHITE_END_TURN", endOfWhiteTurn);
-		EventManager.StopListening("BLACK_END_TURN", endOfBlackTurn);
-		EventManager.StopListening("WHITEPLAYER_LOST_PIECE", whitePlayerLostPiece);
-		EventManager.StopListening("BLACKPLAYER_LOST_PIECE", blackPlayerLostPiece);*/
 	}
 
 	private void endOfActualTurn(){
 		Player.PlayerSide finishedTurn = actualTurn;
 		if(actualTurn == Player.PlayerSide.WHITE){
 			actualTurn = Player.PlayerSide.BLACK;
+			
 		}else{
 			actualTurn = Player.PlayerSide.WHITE;
 		}
-		EventManager.TriggerEvent(finishedTurn.ToString() + "_END_TURN");
 		beginNewturn();
 	}
 
-	private void endOfWhiteTurn(){
-		if(actualTurn == Player.PlayerSide.WHITE){
-			actualTurn = Player.PlayerSide.BLACK;
-			beginNewturn();
-		}else{
-			Debug.LogError("Received WHITE_END_TURN event but it's BLACK turn!");
-		}
-	}
-
-	private void endOfBlackTurn(){
-		if(actualTurn == Player.PlayerSide.BLACK){
-			actualTurn = Player.PlayerSide.WHITE;
-			beginNewturn();
-		}else{
-			Debug.LogError("Received BLACK_END_TURN event but it's WHITE turn!");
-		}
-	}
 
 	public void PlayerLostPiece(Player.PlayerSide side, Piece.PieceType type){
 		int offset = side == Player.PlayerSide.WHITE ? 0 : 5;
@@ -277,20 +260,20 @@ public class GameManager : MonoBehaviour {
 		if(PiecesLostBySide[index] > 1){
 			UITextsPieceLost[index].text = "x"+PiecesLostBySide[index];
 		}
+		else{
+			UITextsPieceLost[index].text = "";
+		}
 	}
 
 	private void beginGame(){
-		// TODO: set up UI
-
+	 	actualTurn = Player.PlayerSide.WHITE;
 		gameRunning = true;
 		beginNewturn();
 	}
 
 	private void beginNewturn(){
-		// TODO: modify UI
-
-		//Debug.Log("new turn : " + actualTurn.ToString());
-		EventManager.TriggerEvent(actualTurn.ToString() + "_BEGIN_TURN");
+		whitePlayer.yourTurn(actualTurn == Player.PlayerSide.WHITE);
+		blackPlayer.yourTurn(actualTurn != Player.PlayerSide.WHITE);
 	}
 
 	private void initPlate(){

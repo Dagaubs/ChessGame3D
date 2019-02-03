@@ -181,7 +181,7 @@ public abstract class Piece : MonoBehaviour {
 				}					
 			}
 			else if(type == PieceType.PAWN && !killedPiecebool && actualCase != null){ // if we move in diagonal without killing anybody = prise en passant
-				Debug.Log("actual index % 8 : " + actualCase.GetIndex() % 8 + " | target index % 8 : " + targetCase.GetIndex() % 8);
+			//	Debug.Log("actual index % 8 : " + actualCase.GetIndex() % 8 + " | target index % 8 : " + targetCase.GetIndex() % 8);
 				if((actualCase.GetIndex() % 8) != (targetCase.GetIndex() % 8)){
 					Case PawnToKillCase = null;
 					if(player.getSide() == Player.PlayerSide.WHITE){  //prise en passant white

@@ -12,62 +12,38 @@ public class Player : MonoBehaviour {
 	[SerializeField]
 	private bool playersTurn = false;
 	public bool isPlaying(){ return playersTurn;}
+	public void yourTurn(bool canPlay){playersTurn = canPlay;}
 
 	private PlayerSide side;
 	public PlayerSide getSide(){return side;}
 	public string toString(){return side.ToString()+ "PLAYER";}
-	//private Camera mainCamera;
+	
 	[SerializeField]
 	private LayerMask layerMask;
 	public List<Piece> alivedPieces;
-	//public List<Piece> lostPieces;
 
 	private bool picked = false;
 	private Piece pickedPiece = null;
 
 	public void LoseThisPiece(Piece p){
-		if(alivedPieces.Contains(p) /*&& !lostPieces.Contains(p)*/){
+		if(alivedPieces.Contains(p)){
 			alivedPieces.Remove(p);
-			//lostPieces.Add(p);
-			//EventManager.TriggerEvent(toString()+"_LOST_PIECE");
 			GameManager.instance.PlayerLostPiece(side, p.getType());
 		}else{
-			Debug.LogError("Can't lose this piece : not in alivelist! " /* | is this in lostList ? => " + lostPieces.Contains(p)*/);
+			Debug.LogError("Can't lose this piece : not in alivelist! ");
 		}
 	}
 
 	public void Init(PlayerSide s,Transform pieces_holder){
 		side = s;
 		createPieces(pieces_holder);
-		//mainCamera = Camera.main; 
 		layerMask = LayerMask.GetMask("Piece", "Case");
-		startListenings();
 	}
 
 	public void RefreshAllPieces(){
 		foreach(Piece p in alivedPieces){
 			p.RefreshAccessible();
 		}
-	}
-
-	private void startListenings(){
-		//Debug.Log(side.ToString() + " starts listening");
-		EventManager.StartListening(side.ToString()+"_BEGIN_TURN", beginOfTurn);
-		EventManager.StartListening(side.ToString()+"_END_TURN", endOfTurn);
-	}
-
-	private void stopListenings(){
-		EventManager.StopListening(side.ToString()+"_BEGIN_TURN", beginOfTurn);
-		EventManager.StopListening(side.ToString()+"_END_TURN", endOfTurn);
-	}
-
-	private void beginOfTurn(){
-	//	Debug.Log(toString()+" : begin turn");
-		playersTurn = true;
-	}
-
-	private void endOfTurn(){
-		playersTurn = false;
 	}
 
 	void Update(){
@@ -92,9 +68,7 @@ public class Player : MonoBehaviour {
 								picked = false;
 								pickedPiece = null;
 								GameManager.instance.SaveNewMove(savedMove);
- 
-								//endOfTurn();
-							}else{
+ 							}else{
 								Debug.LogError("Move null : case " + hitCase.GetIndex() + " was not accessible!");
 							}
 						}
@@ -130,7 +104,6 @@ public class Player : MonoBehaviour {
 
 	private void createPieces(Transform pieces_holder){
 		alivedPieces = new List<Piece>();
-		//lostPieces = new List<Piece>();
 
 		Piece king = Instantiate(GameManager.instance.king, pieces_holder, false).GetComponent<Piece>();
 		king.Init(this);
@@ -175,6 +148,14 @@ public class Player : MonoBehaviour {
 			pawn.setIndex(pawn_index);
 			pawn.Init(this);
 			alivedPieces.Add(pawn);
+		}
+	}
+
+	public void DetroyAllPieces(){
+		foreach(Piece p in alivedPieces){
+			Case c = p.getActualCase();
+			c.LeavePiece();
+			Destroy(p.gameObject);
 		}
 	}
 }
