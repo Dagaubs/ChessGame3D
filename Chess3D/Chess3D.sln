@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chess3D", "Assembly-CSharp.csproj", "{EA0B9687-B9B9-0970-9E25-0E1C02D78036}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chess3D", "Assembly-CSharp-Editor.csproj", "{B59905E1-E7E9-DE48-7A1D-53E85A99601F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -13,6 +15,10 @@ Global
 		{EA0B9687-B9B9-0970-9E25-0E1C02D78036}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EA0B9687-B9B9-0970-9E25-0E1C02D78036}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EA0B9687-B9B9-0970-9E25-0E1C02D78036}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B59905E1-E7E9-DE48-7A1D-53E85A99601F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B59905E1-E7E9-DE48-7A1D-53E85A99601F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B59905E1-E7E9-DE48-7A1D-53E85A99601F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B59905E1-E7E9-DE48-7A1D-53E85A99601F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
