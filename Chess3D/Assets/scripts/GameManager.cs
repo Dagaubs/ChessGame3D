@@ -146,13 +146,12 @@ public class GameManager : MonoBehaviour {
 	public void SaveNewMove(Move m){
 		moves.Add(m);
 	//	Debug.Log(m.toString());
-		if(PieceThatIsChecking != null && m.getKilledPiece() != null && PieceThatIsChecking != m.getKilledPiece()){
+		if(PieceThatIsChecking != null && (m.getKilledPiece() == null || PieceThatIsChecking != m.getKilledPiece())){
 			if(PieceThatIsChecking.CheckForCheck()){ // if this move didn't prevent the king to be killed 
 				Debug.LogError("THIS MOVE SHOULD NOT HAVE BEEN POSSIBLE !");
 				return;
 			}else{
 				Player enemyPlayer = PieceThatIsChecking.GetPlayer().getSide() == Player.PlayerSide.WHITE ? blackPlayer : whitePlayer;
-		
 				PieceThatIsChecking = null;
 				// make everybody refresh their accessibles
 				
@@ -165,7 +164,9 @@ public class GameManager : MonoBehaviour {
 		Piece killedPiece = m.getKilledPiece();
 		if(killedPiece != null){ //If a Piece was destroyed by this move
 			killedPiece.GetEaten();
-
+			if(PieceThatIsChecking != null && killedPiece == PieceThatIsChecking){
+				PieceThatIsChecking = null;
+			}
 			//ANIMATION DE DEATH ?!
 
 			//Destroy(killedPiece.gameObject);
