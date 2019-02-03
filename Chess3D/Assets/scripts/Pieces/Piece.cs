@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public abstract class Piece : MonoBehaviour {
 
@@ -8,7 +9,10 @@ public abstract class Piece : MonoBehaviour {
 
 	protected PieceType type;
 	public PieceType getType(){return type;}
-	
+
+	[SerializeField]
+	private Image minimap_img;
+
 	[SerializeField]
 	protected GameObject meshs, death_cloud_prefab, smokepuff_prefab;
 	public void Hide(bool hide){
@@ -81,6 +85,8 @@ public abstract class Piece : MonoBehaviour {
 
 	public virtual void Init(Player p, Case targetCase = null){
 		player = p;
+		Color minimap_color = player.getSide() == Player.PlayerSide.WHITE ? Color.white : Color.black;
+		minimap_img.color = minimap_color;
 		if(targetCase == null){
 			targetCase = getInitialCase();
 		}
@@ -181,7 +187,7 @@ public abstract class Piece : MonoBehaviour {
 				}					
 			}
 			else if(type == PieceType.PAWN && !killedPiecebool && actualCase != null){ // if we move in diagonal without killing anybody = prise en passant
-			//	Debug.Log("actual index % 8 : " + actualCase.GetIndex() % 8 + " | target index % 8 : " + targetCase.GetIndex() % 8);
+				//Debug.Log("actual index % 8 : " + actualCase.GetIndex() % 8 + " | target index % 8 : " + targetCase.GetIndex() % 8);
 				if((actualCase.GetIndex() % 8) != (targetCase.GetIndex() % 8)){
 					Case PawnToKillCase = null;
 					if(player.getSide() == Player.PlayerSide.WHITE){  //prise en passant white
@@ -206,7 +212,6 @@ public abstract class Piece : MonoBehaviour {
 			}
 			Move ret;
 			if(killedPiecebool){
-				Debug.Log("killed someone");
 				ret = new Move(actualCase, targetCase, this, foundPiece);
 			}
 			else{
