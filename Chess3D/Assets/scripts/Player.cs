@@ -12,7 +12,6 @@ public class Player : MonoBehaviour {
 	[SerializeField]
 	private bool playersTurn = false;
 	public bool isPlaying(){ return playersTurn;}
-	public void yourTurn(bool canPlay){playersTurn = canPlay;}
 
 	private PlayerSide side;
 	public PlayerSide getSide(){return side;}
@@ -43,6 +42,19 @@ public class Player : MonoBehaviour {
 	public void RefreshAllPieces(){
 		foreach(Piece p in alivedPieces){
 			p.RefreshAccessible();
+		}
+	}
+
+	public void yourTurn(bool canPlay)
+	{
+		playersTurn = canPlay;
+		if(playersTurn){
+			foreach(Piece p in alivedPieces){
+				if(p.CanMove())
+					return;
+			}
+			// if no piece can Move : Checkmate
+			GameManager.instance.EndOfGame(side != PlayerSide.WHITE);
 		}
 	}
 

@@ -370,6 +370,10 @@ public abstract class Piece : MonoBehaviour {
 		yield return null;
 	}
 	*/
+	public virtual bool CanMove(){
+		return accessibleCases.Count > 0;
+	}
+
 	public void InstantiateDeathCloud(){
 		Instantiate(death_cloud_prefab, transform.position, Quaternion.Euler(90,0,0));
 	}

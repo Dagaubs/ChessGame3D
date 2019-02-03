@@ -130,10 +130,8 @@ public class GameManager : MonoBehaviour {
 		Player enemyPlayer = m.getMovedPiece().GetPlayer().getSide() == Player.PlayerSide.WHITE ? blackPlayer : whitePlayer;
 		foreach(Piece p in enemyPlayer.alivedPieces){
 			if(p.HasThisCaseInAccessiblesOrInfluence(m.getLeftCase()) || (usefulToTestJoinedCase && p.HasThisCaseInAccessiblesOrInfluence(m.getJoinedCase()))){
-			//	Debug.Log(p.toString() + " is checking for check !");
+				Debug.Log("Checking " + p.toString() + " for " + m.getMovedPiece().toString());
 				bool check = p.CheckForCheck();
-			//	if(check)
-			//		Debug.Log(p.toString() + " is PLACING ENEMY'S KING IN CHECK STATE IF DOING THIS MOVE!");
 				ret = ret || check;
 			}
 		}
@@ -172,31 +170,26 @@ public class GameManager : MonoBehaviour {
 
 		Piece movedPiece = m.getMovedPiece();
 		movedPiece.RefreshAccessible();
-	//	Debug.Log(movedPiece.toString() + " CHECK FOR CHECKSTATE AFTER MOVE");
+
 		bool check = movedPiece.CheckForCheck();
 		if(check){ // if enemy's king is checked : refresh all accessibles of its team
 
 			Player enemyPlayer = movedPiece.GetPlayer().getSide() == Player.PlayerSide.WHITE ? blackPlayer : whitePlayer;
-		//	Debug.Log("BEGIN Refreshing " + enemyPlayer.getSide().ToString() + " PLayer Pieces ! (" + enemyPlayer.alivedPieces.Count + ")");
 			foreach(Piece p in enemyPlayer.alivedPieces){
-		//		Debug.Log("REFRESHING " + p.toString());
 				p.RefreshAccessible();
 			}
-		//	Debug.Log("ENDED Refreshing " + enemyPlayer.getSide().ToString() + " PLayer Pieces !");
 		}else{
 		//	Debug.Log(movedPiece.toString() + " ENDS TURN WITHOUT SETTING OTHER KING IN CHECK MATE");
 		}
 		foreach(Piece p in whitePlayer.alivedPieces){
-			if(p.HasThisCaseInAccessiblesOrInfluence(m.getLeftCase()) || p.HasThisCaseInAccessiblesOrInfluence(m.getJoinedCase()))
+			if(p.HasThisCaseInAccessiblesOrInfluence(m.getLeftCase()) || p.HasThisCaseInAccessiblesOrInfluence(m.getJoinedCase()) || movedPiece.HasThisCaseInAccessiblesOrInfluence(p.getActualCase()))
 			{
-		//		Debug.Log(p.toString() + " Refresh its accessible after move !");
 				p.RefreshAccessible();
 			}
 		}
 		foreach(Piece p in blackPlayer.alivedPieces){
-			if(p.HasThisCaseInAccessiblesOrInfluence(m.getLeftCase()) || p.HasThisCaseInAccessiblesOrInfluence(m.getJoinedCase()))
+			if(p.HasThisCaseInAccessiblesOrInfluence(m.getLeftCase()) || p.HasThisCaseInAccessiblesOrInfluence(m.getJoinedCase()) || movedPiece.HasThisCaseInAccessiblesOrInfluence(p.getActualCase()))
 			{
-		//		Debug.Log(p.toString() + " Refresh its accessible after move !");
 				p.RefreshAccessible();
 			}
 		}
@@ -217,6 +210,8 @@ public class GameManager : MonoBehaviour {
 	}
 
 	public void EndOfGame(bool whiteWin){
+		whitePlayer.yourTurn(false);
+		blackPlayer.yourTurn(false);
 		string playerWin = whiteWin ? "White" : "Black";
 		EndOfGameText.text = "Player "+playerWin+" Win !";
 		EndOfGameCanvas.enabled = true;
