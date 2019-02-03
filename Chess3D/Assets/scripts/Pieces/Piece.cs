@@ -377,10 +377,6 @@ public abstract class Piece : MonoBehaviour {
 	public void DestroyGameObject(){
 		Destroy(gameObject);
 	}
-
-	public void DestroyPiece(){
-	}
-
 	public virtual void GetEaten(){
 		// leave piece
 		//actualCase.LeavePiece();

@@ -166,7 +166,7 @@ public class GameManager : MonoBehaviour {
 			}
 			//ANIMATION DE DEATH ?!
 
-			Destroy(killedPiece.gameObject);
+			//Destroy(killedPiece.gameObject);
 	
 		}
 
