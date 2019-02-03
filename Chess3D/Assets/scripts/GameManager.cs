@@ -155,6 +155,7 @@ public class GameManager : MonoBehaviour {
 			}else{
 				Player enemyPlayer = PieceThatIsChecking.GetPlayer().getSide() == Player.PlayerSide.WHITE ? blackPlayer : whitePlayer;
 				PieceThatIsChecking = null;
+			}
 		}
 		
 		Piece killedPiece = m.getKilledPiece();
