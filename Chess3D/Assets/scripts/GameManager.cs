@@ -102,7 +102,7 @@ public class GameManager : MonoBehaviour {
 
 	public bool SaveNewPotentialMove(PotentialMove m){
 		bool ret = false;
-	//	Debug.Log("Potential New Move : " + m.toString());
+		//	Debug.Log("Potential New Move : " + m.toString());
 		Piece killedPiece = m.getKilledPiece();
 
 		if(PieceThatIsChecking != null){
