@@ -475,7 +475,6 @@ public abstract class Piece : MonoBehaviour {
 			yield return new WaitForFixedUpdate();
 		}
 		_animator.SetFloat("Speed", 0f);
-		Debug.Log("triggering attack !");
 		transform.LookAt(enemyPieceAttacked.transform);
 		_animator.SetTrigger("Attack");
 	}

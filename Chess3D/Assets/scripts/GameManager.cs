@@ -115,7 +115,7 @@ public class GameManager : MonoBehaviour {
 		Piece killedPiece = m.getKilledPiece();
 
 		if(PieceThatIsChecking != null){
-			if(PieceThatIsChecking != m.getMovedPiece() && PieceThatIsChecking != m.getKilledPiece() && PieceThatIsChecking.CheckForCheck()){ // if this move didn't prevent the king to be killed
+			if(PieceThatIsChecking != m.getKilledPiece() && PieceThatIsChecking.CheckForCheck()){ // if this move didn't prevent the king to be killed
 		//		Debug.Log(PieceThatIsChecking.toString() + " is still checking the king, should not be possible");
 				m.ReverseMove();
 				return true;
@@ -135,7 +135,7 @@ public class GameManager : MonoBehaviour {
 		}
 		Player enemyPlayer = m.getMovedPiece().GetPlayer().getSide() == Player.PlayerSide.WHITE ? blackPlayer : whitePlayer;
 		foreach(Piece p in enemyPlayer.alivedPieces){
-			if(p.HasThisCaseInAccessiblesOrInfluence(m.getLeftCase()) || (usefulToTestJoinedCase && p.HasThisCaseInAccessiblesOrInfluence(m.getJoinedCase()))){
+			if(p != killedPiece && (p.HasThisCaseInAccessiblesOrInfluence(m.getLeftCase()) || (usefulToTestJoinedCase && p.HasThisCaseInAccessiblesOrInfluence(m.getJoinedCase())))){
 				bool check = p.CheckForCheck();
 				ret = ret || check;
 			}
@@ -156,7 +156,7 @@ public class GameManager : MonoBehaviour {
 				Debug.LogError("THIS MOVE SHOULD NOT HAVE POSSIBLE !");
 				return;
 			}else{
-				Player enemyPlayer = PieceThatIsChecking.GetPlayer().getSide() == Player.PlayerSide.WHITE ? blackPlayer : whitePlayer;
+				//Player enemyPlayer = PieceThatIsChecking.GetPlayer().getSide() == Player.PlayerSide.WHITE ? blackPlayer : whitePlayer;
 				PieceThatIsChecking = null;
 			}
 		}
@@ -166,6 +166,9 @@ public class GameManager : MonoBehaviour {
 			killedPiece.GetEaten();
 			if(PieceThatIsChecking != null && killedPiece == PieceThatIsChecking){
 				PieceThatIsChecking = null;
+				foreach(Piece p in m.getMovedPiece().GetPlayer().alivedPieces){
+					p.RefreshAccessible();
+				}
 			}
 			//ANIMATION DE DEATH ?!
 
