@@ -91,9 +91,7 @@ public class King : Piece {
 					for(int i = actualIndex+1; i<rookIndex; ++i){
 						Case foundCase = GameManager.instance.GetCaseWithIndex(i);
 						if(foundCase.isTaken() || !AddIfPotentialMove(foundCase)){
-							Debug.Log(foundCase.toString() + (foundCase.isTaken() ? " is taken !" : "could place you in check"));
 							isOk = false;
-							break;
 						}
 						influencingCases.Add(foundCase);
 					}
@@ -108,7 +106,6 @@ public class King : Piece {
 						Case foundCase = GameManager.instance.GetCaseWithIndex(i);
 						if(foundCase.isTaken() || !AddIfPotentialMove(foundCase)){
 							isOk = false;
-							break;
 						}
 						influencingCases.Add(foundCase);
 					}
