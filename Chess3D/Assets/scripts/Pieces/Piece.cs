@@ -717,7 +717,7 @@ public abstract class Piece : MonoBehaviour {
 
 		Case foundCase;
 		GameManager gameManager = GameManager.instance;
-		for(int index = actualIndex-9; index > 0; index=index-9){
+		for(int index = actualIndex-9; index >= 0; index=index-9){
 			foundCase = gameManager.GetCaseWithIndex(index);
 			if(foundCase.isTaken()){ //if there's another piece on the case
 				if(foundCase.GetStandingOnPiece().GetPlayer() == player){// if it's an ally
