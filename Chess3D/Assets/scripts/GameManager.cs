@@ -167,7 +167,7 @@ public class GameManager : MonoBehaviour {
 				Player enemyPlayer = PieceThatIsChecking.GetPlayer().getSide() == Player.PlayerSide.WHITE ? blackPlayer : whitePlayer;
 				enemyPlayer.GetKing().getActualCase().UnCheckCase();
 				PieceThatIsChecking = null;
-				foreach(Piece p in m.getMovedPiece().GetPlayer().alivedPieces){
+				foreach(Piece p in enemyPlayer.alivedPieces){
 					p.RefreshAccessible();
 				}
 			}
