@@ -30,6 +30,7 @@ public class GameManager : MonoBehaviour {
 	public GameObject	ChooseNewPiecePannel;
 
 	public Camera 		MainCamera,FirstPersonCamera;
+	public GameObject	FPSController;
 	public Canvas		EndOfGameCanvas;
 	public Text			EndOfGameText;
 
@@ -329,10 +330,9 @@ public class GameManager : MonoBehaviour {
 	}
 
 	void Update(){
-		bool FPS = MainCamera.gameObject.activeInHierarchy;
 		if(Input.GetKeyDown("space")){
-			MainCamera.gameObject.SetActive(!FPS);
-			FirstPersonCamera.gameObject.SetActive(FPS);
+			FPSController.GetComponent<UnityStandardAssets.Characters.FirstPerson.FirstPersonController>().ReleaseControle(FPSController.activeInHierarchy);
+			FPSController.SetActive(!FPSController.activeInHierarchy);
 		}
 	}
 }
