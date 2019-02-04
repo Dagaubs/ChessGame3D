@@ -330,6 +330,7 @@ public class GameManager : MonoBehaviour {
 		casePawnToQueen.LeavePiece();
 		piece.Init(player, casePawnToQueen);
 		player.alivedPieces.Add(piece);
+		piece.RefreshAccessible();
 		Instantiate(transform_circle, casePawnToQueen.GetStandingOnPieceTransform(), false);
 		_PawnToDestroy = null;
 

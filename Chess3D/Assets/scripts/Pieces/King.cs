@@ -14,13 +14,13 @@ public class King : Piece {
 		}
 	}
 	
-	public override Move GoTo(Case targetCase, bool isInitiate = false, bool isSpecialMove = false){
+	/*public override Move GoTo(Case targetCase, bool isInitiate = false, bool isSpecialMove = false){
 		Move ret = base.GoTo(targetCase, isInitiate, isSpecialMove);
 		if(!isInitiate){
 			_hasMoved = true;
 		}
 		return ret;
-	}
+	}*/
 
 	public override bool CheckForCheck(){
 		int actualIndex = actualCase.GetIndex();
@@ -91,6 +91,7 @@ public class King : Piece {
 					for(int i = actualIndex+1; i<rookIndex; ++i){
 						Case foundCase = GameManager.instance.GetCaseWithIndex(i);
 						if(foundCase.isTaken() || !AddIfPotentialMove(foundCase)){
+							Debug.Log(foundCase.toString() + (foundCase.isTaken() ? " is taken !" : "could place you in check"));
 							isOk = false;
 							break;
 						}
@@ -109,6 +110,7 @@ public class King : Piece {
 							isOk = false;
 							break;
 						}
+						influencingCases.Add(foundCase);
 					}
 					if(isOk){
 						Case castlingCase = GameManager.instance.GetCaseWithIndex(actualIndex-2);

@@ -1286,8 +1286,8 @@ MonoBehaviour:
   dark_case: {fileID: 1891681947616222, guid: e6f20b92b262948e4854b3620ce0684d, type: 2}
   transform_circle: {fileID: 1830315239477158, guid: 593974a0091744fdfaca20c947c723ed,
     type: 2}
-  whiteTimeText: {fileID: 1247928227}
-  blackTimeText: {fileID: 1938479709}
+  whiteTimeText: {fileID: 1938479709}
+  blackTimeText: {fileID: 1247928227}
   king: {fileID: 1509966098796768, guid: f022ef7ea6f434d8d85f1818292ba6c4, type: 2}
   queen: {fileID: 1087807835398320, guid: 7397d6965dc7b4cb2875dce55850e32a, type: 2}
   rook: {fileID: 1131746299785654, guid: be9221a68195f48699fdc23e91c5788f, type: 2}
@@ -4578,7 +4578,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+  m_Color: {r: 0.75, g: 0.7444853, b: 0.7444853, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:

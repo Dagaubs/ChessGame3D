@@ -172,17 +172,18 @@ public abstract class Piece : MonoBehaviour {
 
 				//Castling
 				if(type == PieceType.KING){
-					if(Mathf.Abs(targetCaseIndex - actualCaseIndex)==2){
+					int distance  = Mathf.Abs(targetCaseIndex - actualCaseIndex);
+					if(distance==2 || distance==3){
 						Piece rookForCastling = GetRookForCastling(actualCaseIndex, targetCaseIndex);
 						if(rookForCastling == null){
 							return null;
 						}
 						Case targetRookCase;
 						if(targetCaseIndex > actualCaseIndex){
-							targetRookCase = GameManager.instance.GetCaseWithIndex(actualCaseIndex+1);
+							targetRookCase = GameManager.instance.GetCaseWithIndex(targetCaseIndex-1);
 						}
 						else{
-							targetRookCase = GameManager.instance.GetCaseWithIndex(actualCaseIndex+1);
+							targetRookCase = GameManager.instance.GetCaseWithIndex(targetCaseIndex+1);
 						}
 						rookForCastling.GoTo(targetRookCase, false, true);
 					}					
@@ -230,6 +231,7 @@ public abstract class Piece : MonoBehaviour {
 				StartCoroutine(MoveTo(targetCase, foundPiece));
 				targetCase.ComeOnPiece(this);
 				actualCase = targetCase;
+				_hasMoved = true;
 			}
 			else{
 				Vector3 toDebug = targetCase.ComeOnPiece(this);
@@ -246,20 +248,10 @@ public abstract class Piece : MonoBehaviour {
 	private Piece GetRookForCastling(int actualIndex, int kingTargetCaseIndex){
 		int offsetFromKing;
 		if(actualIndex < kingTargetCaseIndex){
-			if(player.getSide() == Player.PlayerSide.WHITE){
-				offsetFromKing = 3;
-			}
-			else{
-				offsetFromKing =4;
-			}
+			offsetFromKing = 3;
 		}
 		else{
-			if(player.getSide() == Player.PlayerSide.WHITE){
-				offsetFromKing = -4;
-			}
-			else{
-				offsetFromKing =-3;
-			}
+			offsetFromKing = -4;
 		}
 
 		int rookCaseIndex = actualIndex + offsetFromKing;
