@@ -15,10 +15,11 @@ public class King : Piece {
 	}
 	
 	public override Move GoTo(Case targetCase, bool isInitiate = false, bool isSpecialMove = false){
-		base.GoTo(targetCase, isInitiate, isSpecialMove);
+		Move ret = base.GoTo(targetCase, isInitiate, isSpecialMove);
 		if(!isInitiate){
 			_hasMoved = true;
 		}
+		return ret;
 	}
 
 	public override bool CheckForCheck(){

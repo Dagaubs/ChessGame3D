@@ -61,10 +61,12 @@ public class Case : MonoBehaviour {
 	public Piece GetStandingOnPiece(){return standingOnPiece;}
 
 	[SerializeField]
-	private GameObject accessibleGo, accessibleTakenGo, selectedGo;
+	private GameObject accessibleGo, accessibleTakenGo, selectedGo, checkedGo;
 
-	public void LeavePiece(){
+	public void LeavePiece(bool isPotientialMove = false){
 		taken = false;
+		if(checkedGo.activeSelf && !isPotientialMove)
+			UnCheckCase();
 		standingOnPiece = null;
 	}
 
@@ -74,6 +76,16 @@ public class Case : MonoBehaviour {
 		Vector3 dir = Vector3.Normalize(b_Vector - a_Vector);
 		//Debug.Log("A : " + a_Vector + " | B : " + b_Vector + " | dir : " + dir);
 		return standingOnPiecePosition + dir * case_size;
+	}
+
+	public void CheckCase(){
+		Debug.Log("activation check");
+		checkedGo.SetActive(true);
+	}
+
+	public void UnCheckCase(){
+		Debug.Log("DEactivation check");
+		checkedGo.SetActive(false);
 	}
 
 	public Vector3 ComeOnPiece(Piece piece){

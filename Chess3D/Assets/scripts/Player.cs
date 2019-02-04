@@ -27,6 +27,9 @@ public class Player : MonoBehaviour {
 	private LayerMask layerMask;
 	public List<Piece> alivedPieces;
 
+	private King kingPiece;
+	public King GetKing(){return kingPiece;}
+
 	private bool picked = false;
 	private Piece pickedPiece = null;
 
@@ -81,6 +84,9 @@ public class Player : MonoBehaviour {
 		if(playersTurn){
 			timeInSec-= Time.deltaTime;
 			DisplayActualTime();
+			if(timeInSec <= 0){
+				GameManager.instance.EndOfGame(side == PlayerSide.BLACK);
+			}
 			if (Input.GetMouseButtonUp(0))
 			{
 				//Debug.Log(toString() + " : fire !");
@@ -140,6 +146,7 @@ public class Player : MonoBehaviour {
 
 		Piece king = Instantiate(GameManager.instance.king, pieces_holder, false).GetComponent<Piece>();
 		king.Init(this);
+		kingPiece = king as King;
 		alivedPieces.Add(king);
 
 		Piece queen = Instantiate(GameManager.instance.queen, pieces_holder, false).GetComponent<Piece>();

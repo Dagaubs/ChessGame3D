@@ -126,11 +126,9 @@ public class GameManager : MonoBehaviour {
 			if(killedPiece.getType() == Piece.PieceType.KING){
 		//		Debug.Log(m.getMovedPiece().toString() + " COULD END GAME BY KILLING ENEMY KING ");
 				PieceThatIsChecking = m.getMovedPiece();
+				Debug.Log("Alllô");
+				killedPiece.getActualCase().CheckCase();
 				ret = true;
-			}
-			else if(killedPiece == PieceThatIsChecking){
-		//		Debug.Log(m.getMovedPiece().toString() + " COULD KILL THE PIECE THAT IS CHECKING KING ");
-				usefulToTestJoinedCase = false;
 			}
 		}
 		Player enemyPlayer = m.getMovedPiece().GetPlayer().getSide() == Player.PlayerSide.WHITE ? blackPlayer : whitePlayer;
@@ -156,7 +154,8 @@ public class GameManager : MonoBehaviour {
 				Debug.LogError("THIS MOVE SHOULD NOT HAVE POSSIBLE !");
 				return;
 			}else{
-				//Player enemyPlayer = PieceThatIsChecking.GetPlayer().getSide() == Player.PlayerSide.WHITE ? blackPlayer : whitePlayer;
+				Player enemyPlayer = PieceThatIsChecking.GetPlayer().getSide() == Player.PlayerSide.WHITE ? blackPlayer : whitePlayer;
+				enemyPlayer.GetKing().getActualCase().UnCheckCase();
 				PieceThatIsChecking = null;
 			}
 		}
@@ -165,6 +164,8 @@ public class GameManager : MonoBehaviour {
 		if(killedPiece != null){ //If a Piece was destroyed by this move
 			killedPiece.GetEaten();
 			if(PieceThatIsChecking != null && killedPiece == PieceThatIsChecking){
+				Player enemyPlayer = PieceThatIsChecking.GetPlayer().getSide() == Player.PlayerSide.WHITE ? blackPlayer : whitePlayer;
+				enemyPlayer.GetKing().getActualCase().UnCheckCase();
 				PieceThatIsChecking = null;
 				foreach(Piece p in m.getMovedPiece().GetPlayer().alivedPieces){
 					p.RefreshAccessible();
