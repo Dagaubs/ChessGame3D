@@ -52,7 +52,6 @@ public class Knight : Piece {
 			if(upCase.isTaken()){ //if there's another piece on the case
 				if(upCase.GetStandingOnPiece().GetPlayer() != player){// if it's an enemy
 					if(AddIfPotentialMove(upCase)){
-						Debug.Log("Rook add " + upCase.toString());
 						ret.Add(upCase);
 					}
 				}else{// if it's an ally
@@ -60,7 +59,6 @@ public class Knight : Piece {
 				}
 			}
 			else if(AddIfPotentialMove(upCase)){
-				Debug.Log("Rook add " + upCase.toString());
 				ret.Add(upCase);
 			}
 		}
@@ -69,7 +67,6 @@ public class Knight : Piece {
 			if(leftCase.isTaken()){ //if there's another piece on the case
 				if(leftCase.GetStandingOnPiece().GetPlayer() != player){// if it's an enemy
 					if(AddIfPotentialMove(leftCase)){
-						Debug.Log("Rook add " + leftCase.toString());
 						ret.Add(leftCase);
 					}
 				}else{// if it's an ally
@@ -77,7 +74,6 @@ public class Knight : Piece {
 				}
 			}
 			else if(AddIfPotentialMove(leftCase)){
-				Debug.Log("Rook add " + leftCase.toString());
 				ret.Add(leftCase);
 			}
 		}
@@ -99,7 +95,6 @@ public class Knight : Piece {
 			if(upCase.isTaken()){ //if there's another piece on the case
 				if(upCase.GetStandingOnPiece().GetPlayer() != player){// if it's an enemy
 					if(AddIfPotentialMove(upCase)){
-						Debug.Log("Rook add " + upCase.toString());
 						ret.Add(upCase);
 					}
 				}else{// if it's an ally
@@ -107,7 +102,6 @@ public class Knight : Piece {
 				}
 			}
 			else if(AddIfPotentialMove(upCase)){
-				Debug.Log("Rook add " + upCase.toString());
 				ret.Add(upCase);
 			}
 		}
@@ -116,7 +110,6 @@ public class Knight : Piece {
 			if(rightCase.isTaken()){ //if there's another piece on the case
 				if(rightCase.GetStandingOnPiece().GetPlayer() != player){// if it's an enemy
 					if(AddIfPotentialMove(rightCase)){
-						Debug.Log("Rook add " + rightCase.toString());
 						ret.Add(rightCase);
 					}
 				}else{// if it's an ally
@@ -124,7 +117,6 @@ public class Knight : Piece {
 				}
 			}
 			else if(AddIfPotentialMove(rightCase)){
-				Debug.Log("Rook add " + rightCase.toString());
 				ret.Add(rightCase);
 			}
 		}
@@ -146,7 +138,6 @@ public class Knight : Piece {
 			if(downCase.isTaken()){ //if there's another piece on the case
 				if(downCase.GetStandingOnPiece().GetPlayer() != player){// if it's an enemy
 					if(AddIfPotentialMove(downCase)){
-						Debug.Log("Rook add " + downCase.toString());
 						ret.Add(downCase);
 					}
 				}else{// if it's an ally
@@ -154,7 +145,6 @@ public class Knight : Piece {
 				}
 			}
 			else if(AddIfPotentialMove(downCase)){
-				Debug.Log("Rook add " + downCase.toString());
 				ret.Add(downCase);
 			}
 		}
@@ -163,7 +153,6 @@ public class Knight : Piece {
 			if(rightCase.isTaken()){ //if there's another piece on the case
 				if(rightCase.GetStandingOnPiece().GetPlayer() != player){// if it's an enemy
 					if(AddIfPotentialMove(rightCase)){
-						Debug.Log("Rook add " + rightCase.toString());
 						ret.Add(rightCase);
 					}
 				}else{// if it's an ally
@@ -171,7 +160,6 @@ public class Knight : Piece {
 				}
 			}
 			else if(AddIfPotentialMove(rightCase)){
-				Debug.Log("Rook add " + rightCase.toString());
 				ret.Add(rightCase);
 			}
 		}
@@ -193,7 +181,6 @@ public class Knight : Piece {
 			if(downCase.isTaken()){ //if there's another piece on the case
 				if(downCase.GetStandingOnPiece().GetPlayer() != player){// if it's an enemy
 					if(AddIfPotentialMove(downCase)){
-						Debug.Log("Rook add " + downCase.toString());
 						ret.Add(downCase);
 					}
 				}else{// if it's an ally
@@ -201,7 +188,6 @@ public class Knight : Piece {
 				}
 			}
 			else if(AddIfPotentialMove(downCase)){
-				Debug.Log("Rook add " + downCase.toString());
 				ret.Add(downCase);
 			}
 		}
@@ -210,7 +196,6 @@ public class Knight : Piece {
 			if(leftCase.isTaken()){ //if there's another piece on the case
 				if(leftCase.GetStandingOnPiece().GetPlayer() != player){// if it's an enemy
 					if(AddIfPotentialMove(leftCase)){
-						Debug.Log("Rook add " + leftCase.toString());
 						ret.Add(leftCase);
 					}
 				}else{// if it's an ally
@@ -218,7 +203,6 @@ public class Knight : Piece {
 				}
 			}
 			else if(AddIfPotentialMove(leftCase)){
-				Debug.Log("Rook add " + leftCase.toString());
 				ret.Add(leftCase);
 			}
 		}
