@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class GameManager : MonoBehaviour {
 
 	[SerializeField]
-	private Transform plateTransform, pieces_holder, whiteLosses, blackLosses;
+	private Transform plateTransform, pieces_holder;
 
 	[SerializeField]
 	private GameObject light_case, dark_case, transform_circle;
@@ -35,7 +35,6 @@ public class GameManager : MonoBehaviour {
 
 	private int[]		PiecesLostBySide;
 	private Piece		_PawnToDestroy;
-
 
 	public Case GetCaseWithIndex(int index){
 		if(index < 0 || index >= 64){
@@ -330,9 +329,11 @@ public class GameManager : MonoBehaviour {
 
 	}
 
-	void Update(){/*
-		if(gameRunning){
-
-		}*/
+	void Update(){
+		bool FPS = MainCamera.gameObject.activeInHierarchy;
+		if(Input.GetKeyDown("space")){
+			MainCamera.gameObject.SetActive(!FPS);
+			FirstPersonCamera.gameObject.SetActive(FPS);
+		}
 	}
 }
