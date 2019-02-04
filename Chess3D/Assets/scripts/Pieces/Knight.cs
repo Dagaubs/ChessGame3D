@@ -51,27 +51,35 @@ public class Knight : Piece {
 			upCase = gameManager.GetCaseWithIndex(indexCorner + 8);
 			if(upCase.isTaken()){ //if there's another piece on the case
 				if(upCase.GetStandingOnPiece().GetPlayer() != player){// if it's an enemy
-					if(AddIfPotentialMove(upCase))
+					if(AddIfPotentialMove(upCase)){
+						Debug.Log("Rook add " + upCase.toString());
 						ret.Add(upCase);
+					}
 				}else{// if it's an ally
 					influencingCases.Add(upCase);
 				}
 			}
-			else if(AddIfPotentialMove(upCase))
+			else if(AddIfPotentialMove(upCase)){
+				Debug.Log("Rook add " + upCase.toString());
 				ret.Add(upCase);
+			}
 		}
 		if(indexCorner%8 != 0){ //if we are NOT on LEFT bounds
 			leftCase = gameManager.GetCaseWithIndex(indexCorner -1);
 			if(leftCase.isTaken()){ //if there's another piece on the case
 				if(leftCase.GetStandingOnPiece().GetPlayer() != player){// if it's an enemy
-					if(AddIfPotentialMove(leftCase))
+					if(AddIfPotentialMove(leftCase)){
+						Debug.Log("Rook add " + leftCase.toString());
 						ret.Add(leftCase);
+					}
 				}else{// if it's an ally
 					influencingCases.Add(leftCase);
 				}
 			}
-			else if(AddIfPotentialMove(leftCase))
+			else if(AddIfPotentialMove(leftCase)){
+				Debug.Log("Rook add " + leftCase.toString());
 				ret.Add(leftCase);
+			}
 		}
 		return ret;
 	}
@@ -90,27 +98,35 @@ public class Knight : Piece {
 			upCase = gameManager.GetCaseWithIndex(indexCorner + 8);
 			if(upCase.isTaken()){ //if there's another piece on the case
 				if(upCase.GetStandingOnPiece().GetPlayer() != player){// if it's an enemy
-					if(AddIfPotentialMove(upCase))
+					if(AddIfPotentialMove(upCase)){
+						Debug.Log("Rook add " + upCase.toString());
 						ret.Add(upCase);
+					}
 				}else{// if it's an ally
 					influencingCases.Add(upCase);
 				}
 			}
-			else if(AddIfPotentialMove(upCase))
+			else if(AddIfPotentialMove(upCase)){
+				Debug.Log("Rook add " + upCase.toString());
 				ret.Add(upCase);
+			}
 		}
 		if(indexCorner%8 != 7){ //if we are NOT on RIGHT bounds
 			rightCase = gameManager.GetCaseWithIndex(indexCorner +1);
 			if(rightCase.isTaken()){ //if there's another piece on the case
 				if(rightCase.GetStandingOnPiece().GetPlayer() != player){// if it's an enemy
-					if(AddIfPotentialMove(rightCase))
+					if(AddIfPotentialMove(rightCase)){
+						Debug.Log("Rook add " + rightCase.toString());
 						ret.Add(rightCase);
+					}
 				}else{// if it's an ally
 					influencingCases.Add(rightCase);
 				}
 			}
-			else if(AddIfPotentialMove(rightCase))
+			else if(AddIfPotentialMove(rightCase)){
+				Debug.Log("Rook add " + rightCase.toString());
 				ret.Add(rightCase);
+			}
 		}
 		return ret;
 	}
@@ -129,27 +145,35 @@ public class Knight : Piece {
 			downCase = gameManager.GetCaseWithIndex(indexCorner - 8);
 			if(downCase.isTaken()){ //if there's another piece on the case
 				if(downCase.GetStandingOnPiece().GetPlayer() != player){// if it's an enemy
-					if(AddIfPotentialMove(downCase))
+					if(AddIfPotentialMove(downCase)){
+						Debug.Log("Rook add " + downCase.toString());
 						ret.Add(downCase);
+					}
 				}else{// if it's an ally
 					influencingCases.Add(downCase);
 				}
 			}
-			else if(AddIfPotentialMove(downCase))
+			else if(AddIfPotentialMove(downCase)){
+				Debug.Log("Rook add " + downCase.toString());
 				ret.Add(downCase);
+			}
 		}
 		if(indexCorner%8 != 7){ //if we are NOT on RIGHT bounds
 			rightCase = gameManager.GetCaseWithIndex(indexCorner +1);
 			if(rightCase.isTaken()){ //if there's another piece on the case
 				if(rightCase.GetStandingOnPiece().GetPlayer() != player){// if it's an enemy
-					if(AddIfPotentialMove(rightCase))
+					if(AddIfPotentialMove(rightCase)){
+						Debug.Log("Rook add " + rightCase.toString());
 						ret.Add(rightCase);
+					}
 				}else{// if it's an ally
 					influencingCases.Add(rightCase);
 				}
 			}
-			else if(AddIfPotentialMove(rightCase))
+			else if(AddIfPotentialMove(rightCase)){
+				Debug.Log("Rook add " + rightCase.toString());
 				ret.Add(rightCase);
+			}
 		}
 		return ret;
 	}
@@ -168,27 +192,35 @@ public class Knight : Piece {
 			downCase = gameManager.GetCaseWithIndex(indexCorner - 8);
 			if(downCase.isTaken()){ //if there's another piece on the case
 				if(downCase.GetStandingOnPiece().GetPlayer() != player){// if it's an enemy
-					if(AddIfPotentialMove(downCase))
+					if(AddIfPotentialMove(downCase)){
+						Debug.Log("Rook add " + downCase.toString());
 						ret.Add(downCase);
+					}
 				}else{// if it's an ally
 					influencingCases.Add(downCase);
 				}
 			}
-			else if(AddIfPotentialMove(downCase))
+			else if(AddIfPotentialMove(downCase)){
+				Debug.Log("Rook add " + downCase.toString());
 				ret.Add(downCase);
+			}
 		}
-		if(indexCorner%8 != 7){ //if we are NOT on RIGHT bounds
+		if(indexCorner%8 != 0){ //if we are NOT on LEFT bounds
 			leftCase = gameManager.GetCaseWithIndex(indexCorner -1);
 			if(leftCase.isTaken()){ //if there's another piece on the case
 				if(leftCase.GetStandingOnPiece().GetPlayer() != player){// if it's an enemy
-					if(AddIfPotentialMove(leftCase))
+					if(AddIfPotentialMove(leftCase)){
+						Debug.Log("Rook add " + leftCase.toString());
 						ret.Add(leftCase);
+					}
 				}else{// if it's an ally
 					influencingCases.Add(leftCase);
 				}
 			}
-			else if(AddIfPotentialMove(leftCase))
+			else if(AddIfPotentialMove(leftCase)){
+				Debug.Log("Rook add " + leftCase.toString());
 				ret.Add(leftCase);
+			}
 		}
 		return ret;
 	}
