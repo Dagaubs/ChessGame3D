@@ -12,6 +12,9 @@ public class GameManager : MonoBehaviour {
 	[SerializeField]
 	private GameObject light_case, dark_case, transform_circle;
 
+	[SerializeField]
+	private Text whiteTimeText, blackTimeText;
+
 	public GameObject king, queen, rook, bishop, knight, pawn;
 
 	public Material whiteMaterial, blackMaterial;
@@ -22,6 +25,10 @@ public class GameManager : MonoBehaviour {
 
 	[SerializeField]
 	private float case_size = 1.3f;
+
+	public float gameTime = 900f; //15:00
+
+	public static float TimeToAdd = 10f;
 
 	private Case[] cases = null;
 
@@ -84,9 +91,9 @@ public class GameManager : MonoBehaviour {
         }
 		//create player and make them spawn pieces
 		whitePlayer = new GameObject("White player").AddComponent<Player>();
-		whitePlayer.Init(Player.PlayerSide.WHITE, pieces_holder);
+		whitePlayer.Init(Player.PlayerSide.WHITE, pieces_holder, gameTime, whiteTimeText);
 		blackPlayer = new GameObject("Black player").AddComponent<Player>();
-		blackPlayer.Init(Player.PlayerSide.BLACK, pieces_holder);
+		blackPlayer.Init(Player.PlayerSide.BLACK, pieces_holder, gameTime - TimeToAdd, blackTimeText);
 
 		//remove accesibility to all Cases
 		foreach(Case c in cases)

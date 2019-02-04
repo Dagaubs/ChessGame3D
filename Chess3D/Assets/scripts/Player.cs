@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour {
 
@@ -12,6 +13,11 @@ public class Player : MonoBehaviour {
 	[SerializeField]
 	private bool playersTurn = false;
 	public bool isPlaying(){ return playersTurn;}
+
+	[SerializeField]
+	private Text timeText;
+
+	private float timeInSec;
 
 	private PlayerSide side;
 	public PlayerSide getSide(){return side;}
@@ -33,10 +39,19 @@ public class Player : MonoBehaviour {
 		}
 	}
 
-	public void Init(PlayerSide s,Transform pieces_holder){
+	public void Init(PlayerSide s,Transform pieces_holder, float timeInSec, Text text){
 		side = s;
 		createPieces(pieces_holder);
+		this.timeInSec = timeInSec;
+		this.timeText = text;
+		DisplayActualTime();
 		layerMask = LayerMask.GetMask("Piece", "Case");
+	}
+
+	private void DisplayActualTime(){
+		int nbMinutes = (int)timeInSec / 60;
+		int nbSec = (int)timeInSec % 60;
+		timeText.text = (nbMinutes < 10 ? "0"+nbMinutes.ToString() : nbMinutes.ToString()) + ":" + (nbSec < 10 ? "0"+nbSec.ToString() : nbSec.ToString()); 
 	}
 
 	public void RefreshAllPieces(){
@@ -55,11 +70,17 @@ public class Player : MonoBehaviour {
 			}
 			// if no piece can Move : Checkmate
 			GameManager.instance.EndOfGame(side != PlayerSide.WHITE);
+		}else{
+			timeInSec += GameManager.TimeToAdd;
+			// todo anim show more time was given
+			DisplayActualTime();
 		}
 	}
 
 	void Update(){
 		if(playersTurn){
+			timeInSec-= Time.deltaTime;
+			DisplayActualTime();
 			if (Input.GetMouseButtonUp(0))
 			{
 				//Debug.Log(toString() + " : fire !");
