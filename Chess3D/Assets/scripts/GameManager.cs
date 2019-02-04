@@ -12,6 +12,9 @@ public class GameManager : MonoBehaviour {
 	[SerializeField]
 	private GameObject light_case, dark_case, transform_circle;
 
+	[SerializeField]
+	private Text whiteTimeText, blackTimeText;
+
 	public GameObject king, queen, rook, bishop, knight, pawn;
 
 	public Material whiteMaterial, blackMaterial;
@@ -22,6 +25,10 @@ public class GameManager : MonoBehaviour {
 
 	[SerializeField]
 	private float case_size = 1.3f;
+
+	public float gameTime = 900f; //15:00
+
+	public static float TimeToAdd = 10f;
 
 	private Case[] cases = null;
 
@@ -85,9 +92,9 @@ public class GameManager : MonoBehaviour {
         }
 		//create player and make them spawn pieces
 		whitePlayer = new GameObject("White player").AddComponent<Player>();
-		whitePlayer.Init(Player.PlayerSide.WHITE, pieces_holder);
+		whitePlayer.Init(Player.PlayerSide.WHITE, pieces_holder, gameTime, whiteTimeText);
 		blackPlayer = new GameObject("Black player").AddComponent<Player>();
-		blackPlayer.Init(Player.PlayerSide.BLACK, pieces_holder);
+		blackPlayer.Init(Player.PlayerSide.BLACK, pieces_holder, gameTime - TimeToAdd, blackTimeText);
 
 		//remove accesibility to all Cases
 		foreach(Case c in cases)
@@ -109,7 +116,7 @@ public class GameManager : MonoBehaviour {
 		Piece killedPiece = m.getKilledPiece();
 
 		if(PieceThatIsChecking != null){
-			if(PieceThatIsChecking != m.getMovedPiece() && PieceThatIsChecking != m.getKilledPiece() && PieceThatIsChecking.CheckForCheck()){ // if this move didn't prevent the king to be killed
+			if(PieceThatIsChecking != m.getKilledPiece() && PieceThatIsChecking.CheckForCheck()){ // if this move didn't prevent the king to be killed
 		//		Debug.Log(PieceThatIsChecking.toString() + " is still checking the king, should not be possible");
 				m.ReverseMove();
 				return true;
@@ -120,16 +127,14 @@ public class GameManager : MonoBehaviour {
 			if(killedPiece.getType() == Piece.PieceType.KING){
 		//		Debug.Log(m.getMovedPiece().toString() + " COULD END GAME BY KILLING ENEMY KING ");
 				PieceThatIsChecking = m.getMovedPiece();
+				Debug.Log("Alllô");
+				killedPiece.getActualCase().CheckCase();
 				ret = true;
-			}
-			else if(killedPiece == PieceThatIsChecking){
-		//		Debug.Log(m.getMovedPiece().toString() + " COULD KILL THE PIECE THAT IS CHECKING KING ");
-				usefulToTestJoinedCase = false;
 			}
 		}
 		Player enemyPlayer = m.getMovedPiece().GetPlayer().getSide() == Player.PlayerSide.WHITE ? blackPlayer : whitePlayer;
 		foreach(Piece p in enemyPlayer.alivedPieces){
-			if(p.HasThisCaseInAccessiblesOrInfluence(m.getLeftCase()) || (usefulToTestJoinedCase && p.HasThisCaseInAccessiblesOrInfluence(m.getJoinedCase()))){
+			if(p != killedPiece && (p.HasThisCaseInAccessiblesOrInfluence(m.getLeftCase()) || (usefulToTestJoinedCase && p.HasThisCaseInAccessiblesOrInfluence(m.getJoinedCase())))){
 				bool check = p.CheckForCheck();
 				ret = ret || check;
 			}
@@ -151,6 +156,7 @@ public class GameManager : MonoBehaviour {
 				return;
 			}else{
 				Player enemyPlayer = PieceThatIsChecking.GetPlayer().getSide() == Player.PlayerSide.WHITE ? blackPlayer : whitePlayer;
+				enemyPlayer.GetKing().getActualCase().UnCheckCase();
 				PieceThatIsChecking = null;
 			}
 		}
@@ -159,7 +165,12 @@ public class GameManager : MonoBehaviour {
 		if(killedPiece != null){ //If a Piece was destroyed by this move
 			killedPiece.GetEaten();
 			if(PieceThatIsChecking != null && killedPiece == PieceThatIsChecking){
+				Player enemyPlayer = PieceThatIsChecking.GetPlayer().getSide() == Player.PlayerSide.WHITE ? blackPlayer : whitePlayer;
+				enemyPlayer.GetKing().getActualCase().UnCheckCase();
 				PieceThatIsChecking = null;
+				foreach(Piece p in m.getMovedPiece().GetPlayer().alivedPieces){
+					p.RefreshAccessible();
+				}
 			}
 			//ANIMATION DE DEATH ?!
 

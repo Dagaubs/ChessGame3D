@@ -13,6 +13,14 @@ public class King : Piece {
 			return GameManager.instance.GetCaseWithIndex(60);
 		}
 	}
+	
+	public override Move GoTo(Case targetCase, bool isInitiate = false, bool isSpecialMove = false){
+		Move ret = base.GoTo(targetCase, isInitiate, isSpecialMove);
+		if(!isInitiate){
+			_hasMoved = true;
+		}
+		return ret;
+	}
 
 	public override bool CheckForCheck(){
 		int actualIndex = actualCase.GetIndex();

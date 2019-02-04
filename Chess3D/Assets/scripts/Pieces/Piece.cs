@@ -279,7 +279,7 @@ public abstract class Piece : MonoBehaviour {
 
 	public void ReversePotentiallyGoTo(Case leftCase, Case joinedCase, Piece killedPiece = null){			
 			if(actualCase != null){
-				actualCase.LeavePiece();
+				actualCase.LeavePiece(true);
 			}
 			if(killedPiece != null){ // if there was another piece on the joinedCase
 				joinedCase.ComeOnPiece(killedPiece);
@@ -319,7 +319,7 @@ public abstract class Piece : MonoBehaviour {
 			}
 
 			if(actualCase != null){
-				actualCase.LeavePiece();
+				actualCase.LeavePiece(true);
 			}
 			targetCase.setAccessibility(false);
 			//transform.localPosition = transform.parent.InverseTransformPoint(targetCase.ComeOnPiece(this));
@@ -475,7 +475,6 @@ public abstract class Piece : MonoBehaviour {
 			yield return new WaitForFixedUpdate();
 		}
 		_animator.SetFloat("Speed", 0f);
-		Debug.Log("triggering attack !");
 		transform.LookAt(enemyPieceAttacked.transform);
 		_animator.SetTrigger("Attack");
 	}
