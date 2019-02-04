@@ -120,6 +120,7 @@ public class Player : MonoBehaviour {
 								
 								picked = true;
 								pickedPiece = foundPiece;
+								foundPiece.RefreshAccessible();
 								foundPiece.Pick();
 							}
 						}
@@ -131,6 +132,7 @@ public class Player : MonoBehaviour {
 									
 								picked = true;
 								pickedPiece = foundPiece;
+								foundPiece.RefreshAccessible();
 								foundPiece.Pick();
 							}
 					}else{

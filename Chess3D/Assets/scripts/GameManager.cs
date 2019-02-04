@@ -122,7 +122,7 @@ public class GameManager : MonoBehaviour {
 				return true;
 			}
 		}
-		bool usefulToTestJoinedCase = true;
+
 		if(killedPiece){
 			if(killedPiece.getType() == Piece.PieceType.KING){
 		//		Debug.Log(m.getMovedPiece().toString() + " COULD END GAME BY KILLING ENEMY KING ");
@@ -133,7 +133,7 @@ public class GameManager : MonoBehaviour {
 		}
 		Player enemyPlayer = m.getMovedPiece().GetPlayer().getSide() == Player.PlayerSide.WHITE ? blackPlayer : whitePlayer;
 		foreach(Piece p in enemyPlayer.alivedPieces){
-			if(p != killedPiece && (p.HasThisCaseInAccessiblesOrInfluence(m.getLeftCase()) || (usefulToTestJoinedCase && p.HasThisCaseInAccessiblesOrInfluence(m.getJoinedCase())))){
+			if((killedPiece == null || p != killedPiece) && (p.HasThisCaseInAccessiblesOrInfluence(m.getLeftCase()) || p.HasThisCaseInAccessiblesOrInfluence(m.getJoinedCase()))){
 				bool check = p.CheckForCheck();
 				ret = ret || check;
 			}
