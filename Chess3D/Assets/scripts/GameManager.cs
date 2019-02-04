@@ -127,7 +127,6 @@ public class GameManager : MonoBehaviour {
 			if(killedPiece.getType() == Piece.PieceType.KING){
 		//		Debug.Log(m.getMovedPiece().toString() + " COULD END GAME BY KILLING ENEMY KING ");
 				PieceThatIsChecking = m.getMovedPiece();
-				Debug.Log("Alllô");
 				killedPiece.getActualCase().CheckCase();
 				ret = true;
 			}

@@ -79,12 +79,10 @@ public class Case : MonoBehaviour {
 	}
 
 	public void CheckCase(){
-		Debug.Log("activation check");
 		checkedGo.SetActive(true);
 	}
 
 	public void UnCheckCase(){
-		Debug.Log("DEactivation check");
 		checkedGo.SetActive(false);
 	}
 

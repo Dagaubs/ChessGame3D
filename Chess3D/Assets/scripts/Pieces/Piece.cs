@@ -166,50 +166,53 @@ public abstract class Piece : MonoBehaviour {
 				}
 			}
 
-			int targetCaseIndex = targetCase.GetIndex();
-			int actualCaseIndex =0;
+			if(!isInitiate){
+				int targetCaseIndex = targetCase.GetIndex();
+				int actualCaseIndex = actualCase.GetIndex();
 
-			//Castling
-			if(type == PieceType.KING){
-				if(Mathf.Abs(targetCaseIndex - actualCaseIndex)==2){
-					Piece rookForCastling = GetRookForCastling(actualCaseIndex, targetCaseIndex);
-					if(rookForCastling == null){
-						return null;
-					}
-					Case targetRookCase;
-					if(targetCaseIndex > actualCaseIndex){
-						targetRookCase = GameManager.instance.GetCaseWithIndex(actualCaseIndex+1);
-					}
-					else{
-						targetRookCase = GameManager.instance.GetCaseWithIndex(actualCaseIndex+1);
-					}
-					rookForCastling.GoTo(targetRookCase, false, true);
-				}					
-			}
-			else if(type == PieceType.PAWN && !killedPiecebool && actualCase != null){ // if we move in diagonal without killing anybody = prise en passant
-				//Debug.Log("actual index % 8 : " + actualCase.GetIndex() % 8 + " | target index % 8 : " + targetCase.GetIndex() % 8);
-				if((actualCase.GetIndex() % 8) != (targetCase.GetIndex() % 8)){
-					Case PawnToKillCase = null;
-					if(player.getSide() == Player.PlayerSide.WHITE){  //prise en passant white
-						PawnToKillCase = GameManager.instance.GetCaseWithIndex(targetCaseIndex-8);
-					}
-					else{//prise en passant black
-						PawnToKillCase = GameManager.instance.GetCaseWithIndex(targetCaseIndex+8);
-					}
-					if(PawnToKillCase != null){
-						killedPiecebool = true;
-						foundPiece = PawnToKillCase.GetStandingOnPiece();
-						if(foundPiece == null){
-							Debug.LogError("there is no piece here");
+				//Castling
+				if(type == PieceType.KING){
+					if(Mathf.Abs(targetCaseIndex - actualCaseIndex)==2){
+						Piece rookForCastling = GetRookForCastling(actualCaseIndex, targetCaseIndex);
+						if(rookForCastling == null){
+							return null;
 						}
-						else if(foundPiece.getType() != PieceType.PAWN){
-							Debug.LogError("this is not a Pawn");
+						Case targetRookCase;
+						if(targetCaseIndex > actualCaseIndex){
+							targetRookCase = GameManager.instance.GetCaseWithIndex(actualCaseIndex+1);
 						}
-					}else{
-						Debug.LogError("PawnToKillCase is null");
+						else{
+							targetRookCase = GameManager.instance.GetCaseWithIndex(actualCaseIndex+1);
+						}
+						rookForCastling.GoTo(targetRookCase, false, true);
+					}					
+				}
+				else if(type == PieceType.PAWN && !killedPiecebool && actualCase != null){ // if we move in diagonal without killing anybody = prise en passant
+					//Debug.Log("actual index % 8 : " + actualCase.GetIndex() % 8 + " | target index % 8 : " + targetCase.GetIndex() % 8);
+					if((actualCase.GetIndex() % 8) != (targetCase.GetIndex() % 8)){
+						Case PawnToKillCase = null;
+						if(player.getSide() == Player.PlayerSide.WHITE){  //prise en passant white
+							PawnToKillCase = GameManager.instance.GetCaseWithIndex(targetCaseIndex-8);
+						}
+						else{//prise en passant black
+							PawnToKillCase = GameManager.instance.GetCaseWithIndex(targetCaseIndex+8);
+						}
+						if(PawnToKillCase != null){
+							killedPiecebool = true;
+							foundPiece = PawnToKillCase.GetStandingOnPiece();
+							if(foundPiece == null){
+								Debug.LogError("there is no piece here");
+							}
+							else if(foundPiece.getType() != PieceType.PAWN){
+								Debug.LogError("this is not a Pawn");
+							}
+						}else{
+							Debug.LogError("PawnToKillCase is null");
+						}
 					}
 				}
 			}
+			
 			Move ret;
 			if(killedPiecebool){
 				ret = new Move(actualCase, targetCase, this, foundPiece);
