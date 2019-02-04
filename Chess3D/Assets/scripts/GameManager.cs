@@ -129,7 +129,6 @@ public class GameManager : MonoBehaviour {
 		Player enemyPlayer = m.getMovedPiece().GetPlayer().getSide() == Player.PlayerSide.WHITE ? blackPlayer : whitePlayer;
 		foreach(Piece p in enemyPlayer.alivedPieces){
 			if(p.HasThisCaseInAccessiblesOrInfluence(m.getLeftCase()) || (usefulToTestJoinedCase && p.HasThisCaseInAccessiblesOrInfluence(m.getJoinedCase()))){
-				Debug.Log("Checking " + p.toString() + " for " + m.getMovedPiece().toString());
 				bool check = p.CheckForCheck();
 				ret = ret || check;
 			}
