@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -33,10 +34,12 @@ public class Player : MonoBehaviour {
 	private bool picked = false;
 	private Piece pickedPiece = null;
 
-	public void LoseThisPiece(Piece p){
-		if(alivedPieces.Contains(p)){
-			alivedPieces.Remove(p);
-			GameManager.instance.PlayerLostPiece(side, p.getType());
+	public void LoseThisPiece(Piece piece){
+		if(alivedPieces.Contains(piece))
+        {
+            GameManager.AddPointsForKillOf(piece);
+            alivedPieces.Remove(piece);
+			GameManager.instance.PlayerLostPiece(side, piece.getType());
 		}else{
 			Debug.LogError("Can't lose this piece : not in alivelist! ");
 		}
@@ -80,8 +83,9 @@ public class Player : MonoBehaviour {
 		}
 	}
 
+
 	void Update(){
-		if(playersTurn){
+		if(playersTurn && GameManager.ActualState == GameManager.STATE.RUNNING){
 			timeInSec-= Time.deltaTime;
 			DisplayActualTime();
 			if(timeInSec <= 0){
@@ -136,14 +140,23 @@ public class Player : MonoBehaviour {
 								foundPiece.Pick();
 							}
 					}else{
-						Debug.LogError("You shouldn't be able to hit that : " + hit.collider.gameObject + " | layer : " + LayerMask.LayerToName(hit.collider.gameObject.layer));
+						//Debug.LogError("You shouldn't be able to hit that : " + hit.collider.gameObject + " | layer : " + LayerMask.LayerToName(hit.collider.gameObject.layer));
 					}
 				}
 			}
 		}
 	}
 
-	private void createPieces(Transform pieces_holder){
+
+    public void SpawnPieceOn(Piece.PieceType type, Case joinedCase)
+    {
+        GameObject prefab = GameManager.GetPrefab(type);
+        Piece newPiece = Instantiate(prefab, GameManager.PieceHolder, false).GetComponent<Piece>();
+        newPiece.Init(this, joinedCase);
+        alivedPieces.Add(newPiece);
+    }
+
+    private void createPieces(Transform pieces_holder){
 		alivedPieces = new List<Piece>();
 
 		Piece king = Instantiate(GameManager.instance.king, pieces_holder, false).GetComponent<Piece>();
@@ -200,4 +213,17 @@ public class Player : MonoBehaviour {
 			Destroy(p.gameObject);
 		}
 	}
+
+    public void PieceResurected(Piece piece)
+    {
+        if (!alivedPieces.Contains(piece))
+        {
+            alivedPieces.Add(piece);
+            GameManager.RemovePointsForKillOf(piece);
+        }
+        else
+        {
+            Debug.LogError(piece.toString() + " is already in alived Pieces ! ");
+        }
+    }
 }

@@ -12,7 +12,17 @@ public class Move {
 	public Piece getMovedPiece(){return movedPiece;}
 	public Piece getKilledPiece(){return killedPiece;}
 
-	public Move(Case leftCase, Case joinedCase, Piece movedPiece, Piece killedPiece = null){
+    public virtual void ReverseMove(bool fromReverse)
+    {
+        movedPiece.ReverseGoTo(fromReverse, leftCase, joinedCase, killedPiece);
+    }
+
+    public virtual void ApplyMove()
+    {
+        movedPiece.GoTo(joinedCase, true, true);
+    }
+
+    public Move(Case leftCase, Case joinedCase, Piece movedPiece, Piece killedPiece = null){
 		this.leftCase = leftCase;
 		this.joinedCase = joinedCase;
 		this.movedPiece = movedPiece;

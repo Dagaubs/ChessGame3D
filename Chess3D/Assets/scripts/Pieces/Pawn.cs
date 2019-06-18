@@ -268,11 +268,12 @@ public class Pawn : Piece {
 		return false;
 	}
 
-	void Awake(){
-		type = PieceType.PAWN;
-	}
+    public override PieceType getType()
+    {
+        return PieceType.PAWN;
+    }
 
-	/*protected override IEnumerator ShortRangeAttack(Case targetCase){
+    /*protected override IEnumerator ShortRangeAttack(Case targetCase){
 		transform.LookAt(targetCase.GetStandingOnPieceTransform());
 
 		Vector3 targetMovePosition = targetCase.GetAttackPosition(this);

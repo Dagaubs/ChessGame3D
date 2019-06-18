@@ -4,7 +4,11 @@ using UnityEngine;
 
 public class Knight : Piece {
 
-	public override string toString(){return player.getSide().ToString() + " KNIGHT (" + piece_type_index + ")";}
+    public override PieceType getType()
+    {
+        return PieceType.KNIGHT;
+    }
+    public override string toString(){return player.getSide().ToString() + " KNIGHT (" + piece_type_index + ")";}
 
 	protected override Case getInitialCase(){
 		if(player.getSide() == Player.PlayerSide.WHITE){ //white
@@ -335,10 +339,6 @@ public class Knight : Piece {
 			}
 		}
 		return false;
-	}
-
-	void Awake(){
-		type = PieceType.KNIGHT;
 	}
 /*
 	protected override IEnumerator ShortRangeAttack(Case targetCase){

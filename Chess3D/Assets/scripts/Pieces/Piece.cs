@@ -6,18 +6,25 @@ using UnityEngine.UI;
 public abstract class Piece : MonoBehaviour {
 
 	public enum PieceType{KING, QUEEN, BISHOP, KNIGHT, ROOK, PAWN}
-
-	protected PieceType type;
-	public PieceType getType(){return type;}
+    
+    public abstract PieceType getType();
 
 	[SerializeField]
 	private Image minimap_img;
+
+    public Image Icon
+    {
+        get { return minimap_img; }
+        private set { }
+    }
 
 	[SerializeField]
 	protected GameObject meshs, death_cloud_prefab, smokepuff_prefab;
 	public void Hide(bool hide){
 		meshs.SetActive(!hide);
 	}
+
+    protected bool animationStopped = false;
 
 	protected Case actualCase;
 	public Case getActualCase(){return actualCase;}
@@ -31,7 +38,7 @@ public abstract class Piece : MonoBehaviour {
 	[SerializeField]
 	private bool show = false;
 	private bool saveShow = false;
-	protected bool _attacking;
+	protected bool _attacking, _moving;
 
 	void Update(){
 		if(show != saveShow){
@@ -171,7 +178,7 @@ public abstract class Piece : MonoBehaviour {
 				int actualCaseIndex = actualCase.GetIndex();
 
 				//Castling
-				if(type == PieceType.KING){
+				if(getType() == PieceType.KING){
 					int distance  = Mathf.Abs(targetCaseIndex - actualCaseIndex);
 					if(distance==2 || distance==3){
 						Piece rookForCastling = GetRookForCastling(actualCaseIndex, targetCaseIndex);
@@ -188,7 +195,7 @@ public abstract class Piece : MonoBehaviour {
 						rookForCastling.GoTo(targetRookCase, false, true);
 					}					
 				}
-				else if(type == PieceType.PAWN && !killedPiecebool && actualCase != null){ // if we move in diagonal without killing anybody = prise en passant
+				else if(getType() == PieceType.PAWN && !killedPiecebool && actualCase != null){ // if we move in diagonal without killing anybody = prise en passant
 					//Debug.Log("actual index % 8 : " + actualCase.GetIndex() % 8 + " | target index % 8 : " + targetCase.GetIndex() % 8);
 					if((actualCase.GetIndex() % 8) != (targetCase.GetIndex() % 8)){
 						Case PawnToKillCase = null;
@@ -234,18 +241,51 @@ public abstract class Piece : MonoBehaviour {
 				_hasMoved = true;
 			}
 			else{
+                if (_attacking || _moving)
+                {
+                    animationStopped = true;
+                    StopAllCoroutines();
+                }
 				Vector3 toDebug = targetCase.ComeOnPiece(this);
 				transform.localPosition = transform.parent.InverseTransformPoint(toDebug);
 				actualCase = targetCase;
+                if (killedPiecebool)
+                {
+                    foundPiece.DestroyGameObject();
+                }
 			}
 				
 			//LookForAccessibleCases();
 			return ret;
 		}
+        Debug.LogError("You can't go on this case !");
 		return null;
 	}
 
-	private Piece GetRookForCastling(int actualIndex, int kingTargetCaseIndex){
+    public void ReverseGoTo(bool fromReverse, Case leftCase, Case joinedCase, Piece killedPiece = null)
+    {
+        if (_moving || _attacking)
+        {
+            animationStopped = true;
+            //StopAllCoroutines();
+        }
+        if (actualCase != null)
+        {
+            actualCase.LeavePiece(true);
+        }
+        if (killedPiece != null)
+        { // if there was another piece on the joinedCase
+            //killedPiece.player.SpawnPieceOn(killedPiece.getType(), joinedCase);
+            //killedPiece.transform.position = joinedCase.ComeOnPiece(killedPiece);
+            //joinedCase.setAccessibility(false);
+            killedPiece.Revive(fromReverse);
+        }
+        //transform.localPosition = transform.parent.InverseTransformPoint(targetCase.ComeOnPiece(this));
+        transform.position = leftCase.ComeOnPiece(this);
+        actualCase = leftCase;
+    }
+
+    private Piece GetRookForCastling(int actualIndex, int kingTargetCaseIndex){
 		int offsetFromKing;
 		if(actualIndex < kingTargetCaseIndex){
 			offsetFromKing = 3;
@@ -327,6 +367,7 @@ public abstract class Piece : MonoBehaviour {
 	}
 
 	public virtual void TriggerDeathAnimOfEnemy(string boolstring){
+        if (animationStopped) return;
 		if(enemyPieceAttacked != null){
 			if(enemyPieceAttacked.IsSameSideAs(this)){
 				Debug.LogError("Can't kill a piece that is in the same team !");
@@ -374,14 +415,34 @@ public abstract class Piece : MonoBehaviour {
 	}
 
 	public void DestroyGameObject(){
-		Destroy(gameObject);
-	}
+        gameObject.SetActive(false);
+        /*if (JustHide)
+        {
+            _animator.Play("Idle");
+            transform.localPosition = GameManager.Cimetery;
+        } else
+        { */
+            //Destroy(gameObject);
+        //}
+    }
+
+    public void Revive(bool FromReverse)
+    {
+        gameObject.SetActive(true);
+        _animator.Play("Idle");
+        transform.position = actualCase.ComeOnPiece(this);
+        if (FromReverse)
+        {
+            player.PieceResurected(this);
+        }
+    }
+
 	public virtual void GetEaten(){
 		// leave piece
 		//actualCase.LeavePiece();
 		dead = true;
-		// inform player and GameManager
-		player.LoseThisPiece(this);
+        // inform player and GameManager
+        player.LoseThisPiece(this);
 	}
 
 	protected bool AddIfPotentialMove(Case foundCase){
@@ -407,7 +468,7 @@ public abstract class Piece : MonoBehaviour {
 		_attacking = false;
 		//Piece enemyPiece = targetCase.GetStandingOnPiece();
 		Vector3 targetMovePosition = transform.parent.InverseTransformPoint(targetCase.ComeOnPiece(this));
-		if(enemyPiece != null) // if you have to kill a piece
+		if(enemyPiece != null && !animationStopped) // if you have to kill a piece
 		{
 			_attacking = true;
 			StartCoroutine(Attack(targetCase, enemyPiece));
@@ -416,33 +477,47 @@ public abstract class Piece : MonoBehaviour {
 		while(_attacking) //Wait in case of Attack animation
 			yield return new WaitForFixedUpdate();
 
-		// Rotate character to make him look at the target Case
-		transform.LookAt(targetCase.GetStandingOnPieceTransform());
+        if (!animationStopped)
+        {
+            _moving = true;
+            // Rotate character to make him look at the target Case
+            transform.LookAt(targetCase.GetStandingOnPieceTransform());
 
-		Vector3 velocity = new Vector3();
-		float actualSpeed = 0f;
-		// Move To targetMovePosition
-		while(Vector3.Distance(targetMovePosition, transform.position) > 0.1f){
+            Vector3 velocity = new Vector3();
+            float actualSpeed = 0f;
+            // Move To targetMovePosition
+            while (Vector3.Distance(targetMovePosition, transform.position) > 0.1f && !animationStopped)
+            {
 
-			if(Vector3.Distance(targetMovePosition, transform.position) < 1f && actualSpeed > 2f)
-				actualSpeed -= acceleration * Time.deltaTime;
-			else
-				actualSpeed += acceleration * Time.deltaTime;
-			actualSpeed = actualSpeed > maxSpeed ? maxSpeed : actualSpeed;
-			_animator.SetFloat("Speed", actualSpeed);
-			velocity = Vector3.forward * actualSpeed;
-			transform.Translate(velocity * Time.deltaTime);
-			if(Vector3.Distance(Vector3.Normalize(targetMovePosition - transform.position), transform.forward) > 0.1f){
-				//Debug.Log("Should be passed : " + Vector3.Normalize(targetMovePosition - transform.position) + " | forward : " + transform.forward);
-				_animator.SetFloat("Speed", 0f);
-				transform.position = targetMovePosition;
-			}
-			yield return new WaitForFixedUpdate();
-		}
-		transform.localPosition = targetMovePosition;
-		transform.localEulerAngles = defaultEulerAngle;
-		_animator.SetFloat("Speed", 0f);
-		yield return null;	
+                if (Vector3.Distance(targetMovePosition, transform.position) < 1f && actualSpeed > 2f)
+                    actualSpeed -= acceleration * Time.deltaTime;
+                else
+                    actualSpeed += acceleration * Time.deltaTime;
+                actualSpeed = actualSpeed > maxSpeed ? maxSpeed : actualSpeed;
+                _animator.SetFloat("Speed", actualSpeed);
+                velocity = Vector3.forward * actualSpeed;
+                transform.Translate(velocity * Time.deltaTime);
+                if (Vector3.Distance(Vector3.Normalize(targetMovePosition - transform.position), transform.forward) > 0.1f)
+                {
+                    //Debug.Log("Should be passed : " + Vector3.Normalize(targetMovePosition - transform.position) + " | forward : " + transform.forward);
+                    _animator.SetFloat("Speed", 0f);
+                    transform.position = targetMovePosition;
+                }
+                yield return new WaitForFixedUpdate();
+            }
+            if (!animationStopped)
+            {
+                transform.localPosition = targetMovePosition;
+            } else
+            {
+                Debug.Log("STOPPING Moving Coroutines");
+                animationStopped = false;
+            }
+        }
+        _animator.SetFloat("Speed", 0f);
+        transform.localEulerAngles = defaultEulerAngle;
+        _moving = false;
+        yield return null;	
 	}
 
 	protected virtual IEnumerator ShortRangeAttack(Case targetCase){
@@ -452,7 +527,7 @@ public abstract class Piece : MonoBehaviour {
 		Vector3 velocity = new Vector3();
 		float actualSpeed = 0f;
 		// Move To targetMovePosition
-		while(Vector3.Distance(targetMovePosition, transform.position) > 0.1f){
+		while(Vector3.Distance(targetMovePosition, transform.position) > 0.1f && !animationStopped){
 
 			if(Vector3.Distance(targetMovePosition, transform.position) < 1f && actualSpeed > 2f)
 				actualSpeed -= acceleration * Time.deltaTime;
@@ -469,9 +544,17 @@ public abstract class Piece : MonoBehaviour {
 			}
 			yield return new WaitForFixedUpdate();
 		}
-		_animator.SetFloat("Speed", 0f);
-		transform.LookAt(enemyPieceAttacked.transform);
-		_animator.SetTrigger("Attack");
+        if (!animationStopped)
+        {
+            Debug.Log("FINISHING Attack Coroutines");
+            _animator.SetFloat("Speed", 0f);
+            transform.LookAt(enemyPieceAttacked.transform);
+            _animator.SetTrigger("Attack");
+        } else
+        {
+            Debug.Log("STOPPING Attack Coroutines");
+            animationStopped = false;
+        }
 	}
 	protected virtual IEnumerator LongRangeAttack(Case targetCase){
 		StartCoroutine(ShortRangeAttack(targetCase));
@@ -481,10 +564,10 @@ public abstract class Piece : MonoBehaviour {
 	protected IEnumerator Attack(Case targetCase, Piece enemyPiece){
 		Vector3 targetAttackPosition = targetCase.GetAttackPosition(this);
 		enemyPieceAttacked = enemyPiece;
-		if(Vector3.Distance(transform.localPosition, targetAttackPosition) > maxDistanceForShortAttack){ //Long Range Attack
+		if(Vector3.Distance(transform.localPosition, targetAttackPosition) > maxDistanceForShortAttack && ! animationStopped){ //Long Range Attack
 			StartCoroutine(LongRangeAttack(targetCase));
 		}
-		else // Short Range Attack
+		else if (!animationStopped)// Short Range Attack
 		{
 			StartCoroutine(ShortRangeAttack(targetCase));
 		}

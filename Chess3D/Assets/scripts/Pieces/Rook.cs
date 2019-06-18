@@ -48,19 +48,22 @@ public class Rook : Piece {
 		accessibleCases = retUp;
 	}
 
-	void Awake(){
-		type = PieceType.ROOK;
-	}
+    public override PieceType getType()
+    {
+        return PieceType.ROOK;
+    }
 
-	protected override IEnumerator ShortRangeAttack(Case targetCase){
+    protected override IEnumerator ShortRangeAttack(Case targetCase){
 		transform.LookAt(targetCase.GetStandingOnPieceTransform());
-
 		Vector3 targetMovePosition = targetCase.GetAttackPosition(this);
 		Vector3 velocity = new Vector3();
 		float actualSpeed = 0f;
-		_animator.SetTrigger("Attack");
+        if (!animationStopped)
+        {
+            _animator.SetTrigger("Attack");
+        }
 		// Move To targetMovePosition
-		while(Vector3.Distance(targetMovePosition, transform.position) > 0.1f){
+		while(Vector3.Distance(targetMovePosition, transform.position) > 0.1f && !animationStopped){
 
 			if(Vector3.Distance(targetMovePosition, transform.position) < 1f && actualSpeed > 2f)
 				actualSpeed -= acceleration * Time.deltaTime;
@@ -77,9 +80,10 @@ public class Rook : Piece {
 			}
 			yield return new WaitForFixedUpdate();
 		}
-		Debug.Log("Triggering Attack !");
-		//_animator.SetFloat("Speed", 0f);
-		_animator.SetTrigger("AttackHit");
+        if (!animationStopped)
+        {
+            _animator.SetTrigger("AttackHit");
+        }
 		yield return null;
 	}
 

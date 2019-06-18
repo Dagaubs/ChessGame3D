@@ -7,7 +7,12 @@ public class Bishop : Piece {
 	[SerializeField]
 	private GameObject electricBold_prefab, thunderBold_prefab;
 
-	protected override Case getInitialCase(){
+    public override PieceType getType()
+    {
+        return PieceType.BISHOP;
+    }
+
+    protected override Case getInitialCase(){
 		if(player.getSide() == Player.PlayerSide.WHITE){ //white
 			if(piece_type_index == 1)
 				return GameManager.instance.GetCaseWithIndex(2);
@@ -72,14 +77,14 @@ public class Bishop : Piece {
 
 	protected override IEnumerator LongRangeAttack(Case targetCase)
 	{
-		transform.LookAt(enemyPieceAttacked.transform);
-		_animator.SetTrigger("LongRangeAttack");
+        if (!animationStopped)
+        {
+            transform.LookAt(enemyPieceAttacked.transform);
+            _animator.SetTrigger("LongRangeAttack");
+        }
 		yield return null;
 	}
 
 	public override string toString(){return player.getSide().ToString() + " BISHOP (" + piece_type_index + ")";}
-
-	void Awake(){
-		type = PieceType.BISHOP;
-	}
+    
 }

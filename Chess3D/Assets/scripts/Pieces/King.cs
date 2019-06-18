@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -122,8 +123,9 @@ public class King : Piece {
 		return castlingCases;
 	}
 
-	void Awake(){
-		type = PieceType.KING;
+    public override PieceType getType()
+    {
+        return PieceType.KING;
 	}
 /*
 	protected override IEnumerator ShortRangeAttack(Case targetCase){

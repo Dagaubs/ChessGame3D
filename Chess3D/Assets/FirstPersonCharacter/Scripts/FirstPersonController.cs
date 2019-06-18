@@ -11,6 +11,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
     public class FirstPersonController : MonoBehaviour
     {
         [SerializeField] private bool m_IsWalking;
+        [SerializeField] private bool m_IsSprinting;
         [SerializeField] private float m_WalkSpeed;
         [SerializeField] private float m_RunSpeed;
         [SerializeField] [Range(0f, 1f)] private float m_RunstepLenghten;
@@ -28,7 +29,8 @@ namespace UnityStandardAssets.Characters.FirstPerson
         [SerializeField] private AudioClip m_JumpSound;           // the sound played when character leaves the ground.
         [SerializeField] private AudioClip m_LandSound;           // the sound played when character touches back on ground.
 
-        [SerializeField] private float moveSpeed; 
+        [SerializeField] private float moveSpeed;
+        [SerializeField] private float sprintSpeed;
 
         private Camera m_Camera;
         private bool m_Jump;
@@ -69,7 +71,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
             {
                 m_Jump = CrossPlatformInputManager.GetButtonDown("Jump");
             }
-
+            
             if (!m_PreviouslyGrounded && m_CharacterController.isGrounded)
             {
                 StartCoroutine(m_JumpBob.DoBobCycle());
@@ -98,19 +100,22 @@ namespace UnityStandardAssets.Characters.FirstPerson
         {
             float speed = 1;
 
+            m_IsSprinting = Input.GetKey(KeyCode.LeftShift);
+            float tmpMoveSpeed = m_IsSprinting ? moveSpeed + sprintSpeed : moveSpeed;
 
-            if(Input.GetKey(KeyCode.UpArrow)||Input.GetKey(KeyCode.Z)){
-                transform.position += transform.forward *moveSpeed;
+            if (Input.GetKey(KeyCode.UpArrow)||Input.GetKey(KeyCode.Z)){
+                transform.position += transform.forward * tmpMoveSpeed;
             }
             if(Input.GetKey(KeyCode.DownArrow)||Input.GetKey(KeyCode.S)){
-                transform.position -= transform.forward *moveSpeed;
+                transform.position -= transform.forward * tmpMoveSpeed;
             }
             if(Input.GetKey(KeyCode.LeftArrow)||Input.GetKey(KeyCode.Q)){
-                transform.position -= transform.right *moveSpeed;
+                transform.position -= transform.right * tmpMoveSpeed;
             }
             if(Input.GetKey(KeyCode.RightArrow)||Input.GetKey(KeyCode.D)){
-                transform.position += transform.right *moveSpeed;
+                transform.position += transform.right * tmpMoveSpeed;
             }
+
 
             /*GetInput(out speed);
 

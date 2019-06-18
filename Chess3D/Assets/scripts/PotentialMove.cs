@@ -8,7 +8,7 @@ public class PotentialMove : Move {
 
 	}
 
-	public void ReverseMove(){
+	public override void ReverseMove(bool FromReverse = false){
 		movedPiece.ReversePotentiallyGoTo(leftCase, joinedCase, killedPiece);
 	}
 

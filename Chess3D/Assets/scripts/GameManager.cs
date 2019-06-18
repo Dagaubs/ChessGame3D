@@ -6,16 +6,78 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour {
 
+    public enum STATE
+    {
+        INITIATING,
+        RUNNING,
+        LOOKINGBACKWARD
+    }
+
+    private STATE actualState = STATE.INITIATING;
+
+    public static STATE ActualState
+    {
+        get { return instance.actualState; }
+        private set { instance.actualState = value; }
+    }
+
+    public void SetActualState(STATE newState)
+    {
+        actualState = newState;
+    }
+
 	[SerializeField]
 	private Transform plateTransform, pieces_holder;
+
+    [SerializeField]
+    private PanelMoves PanelMoves;
 
 	[SerializeField]
 	private GameObject light_case, dark_case, transform_circle;
 
 	[SerializeField]
-	private Text whiteTimeText, blackTimeText;
+	private Text whiteTimeText, blackTimeText, whitePointText, blackPointText;
 
+    private int actualPoint;
+
+    public static int Point // if > 0 White winning, otherwise black winning
+    {
+        get { return instance.actualPoint; }
+        private set {
+            instance.actualPoint = value;
+            instance.whitePointText.text = GetTextForPointValue(value);
+            instance.blackPointText.text = GetTextForPointValue(-value);
+        }
+    }
 	public GameObject king, queen, rook, bishop, knight, pawn;
+
+    public static Dictionary<Piece.PieceType, int> PieceValues = new Dictionary<Piece.PieceType, int>() {
+        { Piece.PieceType.PAWN, 1}, { Piece.PieceType.QUEEN, 9}, { Piece.PieceType.KNIGHT, 3}, { Piece.PieceType.BISHOP, 3}, { Piece.PieceType.ROOK, 5}
+    };
+
+    private static string GetTextForPointValue(int value)
+    {
+        return (Mathf.Sign(value) >= 1 ? "+ " : "- ") + Mathf.Abs(value).ToString();
+    }
+
+    public static GameObject GetPrefab(Piece.PieceType type)
+    {
+        switch (type)
+        {
+            case Piece.PieceType.PAWN:
+                return instance.pawn;
+            case Piece.PieceType.QUEEN:
+                return instance.queen;
+            case Piece.PieceType.BISHOP:
+                return instance.bishop;
+            case Piece.PieceType.KNIGHT:
+                return instance.knight;
+            case Piece.PieceType.ROOK:
+                return instance.rook;
+            default:
+                return instance.king;
+        }
+    }
 
 	public Material whiteMaterial, blackMaterial;
 
@@ -80,7 +142,11 @@ public class GameManager : MonoBehaviour {
         }
     }
 
-	void Init ()
+    public static Transform PieceHolder { get { return instance.pieces_holder; } private set { } }
+
+    public static Vector3 Cimetery = new Vector3(-30,0,0);
+
+    void Init ()
     {
 		if(isInit || isInitiating) return;
 		isInitiating = true;
@@ -102,23 +168,24 @@ public class GameManager : MonoBehaviour {
 
 		whitePlayer.RefreshAllPieces();
 		blackPlayer.RefreshAllPieces();
-
+        Point = 0;
 		//initialise tabs
 		PiecesLostBySide = new int[10]; // 10 => we don't count the king
-
-		isInitiating = false;
+        
+        isInitiating = false;
 		isInit = true;
+        actualState = STATE.RUNNING;
     }
-
-	public bool SaveNewPotentialMove(PotentialMove m){
+    
+	public bool SaveNewPotentialMove(PotentialMove move){
 		bool ret = false;
 		//	Debug.Log("Potential New Move : " + m.toString());
-		Piece killedPiece = m.getKilledPiece();
+		Piece killedPiece = move.getKilledPiece();
 
 		if(PieceThatIsChecking != null){
-			if(PieceThatIsChecking != m.getKilledPiece() && PieceThatIsChecking.CheckForCheck()){ // if this move didn't prevent the king to be killed
+			if(PieceThatIsChecking != move.getKilledPiece() && PieceThatIsChecking.CheckForCheck()){ // if this move didn't prevent the king to be killed
 		//		Debug.Log(PieceThatIsChecking.toString() + " is still checking the king, should not be possible");
-				m.ReverseMove();
+				move.ReverseMove();
 				return true;
 			}
 		}
@@ -126,30 +193,80 @@ public class GameManager : MonoBehaviour {
 		if(killedPiece){
 			if(killedPiece.getType() == Piece.PieceType.KING){
 		//		Debug.Log(m.getMovedPiece().toString() + " COULD END GAME BY KILLING ENEMY KING ");
-				PieceThatIsChecking = m.getMovedPiece();
+				PieceThatIsChecking = move.getMovedPiece();
 				killedPiece.getActualCase().CheckCase();
 				ret = true;
 			}
 		}
-		Player enemyPlayer = m.getMovedPiece().GetPlayer().getSide() == Player.PlayerSide.WHITE ? blackPlayer : whitePlayer;
+		Player enemyPlayer = move.getMovedPiece().GetPlayer().getSide() == Player.PlayerSide.WHITE ? blackPlayer : whitePlayer;
 		foreach(Piece p in enemyPlayer.alivedPieces){
-			if((killedPiece == null || p != killedPiece) && (p.HasThisCaseInAccessiblesOrInfluence(m.getLeftCase()) || p.HasThisCaseInAccessiblesOrInfluence(m.getJoinedCase()))){
+			if((killedPiece == null || p != killedPiece) && (p.HasThisCaseInAccessiblesOrInfluence(move.getLeftCase()) || p.HasThisCaseInAccessiblesOrInfluence(move.getJoinedCase()))){
 				bool check = p.CheckForCheck();
 				ret = ret || check;
 			}
 		}
 
-		m.ReverseMove();
+		move.ReverseMove();
 		if(ret){
 		//	Debug.Log("POTENTIAL MOVE : " + m.toString() + " and place its king in check state !");
 		}
 		return ret;
 	}
 
-	public void SaveNewMove(Move m){
-		moves.Add(m);
+    public void ReverseLastMove()
+    {
+        Move lastMove = moves[moves.Count - 1];
+        lastMove.ReverseMove(true);
+        moves.Remove(lastMove);
+        endOfActualTurn();
+    }
+
+    public void ApplyThisMove(Move move, bool backward)
+    {
+        if (!backward)
+        {
+            move.ApplyMove();
+        }
+        else
+        {
+            move.ReverseMove(false);
+        }
+    }
+
+    public static void AddPointsForKillOf(Piece KilledPiece)
+    {
+        if (KilledPiece.getType() == Piece.PieceType.KING)
+        {
+            Debug.LogError("Can't kill the king ! ");
+            return;
+        }
+
+        int side = KilledPiece.GetPlayer().getSide() == Player.PlayerSide.BLACK ? 1 : -1;
+        int value = PieceValues[KilledPiece.getType()];
+        Point += value * side;
+    }
+
+    public static void RemovePointsForKillOf(Piece KilledPiece)
+    {
+        if (KilledPiece.getType() == Piece.PieceType.KING)
+        {
+            Debug.LogError("Can't UNkill the king ! ");
+            return;
+        }
+
+        int side = KilledPiece.GetPlayer().getSide() == Player.PlayerSide.BLACK ? 1 : -1;
+        int value = PieceValues[KilledPiece.getType()];
+        Point -= value * side;
+    }
+
+    public void SaveNewMove(Move move, bool saveMove = true){
+        if (saveMove)
+        {
+            moves.Add(move);
+            PanelMoves.AddMove(move);
+        }
 	//	Debug.Log(m.toString());
-		if(PieceThatIsChecking != null && (m.getKilledPiece() == null || PieceThatIsChecking != m.getKilledPiece())){
+		if(PieceThatIsChecking != null && (move.getKilledPiece() == null || PieceThatIsChecking != move.getKilledPiece())){
 			if(PieceThatIsChecking.CheckForCheck()){ // if this move didn't prevent the king to be killed 
 				Debug.LogError("THIS MOVE SHOULD NOT HAVE POSSIBLE !");
 				return;
@@ -160,10 +277,10 @@ public class GameManager : MonoBehaviour {
 			}
 		}
 		
-		Piece killedPiece = m.getKilledPiece();
+		Piece killedPiece = move.getKilledPiece();
 		if(killedPiece != null){ //If a Piece was destroyed by this move
 			killedPiece.GetEaten();
-			if(PieceThatIsChecking != null && killedPiece == PieceThatIsChecking){
+            if (PieceThatIsChecking != null && killedPiece == PieceThatIsChecking){
 				Player enemyPlayer = PieceThatIsChecking.GetPlayer().getSide() == Player.PlayerSide.WHITE ? blackPlayer : whitePlayer;
 				enemyPlayer.GetKing().getActualCase().UnCheckCase();
 				PieceThatIsChecking = null;
@@ -177,7 +294,7 @@ public class GameManager : MonoBehaviour {
 	
 		}
 
-		Piece movedPiece = m.getMovedPiece();
+		Piece movedPiece = move.getMovedPiece();
 		movedPiece.RefreshAccessible();
 
 		bool check = movedPiece.CheckForCheck();
@@ -191,18 +308,21 @@ public class GameManager : MonoBehaviour {
 		//	Debug.Log(movedPiece.toString() + " ENDS TURN WITHOUT SETTING OTHER KING IN CHECK MATE");
 		}
 		foreach(Piece p in whitePlayer.alivedPieces){
-			if(p.HasThisCaseInAccessiblesOrInfluence(m.getLeftCase()) || p.HasThisCaseInAccessiblesOrInfluence(m.getJoinedCase()) || movedPiece.HasThisCaseInAccessiblesOrInfluence(p.getActualCase()))
+			if(p.HasThisCaseInAccessiblesOrInfluence(move.getLeftCase()) || p.HasThisCaseInAccessiblesOrInfluence(move.getJoinedCase()) || movedPiece.HasThisCaseInAccessiblesOrInfluence(p.getActualCase()))
 			{
 				p.RefreshAccessible();
 			}
 		}
 		foreach(Piece p in blackPlayer.alivedPieces){
-			if(p.HasThisCaseInAccessiblesOrInfluence(m.getLeftCase()) || p.HasThisCaseInAccessiblesOrInfluence(m.getJoinedCase()) || movedPiece.HasThisCaseInAccessiblesOrInfluence(p.getActualCase()))
+			if(p.HasThisCaseInAccessiblesOrInfluence(move.getLeftCase()) || p.HasThisCaseInAccessiblesOrInfluence(move.getJoinedCase()) || movedPiece.HasThisCaseInAccessiblesOrInfluence(p.getActualCase()))
 			{
 				p.RefreshAccessible();
 			}
 		}
-		endOfActualTurn();
+        if (saveMove)
+        {
+            endOfActualTurn();
+        }
 	}
 
 	public Move GetLastMove(){
@@ -214,7 +334,12 @@ public class GameManager : MonoBehaviour {
 		return lastMove;
 	}
 
-	public void GiveUp(){
+    public static void GiveUp()
+    {
+        instance.giveUp();
+    }
+
+	public void giveUp(){
 		EndOfGame(whitePlayer.isPlaying());
 	}
 
@@ -235,9 +360,14 @@ public class GameManager : MonoBehaviour {
 		blackPlayer.DetroyAllPieces();
 		Destroy(whitePlayer.gameObject);
 		Destroy(blackPlayer.gameObject);
+        foreach (Piece piece in pieces_holder.GetComponentsInChildren<Piece>())
+        {
+            Destroy(piece.gameObject);
+        }
 		EndOfGameCanvas.enabled = false;
 		isInit = false;
 		isInitiating = false;
+        PanelMoves.Clear();
 		Start();
 	}
 
@@ -282,6 +412,7 @@ public class GameManager : MonoBehaviour {
 	private void beginNewturn(){
 		whitePlayer.yourTurn(actualTurn == Player.PlayerSide.WHITE);
 		blackPlayer.yourTurn(actualTurn != Player.PlayerSide.WHITE);
+        PanelMoves.SwitchTurn(actualTurn);
 	}
 
 	private void initPlate(){
